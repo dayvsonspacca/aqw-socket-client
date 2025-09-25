@@ -11,8 +11,5 @@
             "name": "Dayvson Spacca",
             "email": "spacca.dayvson@gmail.com"
         }
-    ],
-    "require": {
-        "cboden/ratchet": "^0.4.4"
-    }
+    ]
 }
