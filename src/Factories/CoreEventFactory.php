@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+namespace AqwSocketClient\Factories;
+
+use AqwSocketClient\Events\ConnectionEstabilishedEvent;
+use AqwSocketClient\Events\EventFactoryInterface;
+use AqwSocketClient\Events\RawMessageEvent;
+
+class CoreEventFactory implements EventFactoryInterface
+{
+    public function fromMessage(string $message): array
+    {
+        $events = [
+            new RawMessageEvent($message)
+        ];
+
+        if (str_contains($message, "<cross-domain-policy>")) {
+            $events[] = new ConnectionEstabilishedEvent();
+        }
+
+        return $events;
+    }
+}
