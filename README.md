@@ -8,6 +8,15 @@ Allows login, sending commands, and processing server events in a modular way.
 
 **Note:** This client is not intended to serve as a bot for the game. Its purpose is solely to explore the exchange of information with the server and to obtain data such as item names and player information.
 
+**Note:** This project would not have been possible without the following repositories, thank you!
+
+- [anthony-hyo/swf2png](https://github.com/anthony-hyo/swf2png)  
+- [dwiki08/loving](https://github.com/dwiki08/loving)  
+- [Froztt13/aqw-python](https://github.com/Froztt13/aqw-python)  
+- [BrenoHenrike/RBot](https://github.com/BrenoHenrike/RBot)  
+- [133spider/AQLite](https://github.com/133spider/AQLite)
+
+
 ---
 
 ## **Features**
