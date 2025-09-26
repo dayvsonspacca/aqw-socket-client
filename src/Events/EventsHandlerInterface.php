@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Commands;
+namespace AqwSocketClient\Events;
 
 use AqwSocketClient\Events\EventInterface;
 
-interface CommandsHandlerInterface
+interface EventsHandlerInterface
 {
     /**
      * @param EventInterface[] $events
+     * @return CommandInterface[]
      */
     public function handle(array $events);
 }
