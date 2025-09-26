@@ -11,5 +11,11 @@
             "name": "Dayvson Spacca",
             "email": "spacca.dayvson@gmail.com"
         }
-    ]
+    ],
+    "require": {
+        "react/socket": "^1.16"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^7.3"
+    }
 }

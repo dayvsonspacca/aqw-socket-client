@@ -4,44 +4,118 @@ declare(strict_types=1);
 
 namespace AqwSocketClient;
 
-/**
- * Simulates a AQW client communication with server
- */
+use AqwSocketClient\Commands\CommandInterface;
+use AqwSocketClient\Events\EventFactoryInterface;
+use AqwSocketClient\Events\EventsHandlerInterface;
+use React\EventLoop\Loop;
+use React\EventLoop\LoopInterface;
+use React\Socket\Connector;
+use React\Socket\ConnectionInterface;
+use React\Promise\Deferred;
+use React\Promise\PromiseInterface;
+
 class Client
 {
-    private $socket = null;
+    private ?ConnectionInterface $connection = null;
+    private ?LoopInterface $loop = null;
 
-    public function __construct(private readonly Server $server) {}
+    /**
+     * @param EventFactoryInterface[] $eventFactories
+     * @param EventsHandlerInterface[] $eventHandlers
+     */
+    public function __construct(
+        private readonly Server $server,
+        private readonly array $eventFactories,
+        private readonly array $eventHandlers
+    ) {}
 
-    public function connect()
+    /**
+     * Starts the client: initializes the event loop, connects to the server, and runs the loop.
+     */
+    public function run(): void
     {
-        $this->socket = @stream_socket_client(
-            "tcp://{$this->server->hostname}:{$this->server->port}",
-            $errno,
-            $errstr,
-            5
+        $this->loop = Loop::get();
+
+        $this->connect($this->loop)->then(
+            function (Client $client) {
+            },
+            function (\Throwable $e) {
+                echo "Connection failed: {$e->getMessage()}\n";
+            }
         );
 
-        if (!$this->socket) {
-            echo "Erro: $errstr ($errno)\n";
-            return;
-        }
-
-        stream_set_blocking($this->socket, false);
-
-        while (!feof($this->socket)) {
-            $data = fgets($this->socket, 1024);
-            if ($data) {
-                $this->onData($data);
-            }
-            usleep(100000);
-        }
-
-        fclose($this->socket);
+        $this->loop->run();
     }
 
-    private function onData(string $mensagem)
+    /**
+     * Connects to the TCP server and sets up the data listener.
+     */
+    private function connect(LoopInterface $loop): PromiseInterface
     {
-        echo "[RAW] $mensagem\n";
+        $connector = new Connector($loop);
+        $deferred = new Deferred();
+
+        $connector->connect("tcp://{$this->server->hostname}:{$this->server->port}")
+            ->then(
+                function (ConnectionInterface $connection) use ($deferred) {
+                    $this->connection = $connection;
+                    $connection->on('data', fn(string $data) => $this->handleIncomingData($data));
+                    $deferred->resolve($this);
+                },
+                fn(\Throwable $e) => $deferred->reject($e)
+            );
+
+        return $deferred->promise();
+    }
+
+    /**
+     * Sends a command to the server.
+     */
+    public function send(CommandInterface $command): void
+    {
+        if ($this->connection) {
+            $this->connection->write($command->toPacket()->unpacketify());
+        }
+    }
+
+    /**
+     * Handles incoming data from the server.
+     */
+    private function handleIncomingData(string $message): void
+    {
+        $events = $this->parseEvents($message);
+        $commands = $this->handleEvents($events);
+
+        foreach ($commands as $command) {
+            $this->send($command);
+        }
+    }
+
+    /**
+     * Parses raw message into events using registered factories.
+     *
+     * @return array
+     */
+    private function parseEvents(string $message): array
+    {
+        $events = [];
+        foreach ($this->eventFactories as $factory) {
+            $events = array_merge($events, $factory->fromMessage($message));
+        }
+        return $events;
+    }
+
+    /**
+     * Processes events and returns commands to be sent.
+     *
+     * @return CommandInterface[]
+     */
+    private function handleEvents(array $events): array
+    {
+        $commands = [];
+        foreach ($this->eventHandlers as $handler) {
+            $commands = array_merge($commands, $handler->handle($events));
+        }
+        return $commands;
     }
 }
