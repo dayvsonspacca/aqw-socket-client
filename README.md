@@ -21,7 +21,7 @@ Allows login, sending commands, and processing server events in a modular way.
 ## **Installation**
 
 ```bash
-composer require dayvsonspacca/aqw-socket-client
+composer require dayvsonspacca/aqw-socket-client:dev-main
 ```
 
 ---
