@@ -21,7 +21,8 @@ class Server
         public readonly string $name,
         public readonly string $hostname,
         public readonly int $port
-    ) {}
+    ) {
+    }
 
     /**
      * Returns an instance representing the "Espada" AQW server.

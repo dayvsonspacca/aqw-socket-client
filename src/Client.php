@@ -5,14 +5,10 @@ declare(strict_types=1);
 namespace AqwSocketClient;
 
 use AqwSocketClient\Commands\CommandInterface;
-use AqwSocketClient\Events\EventFactoryInterface;
-use AqwSocketClient\Events\EventsHandlerInterface;
-use React\EventLoop\Loop;
-use React\EventLoop\LoopInterface;
-use React\Socket\Connector;
-use React\Socket\ConnectionInterface;
-use React\Promise\Deferred;
-use React\Promise\PromiseInterface;
+use AqwSocketClient\Events\{EventFactoryInterface, EventsHandlerInterface};
+use React\EventLoop\{Loop, LoopInterface};
+use React\Promise\{Deferred, PromiseInterface};
+use React\Socket\{ConnectionInterface, Connector};
 
 /**
  * Represents a client that connects to an AQW server over TCP.
@@ -24,7 +20,7 @@ use React\Promise\PromiseInterface;
 class Client
 {
     private ?ConnectionInterface $connection = null;
-    private ?LoopInterface $loop = null;
+    private ?LoopInterface $loop             = null;
 
     /**
      * Client constructor.
@@ -37,7 +33,8 @@ class Client
         private readonly Server $server,
         private readonly array $eventFactories,
         private readonly array $eventHandlers
-    ) {}
+    ) {
+    }
 
     /**
      * Starts the client.
@@ -69,16 +66,16 @@ class Client
     private function connect(LoopInterface $loop): PromiseInterface
     {
         $connector = new Connector($loop);
-        $deferred = new Deferred();
+        $deferred  = new Deferred();
 
         $connector->connect("tcp://{$this->server->hostname}:{$this->server->port}")
             ->then(
                 function (ConnectionInterface $connection) use ($deferred) {
                     $this->connection = $connection;
-                    $connection->on('data', fn(string $data) => $this->handleIncomingData($data));
+                    $connection->on('data', fn (string $data) => $this->handleIncomingData($data));
                     $deferred->resolve($this);
                 },
-                fn(\Throwable $e) => $deferred->reject($e)
+                fn (\Throwable $e) => $deferred->reject($e)
             );
 
         return $deferred->promise();
@@ -106,7 +103,7 @@ class Client
      */
     private function handleIncomingData(string $message): void
     {
-        $events = $this->parseEvents($message);
+        $events   = $this->parseEvents($message);
         $commands = $this->handleEvents($events);
 
         foreach ($commands as $command) {

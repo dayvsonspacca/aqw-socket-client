@@ -3,7 +3,8 @@
     "type": "library",
     "license": "MIT",
     "scripts": {
-        "test": "./vendor/bin/phpunit"
+        "test": "./vendor/bin/phpunit",
+        "fmt": "./vendor/bin/php-cs-fixer fix --allow-risky=yes"
     },
     "autoload": {
         "psr-4": {
@@ -26,7 +27,8 @@
     },
     "require-dev": {
         "symfony/var-dumper": "^7.3",
-        "phpunit/phpunit": "^12.3"
+        "phpunit/phpunit": "^12.3",
+        "friendsofphp/php-cs-fixer": "^3.88"
     },
     "minimum-stability": "stable"
 }

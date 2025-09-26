@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Events;
 
-use AqwSocketClient\Events\EventInterface;
-
 /**
  * Interface defining a factory responsible for converting raw server messages
  * into {@see AqwSocketClient\Events\EventInterface} objects.

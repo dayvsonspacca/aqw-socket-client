@@ -21,7 +21,7 @@ class AfterLoginCommand implements CommandInterface
      */
     public function toPacket(): Packet
     {
-        $packet = "%xt%zm%firstJoin%1%";
+        $packet = '%xt%zm%firstJoin%1%';
 
         return Packet::packetify($packet);
     }

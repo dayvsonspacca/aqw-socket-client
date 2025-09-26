@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AqwSocketClient\Tests;
 
+use AqwSocketClient\Commands\{AfterLoginCommand, LoginCommand};
+use AqwSocketClient\Events\{ConnectionEstabilishedEvent, LoginSuccessfulEvent, RawMessageEvent};
+use AqwSocketClient\Factories\CoreEventsHandler;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use AqwSocketClient\Factories\CoreEventsHandler;
-use AqwSocketClient\Events\ConnectionEstabilishedEvent;
-use AqwSocketClient\Events\LoginSuccessfulEvent;
-use AqwSocketClient\Events\RawMessageEvent;
-use AqwSocketClient\Commands\LoginCommand;
-use AqwSocketClient\Commands\AfterLoginCommand;
 
 class CoreEventsHandlerTest extends TestCase
 {
@@ -17,7 +16,7 @@ class CoreEventsHandlerTest extends TestCase
     public function handle_connection_established_generates_login_command(): void
     {
         $handler = new CoreEventsHandler('PlayerOne', 'Token123');
-        $events = [new ConnectionEstabilishedEvent()];
+        $events  = [new ConnectionEstabilishedEvent()];
 
         $commands = $handler->handle($events);
 
@@ -29,7 +28,7 @@ class CoreEventsHandlerTest extends TestCase
     public function handle_login_successful_generates_after_login_command(): void
     {
         $handler = new CoreEventsHandler('PlayerOne', 'Token123');
-        $events = [new LoginSuccessfulEvent()];
+        $events  = [new LoginSuccessfulEvent()];
 
         $commands = $handler->handle($events);
 
@@ -41,7 +40,7 @@ class CoreEventsHandlerTest extends TestCase
     public function handle_raw_message_generates_no_command(): void
     {
         $handler = new CoreEventsHandler('PlayerOne', 'Token123');
-        $events = [new RawMessageEvent("any message")];
+        $events  = [new RawMessageEvent('any message')];
 
         $commands = $handler->handle($events);
 
@@ -52,9 +51,9 @@ class CoreEventsHandlerTest extends TestCase
     public function handle_multiple_events_generates_correct_commands(): void
     {
         $handler = new CoreEventsHandler('PlayerOne', 'Token123');
-        $events = [
+        $events  = [
             new ConnectionEstabilishedEvent(),
-            new RawMessageEvent("message"),
+            new RawMessageEvent('message'),
             new LoginSuccessfulEvent()
         ];
 

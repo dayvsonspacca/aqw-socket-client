@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Factories;
 
-use AqwSocketClient\Commands\AfterLoginCommand;
-use AqwSocketClient\Commands\LoginCommand;
-use AqwSocketClient\Events\ConnectionEstabilishedEvent;
-use AqwSocketClient\Events\EventsHandlerInterface;
-use AqwSocketClient\Events\LoginSuccessfulEvent;
-use AqwSocketClient\Events\RawMessageEvent;
-use AqwSocketClient\Events\EventInterface;
+use AqwSocketClient\Commands\{AfterLoginCommand, LoginCommand};
+use AqwSocketClient\Events\{ConnectionEstabilishedEvent, EventInterface, EventsHandlerInterface, LoginSuccessfulEvent, RawMessageEvent};
 
 /**
  * Handles core events received from the AQW server and generates appropriate commands.
@@ -29,7 +24,8 @@ class CoreEventsHandler implements EventsHandlerInterface
     public function __construct(
         private readonly string $playerName,
         private readonly string $token
-    ) {}
+    ) {
+    }
 
     /**
      * Handles an array of events and returns commands to be sent to the server.

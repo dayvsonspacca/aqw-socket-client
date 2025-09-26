@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AqwSocketClient\Tests;
 
+use AqwSocketClient\Events\{ConnectionEstabilishedEvent, LoginSuccessfulEvent, RawMessageEvent};
+use AqwSocketClient\Factories\CoreEventsFactory;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use AqwSocketClient\Factories\CoreEventsFactory;
-use AqwSocketClient\Events\RawMessageEvent;
-use AqwSocketClient\Events\ConnectionEstabilishedEvent;
-use AqwSocketClient\Events\LoginSuccessfulEvent;
 
 class CoreEventsFactoryTest extends TestCase
 {
@@ -15,7 +15,7 @@ class CoreEventsFactoryTest extends TestCase
     public function from_message_always_returns_raw_message_event(): void
     {
         $factory = new CoreEventsFactory();
-        $message = "any message";
+        $message = 'any message';
 
         $events = $factory->fromMessage($message);
 
@@ -27,7 +27,7 @@ class CoreEventsFactoryTest extends TestCase
     public function from_message_detects_connection_established_event(): void
     {
         $factory = new CoreEventsFactory();
-        $message = "<cross-domain-policy>";
+        $message = '<cross-domain-policy>';
 
         $events = $factory->fromMessage($message);
 
@@ -39,7 +39,7 @@ class CoreEventsFactoryTest extends TestCase
     public function from_message_detects_login_successful_event(): void
     {
         $factory = new CoreEventsFactory();
-        $message = "%xt%loginResponse%-1%true%";
+        $message = '%xt%loginResponse%-1%true%';
 
         $events = $factory->fromMessage($message);
 

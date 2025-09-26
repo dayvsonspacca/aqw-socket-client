@@ -23,7 +23,8 @@ class LoginCommand implements CommandInterface
     public function __construct(
         private readonly string $playerName,
         private readonly string $token
-    ) {}
+    ) {
+    }
 
     /**
      * Converts the login command into a packet that can be sent to the server.
@@ -37,7 +38,7 @@ class LoginCommand implements CommandInterface
             "<login z='zone_master'>" .
             "<nick><![CDATA[SPIDER#0001~{$this->playerName}~3.01]]></nick>" .
             "<pword><![CDATA[{$this->token}]]></pword>" .
-            "</login></body></msg>";
+            '</login></body></msg>';
 
         return Packet::packetify($packet);
     }

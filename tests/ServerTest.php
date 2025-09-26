@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AqwSocketClient\Tests;
 
+use AqwSocketClient\Server;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use AqwSocketClient\Server;
 
 class ServerTest extends TestCase
 {
@@ -16,7 +18,7 @@ class ServerTest extends TestCase
         $this->assertIsArray($servers);
         $this->assertCount(13, $servers);
 
-        $names = array_map(fn(Server $s) => $s->name, $servers);
+        $names = array_map(fn (Server $s) => $s->name, $servers);
 
         $expectedNames = [
             'Twilly',

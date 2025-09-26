@@ -9,4 +9,6 @@ namespace AqwSocketClient\Events;
  *
  * This event is triggered when the server confirms that the player has logged in successfully.
  */
-class LoginSuccessfulEvent implements EventInterface {}
+class LoginSuccessfulEvent implements EventInterface
+{
+}

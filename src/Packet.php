@@ -18,7 +18,9 @@ class Packet
     /**
      * @param string $data The raw data of the packet.
      */
-    private function __construct(private readonly string $data) {}
+    private function __construct(private readonly string $data)
+    {
+    }
 
     /**
      * Creates a packet from raw string data.
