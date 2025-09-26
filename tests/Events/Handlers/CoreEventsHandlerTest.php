@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Tests;
+namespace AqwSocketClient\Tests\Events\Handlers;
 
 use AqwSocketClient\Commands\{AfterLoginCommand, LoginCommand};
 use AqwSocketClient\Events\{ConnectionEstabilishedEvent, LoginSuccessfulEvent, RawMessageEvent};
-use AqwSocketClient\Factories\CoreEventsHandler;
+use AqwSocketClient\Events\Handlers\CoreEventsHandler;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

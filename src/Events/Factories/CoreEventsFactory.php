@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Factories;
+namespace AqwSocketClient\Events\Factories;
 
-use AqwSocketClient\Events\{ConnectionEstabilishedEvent, EventsFactoryInterface, LoginSuccessfulEvent, RawMessageEvent};
+use AqwSocketClient\Events\{ConnectionEstabilishedEvent, LoginSuccessfulEvent, RawMessageEvent};
 
 /**
  * Factory responsible for creating core events from raw AQW server messages.

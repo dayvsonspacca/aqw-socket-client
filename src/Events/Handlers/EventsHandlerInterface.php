@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Events;
+namespace AqwSocketClient\Events\Handlers;
 
 use AqwSocketClient\Commands\CommandInterface;
 

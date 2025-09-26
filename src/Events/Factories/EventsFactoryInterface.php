@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Events;
+namespace AqwSocketClient\Events\Factories;
 
 /**
  * Interface defining a factory responsible for converting raw server messages

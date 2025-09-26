@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace AqwSocketClient;
 
 use AqwSocketClient\Commands\CommandInterface;
-use AqwSocketClient\Events\{EventFactoryInterface, EventsHandlerInterface};
+use AqwSocketClient\Events\Handlers\EventsHandlerInterface;
+use AqwSocketClient\Events\Factories\EventsFactoryInterface;
 use React\EventLoop\{Loop, LoopInterface};
 use React\Promise\{Deferred, PromiseInterface};
 use React\Socket\{ConnectionInterface, Connector};
@@ -26,7 +27,7 @@ class Client
      * Client constructor.
      *
      * @param Server $server The server to connect to.
-     * @param EventFactoryInterface[] $eventFactories List of factories to parse raw messages into events.
+     * @param EventsFactoryInterface[] $eventFactories List of factories to parse raw messages into events.
      * @param EventsHandlerInterface[] $eventHandlers List of handlers to process events and optionally generate commands.
      */
     public function __construct(

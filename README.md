@@ -43,8 +43,8 @@ $server = \AqwSocketClient\Server::espada();
 
 $client = new \AqwSocketClient\Client(
     $server,
-    [new \AqwSocketClient\Factories\CoreEventsFactory()],
-    [new \AqwSocketClient\Factories\CoreEventsHandler('PlayerName', 'Token')]
+    [new \AqwSocketClient\Events\Factories\CoreEventsFactory()],
+    [new \AqwSocketClient\Events\Handlers\CoreEventsHandler('PlayerName', 'Token')]
 );
 
 $client->run();

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Factories;
+namespace AqwSocketClient\Events\Handlers;
 
 use AqwSocketClient\Commands\{AfterLoginCommand, LoginCommand};
-use AqwSocketClient\Events\{ConnectionEstabilishedEvent, EventInterface, EventsHandlerInterface, LoginSuccessfulEvent, RawMessageEvent};
+use AqwSocketClient\Events\{ConnectionEstabilishedEvent, EventInterface, LoginSuccessfulEvent, RawMessageEvent};
 
 /**
  * Handles core events received from the AQW server and generates appropriate commands.
