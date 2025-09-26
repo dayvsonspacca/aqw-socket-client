@@ -2,9 +2,17 @@
     "name": "dayvsonspacca/aqw-socket-client",
     "type": "library",
     "license": "MIT",
+    "scripts": {
+        "test": "./vendor/bin/phpunit"
+    },
     "autoload": {
         "psr-4": {
             "AqwSocketClient\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AqwSocketClient\\Tests\\": "tests/"
         }
     },
     "authors": [
@@ -17,7 +25,8 @@
         "react/socket": "^1.16"
     },
     "require-dev": {
-        "symfony/var-dumper": "^7.3"
+        "symfony/var-dumper": "^7.3",
+        "phpunit/phpunit": "^12.3"
     },
     "minimum-stability": "stable"
 }
