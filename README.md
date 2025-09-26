@@ -37,7 +37,6 @@ composer require dayvsonspacca/aqw-socket-client:dev-main
 
 ## **Usage**
 
-1. Create a server instance:  
 ```php
 $server = \AqwSocketClient\Server::espada();
 
@@ -49,9 +48,7 @@ $client = new \AqwSocketClient\Client(
 
 $client->run();
 ```
-
----
-
+> See my other project [dayvsonspacca/aq-hub](https://github.com/dayvsonspacca/aq-hub) `AqwApiClient` file to see how generate you token.
 ---
 
 ## **Architecture**
