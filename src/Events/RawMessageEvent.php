@@ -9,5 +9,8 @@ namespace AqwSocketClient\Events;
  */
 class RawMessageEvent implements EventInterface
 {
-    public function __construct(public readonly string $message) {}
+    public function __construct(public readonly string $message)
+    {
+        echo "[RAW] - " . $message . PHP_EOL;
+    }
 }
