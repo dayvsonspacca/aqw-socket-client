@@ -9,7 +9,7 @@ use AqwSocketClient\Events\EventInterface;
 /**
  * Interface defining a factory responsible for converting raw messages into {@see AqwSocketClient\Events\EventInterface} objects.
  */
-interface EventFactoryInterface
+interface EventsFactoryInterface
 {
     /**
      * Creates {@see AqwSocketClient\Events\EventInterface} objects from a raw socket message.

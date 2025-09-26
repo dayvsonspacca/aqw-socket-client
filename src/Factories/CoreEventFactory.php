@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace AqwSocketClient\Factories;
 
 use AqwSocketClient\Events\ConnectionEstabilishedEvent;
-use AqwSocketClient\Events\EventFactoryInterface;
+use AqwSocketClient\Events\EventsFactoryInterface;
 use AqwSocketClient\Events\RawMessageEvent;
 
-class CoreEventFactory implements EventFactoryInterface
+class CoreEventFactory implements EventsFactoryInterface
 {
     public function fromMessage(string $message): array
     {
