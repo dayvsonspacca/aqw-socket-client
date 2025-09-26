@@ -25,7 +25,7 @@ class LoginCommand implements CommandInterface
         $packet = "<msg t='sys'>" .
             "<body action='login' r='0'>" .
             "<login z='zone_master'>" .
-            "<nick><![CDATA[SPIDER#{$this->playerName}~3.01]]></nick>" .
+            "<nick><![CDATA[SPIDER#0001~{$this->playerName}~3.01]]></nick>" .
             "<pword><![CDATA[{$this->token}]]></pword>" .
             "</login></body></msg>";
 
