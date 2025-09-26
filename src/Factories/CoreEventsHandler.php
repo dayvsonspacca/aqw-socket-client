@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Factories;
 
+use AqwSocketClient\Commands\AfterLoginCommand;
 use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Events\ConnectionEstabilishedEvent;
 use AqwSocketClient\Events\EventsHandlerInterface;
+use AqwSocketClient\Events\LoginSuccessfulEvent;
 use AqwSocketClient\Events\RawMessageEvent;
 
 class CoreEventsHandler implements EventsHandlerInterface
@@ -28,6 +30,9 @@ class CoreEventsHandler implements EventsHandlerInterface
             $commands = array_merge($commands, match ($eventName) {
                 ConnectionEstabilishedEvent::class => [
                     new LoginCommand($this->playerName, $this->token)
+                ],
+                LoginSuccessfulEvent::class => [
+                    new AfterLoginCommand()
                 ],
                 RawMessageEvent::class => [],
                 default => []
