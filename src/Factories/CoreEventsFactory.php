@@ -8,7 +8,7 @@ use AqwSocketClient\Events\ConnectionEstabilishedEvent;
 use AqwSocketClient\Events\EventsFactoryInterface;
 use AqwSocketClient\Events\RawMessageEvent;
 
-class CoreEventFactory implements EventsFactoryInterface
+class CoreEventsFactory implements EventsFactoryInterface
 {
     public function fromMessage(string $message): array
     {
