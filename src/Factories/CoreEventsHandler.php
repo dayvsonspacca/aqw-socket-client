@@ -10,18 +10,34 @@ use AqwSocketClient\Events\ConnectionEstabilishedEvent;
 use AqwSocketClient\Events\EventsHandlerInterface;
 use AqwSocketClient\Events\LoginSuccessfulEvent;
 use AqwSocketClient\Events\RawMessageEvent;
+use AqwSocketClient\Events\EventInterface;
 
+/**
+ * Handles core events received from the AQW server and generates appropriate commands.
+ *
+ * This handler reacts to specific events such as connection established and login successful,
+ * generating commands like {@see AqwSocketClient\Commands\LoginCommand} and {@see AqwSocketClient\Commands\AfterLoginCommand} accordingly.
+ */
 class CoreEventsHandler implements EventsHandlerInterface
 {
+    /**
+     * CoreEventsHandler constructor.
+     *
+     * @param string $playerName The name of the player to login.
+     * @param string $token The authentication token used for login.
+     */
     public function __construct(
         private readonly string $playerName,
         private readonly string $token
     ) {}
 
     /**
-     * @param EventInterface[] $events
+     * Handles an array of events and returns commands to be sent to the server.
+     *
+     * @param EventInterface[] $events The events to handle.
+     * @return array An array of command objects generated based on the events.
      */
-    public function handle(array $events)
+    public function handle(array $events): array
     {
         $commands = [];
         foreach ($events as $event) {
@@ -38,6 +54,7 @@ class CoreEventsHandler implements EventsHandlerInterface
                 default => []
             });
         }
+
         return $commands;
     }
 }
