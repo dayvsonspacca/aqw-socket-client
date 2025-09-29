@@ -1,6 +1,6 @@
 # AqwSocketClient
 
-PHP client for connecting and interacting with **Adventure Quest Worlds (AQW)** servers via TCP, using ReactPHP for asynchronous event handling.
+PHP client for connecting and interacting with **Adventure Quest Worlds (AQW)** servers, using ReactPHP for asynchronous event handling.
 
 Allows login, sending commands, and processing server events in a modular way.  
 
