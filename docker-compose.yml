@@ -1,8 +1,0 @@
-services:
-  php:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: php
-    volumes:
-      - ./:/var/www
