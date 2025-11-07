@@ -26,6 +26,6 @@ class Configuration
         public readonly bool $logMessages = false
     ) {
         $this->interpreters = array_merge([new LoginInterpreter()], $interpreters);
-        $this->translators = array_merge([new LoginTranslator($username, $password)], $translators);
+        $this->translators = array_merge([new LoginTranslator($username, $token)], $translators);
     }
 }
