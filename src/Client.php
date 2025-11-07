@@ -60,7 +60,13 @@ class Client
                 foreach ($this->configuration->translators as $translator) {
                     $commands[] = $translator->translate($event);
                 }
+
+                foreach ($this->configuration->listeners as $listener) {
+                    $listener->listen($event);
+                }
             }
+
+            $commands = array_filter($commands, fn($command) => $command);
 
             foreach ($commands as $command) {
                 $this->sendPacket($command->pack());
