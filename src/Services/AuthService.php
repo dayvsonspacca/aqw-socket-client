@@ -12,23 +12,16 @@ class AuthService
 {
     private const LOGIN_URL = 'https://game.aq.com/game/api/login/now';
 
-    private readonly GuzzleHttpClient $httpClient;
-
-    public function __construct(
-    ) {
-        $this->httpClient = new GuzzleHttpClient();
-    }
-
     /**
      * Performs authentication via POST request and returns the token synchronously.
      *
      * @return string The authentication token (sToken).
      * @throws RuntimeException If token retrieval fails.
      */
-    public function getAuthToken(string $username, string $password): string
+    public static function getAuthToken(string $username, string $password): string
     {
         try {
-            $response = $this->httpClient->post(self::LOGIN_URL, [
+            $response = new GuzzleHttpClient()->post(self::LOGIN_URL, [
                 'form_params' => [
                     'user' => $username,
                     'pass' => $password,
