@@ -7,6 +7,7 @@ namespace AqwSocketClient;
 use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
+use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Messages\XmlMessage;
 use AqwSocketClient\Services\AuthService;
 use GuzzleHttp\Client as GuzzleHttpClient;
@@ -94,7 +95,7 @@ class Client
             echo $data . PHP_EOL;
         }
 
-        $messages = [XmlMessage::fromString($data), DelimitedMessage::fromString($data)];
+        $messages = [XmlMessage::fromString($data), DelimitedMessage::fromString($data), JsonMessage::fromString($data)];
         $messages = array_filter($messages, fn($message) => $message);
 
         $events = [];
