@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Translators;
 
+use AqwSocketClient\Commands\FirstLoginCommand;
 use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Events\ConnectionEstabilishedEvent;
+use AqwSocketClient\Events\LoginResponseEvent;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Interfaces\TranslatorInterface;
@@ -21,6 +23,7 @@ class LoginTranslator implements TranslatorInterface
     {
         return match ($event::class) {
             ConnectionEstabilishedEvent::class => new LoginCommand($this->username, $this->token),
+            LoginResponseEvent::class => (fn() => $event->success ? new FirstLoginCommand() : false )(),
             default => false
         };
     }
