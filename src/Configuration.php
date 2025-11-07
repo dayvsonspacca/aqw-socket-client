@@ -20,6 +20,7 @@ class Configuration
     public function __construct(
         public readonly string $username,
         public readonly string $password,
+        public readonly string $token,
         array $interpreters = [],
         array $translators = [],
         public readonly bool $logMessages = false
