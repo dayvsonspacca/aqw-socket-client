@@ -19,7 +19,7 @@ class PlayersInterpreter implements InterpreterInterface
         $events = [];
 
         if ($message instanceof DelimitedMessage) {
-            if ($message->type === DelimitedMessageType::ExitArea && count($message->data) === 3) {
+            if ($message->type === DelimitedMessageType::ExitArea && count($message->data) === 2) {
                 $events[] = new PlayerDetectedEvent($message->data[1]);
             }
             if ($message->type === DelimitedMessageType::PlayerChange) {
