@@ -58,7 +58,8 @@ class PlayersInterpreter implements InterpreterInterface
                     $events[] = new MovedToAreaEvent(
                         areaId: $command->data['areaId'],
                         players: $players,
-                        userId: $user[0]['entID']
+                        userId: $user[0]['entID'],
+                        mapName: $command->data['strMapName']
                     );
                 }
             }
