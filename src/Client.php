@@ -4,141 +4,99 @@ declare(strict_types=1);
 
 namespace AqwSocketClient;
 
-use AqwSocketClient\Commands\CommandInterface;
-use AqwSocketClient\Events\Handlers\EventsHandlerInterface;
-use AqwSocketClient\Events\Factories\EventsFactoryInterface;
-use React\EventLoop\{Loop, LoopInterface};
-use React\Promise\{Deferred, PromiseInterface};
+use AqwSocketClient\Commands\LoginCommand;
+use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Messages\XmlMessage;
+use AqwSocketClient\Services\AuthService;
+use GuzzleHttp\Client as GuzzleHttpClient;
+use React\Promise\Deferred;
 use React\Socket\{ConnectionInterface, Connector};
+use RuntimeException;
 
-/**
- * Represents a client that connects to an AQW server over TCP.
- *
- * This client manages the connection, sends commands, and handles incoming
- * messages by converting them into events and processing them with registered
- * event handlers.
- */
 class Client
 {
     private ?ConnectionInterface $connection = null;
-    private ?LoopInterface $loop             = null;
 
-    /**
-     * Client constructor.
-     *
-     * @param Server $server The server to connect to.
-     * @param EventsFactoryInterface[] $eventFactories List of factories to parse raw messages into events.
-     * @param EventsHandlerInterface[] $eventHandlers List of handlers to process events and optionally generate commands.
-     */
     public function __construct(
         private readonly Server $server,
-        private readonly array $eventFactories,
-        private readonly array $eventHandlers
-    ) {
-    }
+        private readonly Configuration $configuration
+    ) {}
 
-    /**
-     * Starts the client.
-     *
-     * Initializes the event loop, connects to the server, and runs the loop.
-     */
-    public function run(): void
+    public function connect()
     {
-        $this->loop = Loop::get();
-
-        $this->connect($this->loop)->then(
-            function (Client $client) {
-                // Connection established
-            },
-            function (\Throwable $e) {
-                echo "Connection failed: {$e->getMessage()}\n";
-            }
-        );
-
-        $this->loop->run();
-    }
-
-    /**
-     * Connects to the TCP server and sets up the data listener.
-     *
-     * @param LoopInterface $loop The event loop to use for the connection.
-     * @return PromiseInterface Resolves with the Client instance when the connection is successful.
-     */
-    private function connect(LoopInterface $loop): PromiseInterface
-    {
-        $connector = new Connector($loop);
+        $connector = new Connector();
         $deferred  = new Deferred();
 
-        $connector->connect("tcp://{$this->server->hostname}:{$this->server->port}")
+        $target = "tcp://{$this->server->hostname}:{$this->server->port}";
+        echo "Attempting to connect to {$this->server->name} at {$target}" . PHP_EOL;
+
+        $connector->connect($target)
             ->then(
                 function (ConnectionInterface $connection) use ($deferred) {
+                    echo "Connection to {$this->server->name} established." . PHP_EOL;
+
                     $this->connection = $connection;
-                    $connection->on('data', fn (string $data) => $this->handleIncomingData($data));
-                    $deferred->resolve($this);
+                    $this->setupConnectionHandlers($connection);
                 },
-                fn (\Throwable $e) => $deferred->reject($e)
+                fn(\Throwable $e) => $deferred->reject($e)
             );
 
         return $deferred->promise();
     }
 
-    /**
-     * Sends a command to the server.
-     *
-     * @param CommandInterface $command The command to send.
-     */
-    public function send(CommandInterface $command): void
+    private function setupConnectionHandlers(ConnectionInterface $connection): void
     {
-        if ($this->connection) {
-            $this->connection->write($command->toPacket()->unpacketify());
+        $connection->on('close', function () {
+            echo "Connection to {$this->server->name} closed." . PHP_EOL;
+            $this->connection = null;
+        });
+
+        $connection->on('data', function (string $data) {
+            $events = $this->handleMessage($data);
+
+            $commands = [];
+            foreach ($events as $event) {
+                foreach ($this->configuration->translators as $translator) {
+                    $commands[] = $translator->translate($event);
+                }
+            }
+
+            foreach ($commands as $command) {
+                $this->sendPacket($command->pack());
+            }
+        });
+    }
+
+    private function sendPacket(Packet $packet): void
+    {
+        if ($this->connection === null) {
+            throw new RuntimeException("Cannot send packet, connection is not open.");
         }
+
+        $this->connection->write($packet->unpacketify());
     }
 
     /**
-     * Handles incoming data from the server.
-     *
-     * Converts raw messages into events and processes them with the registered
-     * event handlers, sending any resulting commands back to the server.
-     *
-     * @param string $message The raw message received from the server.
+     * @return EventInterface[]
      */
-    private function handleIncomingData(string $message): void
+    private function handleMessage(string $data): array
     {
-        $events   = $this->parseEvents($message);
-        $commands = $this->handleEvents($events);
+        $data = str_replace(["\x00"], '', $data);
 
-        foreach ($commands as $command) {
-            $this->send($command);
+        if ($this->configuration->logMessages) {
+            echo $data . PHP_EOL;
         }
-    }
 
-    /**
-     * Parses a raw message into events using the registered factories.
-     *
-     * @param string $message The raw message from the server.
-     * @return array An array of {@see AqwSocketClient\Events\EventInterface} objects generated from the message.
-     */
-    private function parseEvents(string $message): array
-    {
+        $messages = [XmlMessage::fromString($data)];
+        $messages = array_filter($messages, fn($message) => $message);
+
         $events = [];
-        foreach ($this->eventFactories as $factory) {
-            $events = array_merge($events, $factory->fromMessage($message));
+        foreach ($this->configuration->interpreters as $interpreter) {
+            foreach ($messages as $message) {
+                $events = array_merge($interpreter->interpret($message), $events);
+            }
         }
-        return $events;
-    }
 
-    /**
-     * Processes events using registered handlers and returns any commands to be sent.
-     *
-     * @param array $events An array of events to process.
-     * @return CommandInterface[] An array of commands generated by the event handlers.
-     */
-    private function handleEvents(array $events): array
-    {
-        $commands = [];
-        foreach ($this->eventHandlers as $handler) {
-            $commands = array_merge($commands, $handler->handle($events));
-        }
-        return $commands;
+        return $events;
     }
 }

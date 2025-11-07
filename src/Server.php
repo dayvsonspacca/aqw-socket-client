@@ -21,12 +21,8 @@ class Server
         public readonly string $name,
         public readonly string $hostname,
         public readonly int $port
-    ) {
-    }
+    ) {}
 
-    /**
-     * Returns an instance representing the "Espada" AQW server.
-     */
     public static function espada(): Server
     {
         return new self('Espada', 'socket2.aq.com', 5591);
