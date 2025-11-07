@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace AqwSocketClient;
 
-use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Interfaces\EventInterface;
-use AqwSocketClient\Messages\DelimitedMessage;
-use AqwSocketClient\Messages\JsonMessage;
-use AqwSocketClient\Messages\XmlMessage;
-use AqwSocketClient\Services\AuthService;
-use GuzzleHttp\Client as GuzzleHttpClient;
+use AqwSocketClient\Messages\{DelimitedMessage, JsonMessage, XmlMessage};
 use React\Promise\Deferred;
 use React\Socket\{ConnectionInterface, Connector};
 use RuntimeException;
@@ -36,7 +31,8 @@ class Client
     public function __construct(
         private readonly Server $server,
         private readonly Configuration $configuration
-    ) {}
+    ) {
+    }
 
     /**
      * Attempts to establish an asynchronous TCP connection to the configured AQW server.
@@ -63,7 +59,7 @@ class Client
                     $this->connection = $connection;
                     $this->setupConnectionHandlers($connection);
                 },
-                fn(\Throwable $e) => $deferred->reject($e)
+                fn (\Throwable $e) => $deferred->reject($e)
             );
 
         return $deferred->promise();
@@ -98,7 +94,7 @@ class Client
                 }
             }
 
-            $commands = array_filter($commands, fn($command) => $command);
+            $commands = array_filter($commands, fn ($command) => $command);
 
             foreach ($commands as $command) {
                 $this->sendPacket($command->pack());
@@ -116,7 +112,7 @@ class Client
     private function sendPacket(Packet $packet): void
     {
         if ($this->connection === null) {
-            throw new RuntimeException("Cannot send packet, connection is not open.");
+            throw new RuntimeException('Cannot send packet, connection is not open.');
         }
 
         $this->connection->write($packet->unpacketify());
@@ -141,7 +137,7 @@ class Client
         }
 
         $messages = [XmlMessage::fromString($data), DelimitedMessage::fromString($data), JsonMessage::fromString($data)];
-        $messages = array_filter($messages, fn($message) => $message);
+        $messages = array_filter($messages, fn ($message) => $message);
 
         $events = [];
         foreach ($this->configuration->interpreters as $interpreter) {

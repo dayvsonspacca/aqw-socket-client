@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests;
 
-use AqwSocketClient\Events\ConnectionEstabilishedEvent;
-use AqwSocketClient\Events\LoginResponseEvent;
+use AqwSocketClient\Events\{ConnectionEstabilishedEvent, LoginResponseEvent};
 use AqwSocketClient\Interpreters\LoginInterpreter;
-use AqwSocketClient\Messages\DelimitedMessage;
-use AqwSocketClient\Messages\XmlMessage;
+use AqwSocketClient\Messages\{DelimitedMessage, XmlMessage};
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\DelimitedMessageType;
-use AqwSocketClient\Events\ConnectionEstabilishedEvent;
-use AqwSocketClient\Events\LoginResponseEvent;
-use AqwSocketClient\Interfaces\{MessageInterface, InterpreterInterface};
-use AqwSocketClient\Messages\DelimitedMessage;
-use AqwSocketClient\Messages\XmlMessage;
+use AqwSocketClient\Events\{ConnectionEstabilishedEvent, LoginResponseEvent};
+use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
+use AqwSocketClient\Messages\{DelimitedMessage, XmlMessage};
 
 /**
  * An interpreter responsible for parsing incoming server messages that are
@@ -38,7 +36,7 @@ class LoginInterpreter implements InterpreterInterface
             if ($message->dom->firstChild?->nodeName === 'cross-domain-policy') {
                 $events[] = new ConnectionEstabilishedEvent();
             }
-        } else if ($message instanceof DelimitedMessage) {
+        } elseif ($message instanceof DelimitedMessage) {
             if ($message->type === DelimitedMessageType::LoginResponse) {
                 $events[] = new LoginResponseEvent((bool) $message->data[0] ?? false);
             }

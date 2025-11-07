@@ -20,5 +20,6 @@ class LoginResponseEvent implements EventInterface
      */
     public function __construct(
         public readonly bool $success
-    ) {}
+    ) {
+    }
 }

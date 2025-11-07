@@ -6,7 +6,7 @@ namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Events\PlayerDetectedEvent;
-use AqwSocketClient\Interfaces\{MessageInterface, InterpreterInterface};
+use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
 use AqwSocketClient\Messages\DelimitedMessage;
 
 /**

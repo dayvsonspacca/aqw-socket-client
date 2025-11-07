@@ -32,7 +32,7 @@ class XmlMessage implements MessageInterface
     public static function fromString(string $message): MessageInterface|false
     {
         $dom = new DOMDocument();
-        
+
         $success = @$dom->loadXML($message);
         if (!$success) {
             return false;

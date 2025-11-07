@@ -22,7 +22,8 @@ class JsonMessage implements MessageInterface
      */
     private function __construct(
         public readonly array $commands
-    ) {}
+    ) {
+    }
 
     /**
      * Attempts to create a JsonMessage object by preprocessing the raw string
@@ -45,7 +46,7 @@ class JsonMessage implements MessageInterface
             return false;
         }
 
-        $json = array_map(fn($part) => $part['b']['o'], $json);
+        $json = array_map(fn ($part) => $part['b']['o'], $json);
         $json = array_map(function ($part) {
             $type = JsonCommandType::fromString($part['cmd']);
             if (!$type) {
@@ -55,8 +56,8 @@ class JsonMessage implements MessageInterface
             return new JsonCommand($type, $part);
         }, $json);
 
-        $json = array_filter($json, fn($command) => $command);
-        
+        $json = array_filter($json, fn ($command) => $command);
+
         if (empty($json)) {
             return false;
         }

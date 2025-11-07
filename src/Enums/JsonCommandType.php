@@ -35,8 +35,8 @@ enum JsonCommandType
     {
         return match($string) {
             'equipItem' => self::EquipItem,
-            'wearItem'  => self::WearItem,
-            default     => false
+            'wearItem' => self::WearItem,
+            default => false
         };
     }
 }

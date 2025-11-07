@@ -21,5 +21,6 @@ class JsonCommand
     public function __construct(
         public readonly JsonCommandType $type,
         public readonly array $data
-    ) {}
+    ) {
+    }
 }

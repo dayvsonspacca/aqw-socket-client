@@ -27,11 +27,11 @@ class AuthService
                     'pass' => $password,
                     'option' => 1
                 ],
-                'timeout' => 5.0, 
+                'timeout' => 5.0,
             ]);
 
             $body = json_decode($response->getBody()->getContents(), true);
-            
+
             if (!isset($body['login']['sToken'])) {
                 throw new RuntimeException(
                     "Failed to retrieve account auth token for user: {$username}"
@@ -41,7 +41,7 @@ class AuthService
             return $body['login']['sToken'];
 
         } catch (GuzzleException $e) {
-            throw new RuntimeException("HTTP Authentication Error: " . $e->getMessage(), 0, $e);
+            throw new RuntimeException('HTTP Authentication Error: ' . $e->getMessage(), 0, $e);
         } catch (\Throwable $e) {
             throw $e;
         }

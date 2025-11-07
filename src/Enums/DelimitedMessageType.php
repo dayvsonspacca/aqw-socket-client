@@ -45,10 +45,10 @@ enum DelimitedMessageType
     {
         return match ($string) {
             'loginResponse' => self::LoginResponse,
-            'server'        => self::Server,
-            'exitArea'      => self::ExitArea,
-            'uotls'         => self::PlayerChange,
-            default         => false
+            'server' => self::Server,
+            'exitArea' => self::ExitArea,
+            'uotls' => self::PlayerChange,
+            default => false
         };
     }
 }

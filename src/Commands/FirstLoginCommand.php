@@ -13,7 +13,7 @@ use AqwSocketClient\Packet;
  *
  * This command is typically required by the server protocol to initiate
  * the client's session and receive the initial data.
- * 
+ *
  * Move player to battleon
  */
 class FirstLoginCommand implements CommandInterface

@@ -16,7 +16,7 @@ final class LoginCommandTest extends TestCase
     protected function setUp(): void
     {
         $username = 'Artix';
-        $token = 'thisisnotartixtoken';
+        $token    = 'thisisnotartixtoken';
 
         $this->command = new LoginCommand($username, $token);
     }
@@ -36,8 +36,8 @@ final class LoginCommandTest extends TestCase
         $this->assertSame($packet->unpacketify(), "<msg t='sys'>" .
                 "<body action='login' r='0'>" .
                 "<login z='zone_master'>" .
-                "<nick><![CDATA[SPIDER#0001~Artix~3.01]]></nick>" .
-                "<pword><![CDATA[thisisnotartixtoken]]></pword>" .
+                '<nick><![CDATA[SPIDER#0001~Artix~3.01]]></nick>' .
+                '<pword><![CDATA[thisisnotartixtoken]]></pword>' .
                 '</login></body></msg>'.  "\u{0000}");
     }
 }

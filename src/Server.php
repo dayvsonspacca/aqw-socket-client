@@ -21,7 +21,8 @@ class Server
         public readonly string $name,
         public readonly string $hostname,
         public readonly int $port
-    ) {}
+    ) {
+    }
 
     public static function espada(): Server
     {

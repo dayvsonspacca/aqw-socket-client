@@ -22,7 +22,8 @@ class LoginCommand implements CommandInterface
     public function __construct(
         private readonly string $username,
         private readonly string $token
-    ) {}
+    ) {
+    }
 
     public function pack(): Packet
     {

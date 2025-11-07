@@ -10,7 +10,7 @@ namespace AqwSocketClient\Interfaces;
  *
  * Listeners are responsible for acting upon the interpreted server messages,
  * providing the main application logic.
- * 
+ *
  * And dont return any commands do server
  */
 interface ListenerInterface

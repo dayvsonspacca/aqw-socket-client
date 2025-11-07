@@ -15,7 +15,7 @@ final class DelimitedMessageTest extends TestCase
     public function should_create_delimited_message()
     {
         $rawMessage = '%xt%server%-1%You joined "battleon-2"%';
-        $message = DelimitedMessage::fromString($rawMessage);
+        $message    = DelimitedMessage::fromString($rawMessage);
 
         $this->assertInstanceOf(DelimitedMessage::class, $message);
         $this->assertSame($message->type, DelimitedMessageType::Server);
@@ -25,7 +25,7 @@ final class DelimitedMessageTest extends TestCase
     public function should_return_false_when_cant_parse_to_delimited()
     {
         $rawMessage = '{"msg": "hello"}';
-        $message = DelimitedMessage::fromString($rawMessage);
+        $message    = DelimitedMessage::fromString($rawMessage);
 
         $this->assertFalse($message);
     }
@@ -34,7 +34,7 @@ final class DelimitedMessageTest extends TestCase
     public function should_return_false_when_cant_parse_the_delimited_type()
     {
         $rawMessage = '%xt%artixsupercommand%-1%You joined "battleon-2"%';
-        $message = DelimitedMessage::fromString($rawMessage);
+        $message    = DelimitedMessage::fromString($rawMessage);
 
         $this->assertFalse($message);
     }

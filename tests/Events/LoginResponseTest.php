@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Commands;
 
-use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Events\LoginResponseEvent;
-use AqwSocketClient\Packet;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

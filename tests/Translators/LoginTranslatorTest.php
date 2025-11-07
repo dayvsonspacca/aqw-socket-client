@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Translators;
 
-use AqwSocketClient\Commands\FirstLoginCommand;
-use AqwSocketClient\Commands\LoginCommand;
-use AqwSocketClient\Events\ConnectionEstabilishedEvent;
-use AqwSocketClient\Events\LoginResponseEvent;
+use AqwSocketClient\Commands\{FirstLoginCommand, LoginCommand};
+use AqwSocketClient\Events\{ConnectionEstabilishedEvent, LoginResponseEvent};
+use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Translators\LoginTranslator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use AqwSocketClient\Interfaces\EventInterface;
 
 final class LoginTranslatorTest extends TestCase
 {
@@ -39,7 +37,7 @@ final class LoginTranslatorTest extends TestCase
     #[Test]
     public function should_return_false_when_dont_translate_any_event()
     {
-        $event = new class () implements EventInterface {};
+        $event   = new class () implements EventInterface {};
         $command = $this->translator->translate($event);
         $this->assertFalse($command);
     }
