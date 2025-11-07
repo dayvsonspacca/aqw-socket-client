@@ -17,12 +17,14 @@ final class ConfigurationTest extends TestCase
             username: 'Artix',
             password: 'this is not artix password',
             token: 'thisisnotartixtoken',
-            logMessages: true
+            logMessages: true,
+            listeners: []
         );
 
         $this->assertTrue($configuration->logMessages);
         $this->assertSame($configuration->username, 'Artix');
         $this->assertSame($configuration->password, 'this is not artix password');
         $this->assertSame($configuration->token, 'thisisnotartixtoken');
+        $this->assertSame($configuration->listeners, []);
     }
 }
