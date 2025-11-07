@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Translators;
 
+use AqwSocketClient\Commands\FirstLoginCommand;
 use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Events\ConnectionEstabilishedEvent;
+use AqwSocketClient\Events\LoginResponseEvent;
 use AqwSocketClient\Translators\LoginTranslator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -40,5 +42,13 @@ final class LoginTranslatorTest extends TestCase
         $event = new class () implements EventInterface {};
         $command = $this->translator->translate($event);
         $this->assertFalse($command);
+    }
+
+    #[Test]
+    public function should_translate_login_response_to_first_login_command()
+    {
+        $command = $this->translator->translate(new LoginResponseEvent(true));
+
+        $this->assertInstanceOf(FirstLoginCommand::class, $command);
     }
 }
