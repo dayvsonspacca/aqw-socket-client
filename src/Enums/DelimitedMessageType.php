@@ -8,12 +8,16 @@ enum DelimitedMessageType
 {
     case Server;
     case LoginResponse;
+    case ExitArea;
+    case PlayerChange;
 
     public static function fromString(string $string): self|false
     {
         return match ($string) {
             'loginResponse' => self::LoginResponse,
             'server'        => self::Server,
+            'exitArea'      => self::ExitArea,
+            'uotls'         => self::PlayerChange,
             default         => false
         };
     }
