@@ -23,6 +23,7 @@ class Client
      * @var ConnectionInterface|null The active socket connection instance, or null if disconnected.
      */
     private ?ConnectionInterface $connection = null;
+    private string $buffer = '';
 
     /**
      * @param Server $server The configuration object describing the target AQW server (hostname, port, name).
@@ -31,8 +32,7 @@ class Client
     public function __construct(
         private readonly Server $server,
         private readonly Configuration $configuration
-    ) {
-    }
+    ) {}
 
     /**
      * Attempts to establish an asynchronous TCP connection to the configured AQW server.
@@ -59,7 +59,7 @@ class Client
                     $this->connection = $connection;
                     $this->setupConnectionHandlers($connection);
                 },
-                fn (\Throwable $e) => $deferred->reject($e)
+                fn(\Throwable $e) => $deferred->reject($e)
             );
 
         return $deferred->promise();
@@ -78,28 +78,51 @@ class Client
         $connection->on('close', function () {
             echo "Connection to {$this->server->name} closed." . PHP_EOL;
             $this->connection = null;
+            $this->buffer = '';
         });
 
         $connection->on('data', function (string $data) {
-            $events = $this->handleMessage($data);
-
-            $commands = [];
-            foreach ($events as $event) {
-                foreach ($this->configuration->translators as $translator) {
-                    $commands[] = $translator->translate($event);
-                }
-
-                foreach ($this->configuration->listeners as $listener) {
-                    $listener->listen($event);
-                }
-            }
-
-            $commands = array_filter($commands, fn ($command) => $command);
-
-            foreach ($commands as $command) {
-                $this->sendPacket($command->pack());
-            }
+            $this->buffer .= $data;
+            $this->processBuffer();
         });
+    }
+
+    private function processBuffer()
+    {
+        while (true) {
+            $delimiterPosition = strpos($this->buffer, "\x00");
+
+            if ($delimiterPosition === false) {
+                break;
+            }
+
+            $rawMessage = substr($this->buffer, 0, $delimiterPosition + 1);
+            $this->buffer = substr($this->buffer, $delimiterPosition + 1);
+
+            $this->processRawMessage($rawMessage);
+            break;
+        }
+    }
+
+    private function processRawMessage(string $rawMessage): void
+    {
+        $events = $this->handleMessage($rawMessage);
+        
+        $commands = [];
+        foreach ($events as $event) {
+            foreach ($this->configuration->translators as $translator) {
+                $commands[] = $translator->translate($event);
+            }
+
+            foreach ($this->configuration->listeners as $listener) {
+                $listener->listen($event);
+            }
+        }
+
+        $commands = array_filter($commands, fn($command) => $command);
+        foreach ($commands as $command) {
+            $this->sendPacket($command->pack());
+        }
     }
 
     /**
@@ -137,7 +160,7 @@ class Client
         }
 
         $messages = [XmlMessage::fromString($data), DelimitedMessage::fromString($data), JsonMessage::fromString($data)];
-        $messages = array_filter($messages, fn ($message) => $message);
+        $messages = array_filter($messages, fn($message) => $message);
 
         $events = [];
         foreach ($this->configuration->interpreters as $interpreter) {
