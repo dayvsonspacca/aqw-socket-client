@@ -2,93 +2,112 @@
 
 PHP client for connecting and interacting with **Adventure Quest Worlds (AQW)** servers, using ReactPHP for asynchronous event handling.
 
-Allows login, sending commands, and processing server events in a modular way.  
-
-**Note:** Once connected, the client cannot cancel the connection on its own; it will remain active until the server closes it, the script is terminated manually, or you create a `Command` to exit the program.
+Allows login, sending commands, and processing server events in a modular way.
 
 **Note:** This client is not intended to serve as a bot for the game. Its purpose is solely to explore the exchange of information with the server and to obtain data such as item names and player information.
 
 **Note:** This project would not have been possible without the following repositories, thank you!
 
-- [anthony-hyo/swf2png](https://github.com/anthony-hyo/swf2png)  
-- [dwiki08/loving](https://github.com/dwiki08/loving)  
-- [Froztt13/aqw-python](https://github.com/Froztt13/aqw-python)  
-- [BrenoHenrike/RBot](https://github.com/BrenoHenrike/RBot)  
+- [anthony-hyo/swf2png](https://github.com/anthony-hyo/swf2png)
+- [dwiki08/loving](https://github.com/dwiki08/loving)
+- [Froztt13/aqw-python](https://github.com/Froztt13/aqw-python)
+- [BrenoHenrike/RBot](https://github.com/BrenoHenrike/RBot)
 - [133spider/AQLite](https://github.com/133spider/AQLite)
-
 
 ---
 
 ## **Features**
 
-- Creation and sending of commands to the server.  
-- Processing of server messages as events.  
-- Modular system of event factories and handlers.
-
----
-
-## **Installation**
-
-```bash
-composer require dayvsonspacca/aqw-socket-client:dev-main
-```
+- Creation and sending of commands to the server.
+- Processing of server messages as events.
+- Modular system based on **Interpreters**, **Translators**, and **Listeners** for event processing and handling.
 
 ---
 
 ## **Usage**
 
 ```php
-$server = \AqwSocketClient\Server::espada();
+use AqwSocketClient\Client;
+use AqwSocketClient\Server;
+use AqwSocketClient\Configuration;
+use YourApp\Listeners\CustomGameLogicListener; 
 
-$client = new \AqwSocketClient\Client(
-    $server,
-    [new \AqwSocketClient\Events\Factories\CoreEventsFactory()],
-    [new \AqwSocketClient\Events\Handlers\CoreEventsHandler('PlayerName', 'Token')]
+$server = Server::espada();
+
+$config = new Configuration(
+    username: 'PlayerName',
+    password: 'Password',
+    token: 'AuthenticationToken',
+    listeners: [new CustomGameLogicListener()], 
+    translators: [/* your custom translators here */],
+    logMessages: true // Optional: to see raw messages in the console
 );
 
-$client->run();
+$client = new Client($server, $config);
+
+$promise = $client->connect(); 
 ```
-> See my other project [dayvsonspacca/aq-hub](https://github.com/dayvsonspacca/aq-hub) `AqwApiClient` file to see how generate you token.
+
+You can use **AuthService** class to generate you auth token
+```php
+use AqwSocketClient\Services\AuthService;
+
+$token = AuthService::getAuthToken('you-user', 'you-pass');
+```
+
 ---
 
-## **Architecture**
+## ✨ Architecture
 
-### **Server**
+The `AqwSocketClient` architecture is based on an **Event-Oriented Pipeline**, ensuring high modularity, strict typing, and **separation of concerns**. The data flow follows the cycle: **Message $\rightarrow$ Interpreter $\rightarrow$ Event $\rightarrow$ Listener/Translator $\rightarrow$ Command**.
 
-- **Server**: Represents an AQW server with hostname and port.  
-  - Factory methods for known servers like (`espada()`).
+---
 
-### **Packets**
+### **Core Components & Setup**
 
-- **Packet**: Encapsulates data for sending to the server.  
-  - `packetify(string $data)` — creates a packet with null terminator.  
-  - `unpacketify()` — returns the packet data.  
-- **PacketException**: Exception for packet errors.
+* **`Client`**: The main class that manages the asynchronous TCP connection (via **ReactPHP**), receives raw data, and orchestrates the processing pipeline.
+* **`Configuration`**: An initialization container that stores credentials and registers all essential pipeline components (`Interpreters`, `Translators`, `Listeners`).
+* **`Server`**: A value object representing an AQW server (`hostname`, `port`, `name`). Includes **factory methods** for known servers (e.g., `Server::espada()`).
+* **`Packet`**: Encapsulates data for sending, automatically appending the mandatory **null terminator (`\u{0000}`)** required by the server protocol.
 
-### **Client**
+---
 
-- **Client**: Manages the TCP connection, sending commands, and event processing.  
-  - `run()` — starts the event loop and connects to the server.  
-  - `send(CommandInterface $command)` — sends a command.  
-  - Incoming messages are processed through factories and handlers.
+### **I. Input (Raw Messages) - Deserialization**
 
-### **Events**
+These classes implement the **`MessageInterface`** and are responsible for deserializing the raw string received from the socket into usable PHP objects, handling the server's multi-protocol nature:
 
-- **EventInterface** — marker for any AQW client event.  
-- **RawMessageEvent** — generic event for each raw message received.  
-- **LoginSuccessfulEvent** — triggered when login succeeds.  
-- **ConnectionEstabilishedEvent** — triggered when the connection is established.
+* **`MessageInterface`**: Defines the contract (`fromString()`) to create an object from the raw string.
+* **`XmlMessage`**: Handles the **XML format**, converting it into a navigable `DOMDocument`.
+* **`JsonMessage`**: Handles the **concatenated JSON format**, pre-processing it into internal `JsonCommand` objects.
+* **`DelimitedMessage`**: Handles the **`%`-delimited format**, extracting the message type and payload data.
 
-### **Factories and Handlers**
+---
 
-- **EventsFactoryInterface** — converts raw messages into events.  
-  - `CoreEventsFactory` creates core events: raw message, connection, login.  
-- **EventsHandlerInterface** — handles events and returns commands.  
-  - `CoreEventsHandler` sends `LoginCommand` and `AfterLoginCommand` according to events.
+### **II. Processing (Interpretation & Events)**
 
-### **Commands**
+This stage transforms the decoded raw messages into high-level, strongly-typed events:
 
-- **CommandInterface** — defines a command to send to the server.  
-  - `toPacket()` returns a `Packet`.  
-- **LoginCommand** — login command.  
-- **AfterLoginCommand** — command sent after login.
+* **`InterpreterInterface`**: The contract for classes that convert a `MessageInterface` object into an array of `EventInterface` objects. It acts as the core **parser**.
+* **`EventInterface`**: The marker interface for any **event** received and **interpreted** from the server (e.g., `LoginResponseEvent`, `PlayerDetectedEvent`).
+
+---
+
+### **III. Output & Logic (Responses and Actions)**
+
+The interpreted event is dispatched to two types of components, allowing the application to react in a decoupled manner:
+
+#### **A. Application Logic (Listeners)**
+
+* **`ListenerInterface`**: Executes **application logic** in response to an event (e.g., logging a detected player, updating internal state), **without generating commands** to the server.
+
+#### **B. Server Responses (Translators)**
+
+* **`TranslatorInterface`**: Converts an `EventInterface` into a `CommandInterface` (response command) if a direct action is required. For instance, the **`LoginTranslator`** converts the `ConnectionEstabilishedEvent` into the `LoginCommand`.
+
+---
+
+### **IV. Output (Commands) - Serialization**
+
+* **`CommandInterface`**: Defines a **command** or **action** to be sent back to the server.
+* The required method `pack()` serializes the command into the necessary protocol format (XML, Delimited, etc.) and wraps it in a **`Packet`** ready for transmission.
+* Examples: `LoginCommand`, `FirstLoginCommand`.
