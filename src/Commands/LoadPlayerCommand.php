@@ -12,7 +12,8 @@ class LoadPlayerCommand implements CommandInterface
     public function __construct(
         public readonly int $areaId,
         public readonly int $userId
-    ) {}
+    ) {
+    }
 
     public function pack(): Packet
     {

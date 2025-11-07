@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Interpreters;
 
-use AqwSocketClient\Enums\DelimitedMessageType;
-use AqwSocketClient\Enums\JsonCommandType;
-use AqwSocketClient\Events\MovedToAreaEvent;
-use AqwSocketClient\Events\PlayerDetectedEvent;
+use AqwSocketClient\Enums\{DelimitedMessageType, JsonCommandType};
+use AqwSocketClient\Events\{MovedToAreaEvent, PlayerDetectedEvent};
 use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
-use AqwSocketClient\Messages\DelimitedMessage;
-use AqwSocketClient\Messages\JsonCommand;
-use AqwSocketClient\Messages\JsonMessage;
+use AqwSocketClient\Messages\{DelimitedMessage, JsonCommand, JsonMessage};
 
 /**
  * An interpreter responsible for parsing incoming server messages that are
@@ -23,7 +19,8 @@ class PlayersInterpreter implements InterpreterInterface
 {
     public function __construct(
         public readonly string $username
-    ) {}
+    ) {
+    }
     /**
      * Currently handles:
      * - **ExitArea** delimited messages (for player detection, based on your logic).
@@ -46,11 +43,11 @@ class PlayersInterpreter implements InterpreterInterface
                 $events[] = new PlayerDetectedEvent($message->data[0]);
             }
         } elseif ($message instanceof JsonMessage) {
-            $commands = array_filter($message->commands, fn(JsonCommand $command) => $command->type === JsonCommandType::MoveToArea);
+            $commands = array_filter($message->commands, fn (JsonCommand $command) => $command->type === JsonCommandType::MoveToArea);
             foreach ($commands as $command) {
                 if ($command->type === JsonCommandType::MoveToArea) {
-                    $players = array_map(fn($data) => $data['strUsername'], $command->data['uoBranch']);
-                    $user = array_values(array_filter($command->data['uoBranch'], fn($player) => $player['strUsername'] === $this->username));
+                    $players = array_map(fn ($data) => $data['strUsername'], $command->data['uoBranch']);
+                    $user    = array_values(array_filter($command->data['uoBranch'], fn ($player) => $player['strUsername'] === $this->username));
                     if (empty($user)) {
                         continue;
                     }
