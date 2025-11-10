@@ -6,8 +6,7 @@ namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\JsonCommandType;
 use AqwSocketClient\Events\JoinedAreaEvent;
-use AqwSocketClient\Interfaces\InterpreterInterface;
-use AqwSocketClient\Interfaces\MessageInterface;
+use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
 use AqwSocketClient\Messages\JsonMessage;
 
 class PlayerRelatedInterpreter implements InterpreterInterface
@@ -29,7 +28,7 @@ class PlayerRelatedInterpreter implements InterpreterInterface
                     $command->data['strMapName'],
                     (int) explode('-', $command->data['areaName'])[1],
                     (int) $command->data['areaId'],
-                    array_map(fn($player) => $player['strUsername'], $command->data['uoBranch'])
+                    array_map(fn ($player) => $player['strUsername'], $command->data['uoBranch'])
                 );
             }
         }

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Listeners;
 
-use AqwSocketClient\Events\JoinedAreaEvent;
-use AqwSocketClient\Events\LoginResponseEvent;
-use AqwSocketClient\Interfaces\EventInterface;
-use AqwSocketClient\Interfaces\ListenerInterface;
+use AqwSocketClient\Events\{JoinedAreaEvent, LoginResponseEvent};
+use AqwSocketClient\Interfaces\{EventInterface, ListenerInterface};
 
 class GlobalPlayerListener implements ListenerInterface
 {

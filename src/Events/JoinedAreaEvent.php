@@ -14,5 +14,6 @@ class JoinedAreaEvent implements EventInterface
         public readonly int $mapNumber,
         public readonly int $areaId,
         public readonly array $players
-    ) {}
+    ) {
+    }
 }

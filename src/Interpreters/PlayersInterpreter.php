@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Interpreters;
 
-use AqwSocketClient\Enums\{DelimitedMessageType, JsonCommandType};
+use AqwSocketClient\Enums\{DelimitedMessageType};
 use AqwSocketClient\Events\{PlayerDetectedEvent};
 use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
 use AqwSocketClient\Messages\{DelimitedMessage};
