@@ -11,14 +11,14 @@ class LoadPlayerCommand implements CommandInterface
 {
     public function __construct(
         public readonly int $areaId,
-        public readonly int $userId
+        public readonly int $socketId
     ) {
     }
 
     public function pack(): Packet
     {
         return Packet::packetify(
-            "%xt%zm%retrieveUserDatas%{$this->areaId}%{$this->userId}%"
+            "%xt%zm%retrieveUserDatas%{$this->areaId}%{$this->socketId}%"
         );
     }
 }
