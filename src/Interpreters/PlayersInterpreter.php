@@ -17,9 +17,6 @@ use AqwSocketClient\Messages\{DelimitedMessage};
  */
 class PlayersInterpreter implements InterpreterInterface
 {
-    /** @var EventInterface[] $events */
-    private array $events = [];
-
     /**
      * Currently handles:
      * - **ExitArea** delimited messages (for player detection, based on your logic).
@@ -32,21 +29,22 @@ class PlayersInterpreter implements InterpreterInterface
      */
     public function interpret(MessageInterface $message): array
     {
-        match ($message::class) {
+        return match ($message::class) {
             DelimitedMessage::class => $this->interpretDelimited($message),
-            default => null
+            default => []
         };
-
-        return $this->events;
     }
 
     private function interpretDelimited(DelimitedMessage $message)
     {
+        $events = [];
         if ($message->type === DelimitedMessageType::ExitArea) {
-            $this->events[] = new PlayerDetectedEvent($message->data[1]);
+            $events[] = new PlayerDetectedEvent($message->data[1]);
         }
         if ($message->type === DelimitedMessageType::PlayerChange) {
-            $this->events[] = new PlayerDetectedEvent($message->data[0]);
+            $events[] = new PlayerDetectedEvent($message->data[0]);
         }
+
+        return $events;
     }
 }

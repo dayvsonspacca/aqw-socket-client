@@ -17,9 +17,6 @@ use AqwSocketClient\Messages\{DelimitedMessage, XmlMessage};
  */
 class LoginInterpreter implements InterpreterInterface
 {
-    /** @var EventInterface[] $events */
-    private array $events = [];
-
     /**
      * Attempts to convert a server message (XML or Delimited) into
      * relevant events during the connection and login phase.
@@ -33,26 +30,30 @@ class LoginInterpreter implements InterpreterInterface
      */
     public function interpret(MessageInterface $message): array
     {
-        match ($message::class) {
+        return match ($message::class) {
             XmlMessage::class => $this->interpretXml($message),
             DelimitedMessage::class => $this->interpretDelimited($message),
-            default => null
+            default => []
         };
-        
-        return $this->events;
     }
 
     private function interpretXml(XmlMessage $message)
     {
+        $events = [];
         if ($message->dom->firstChild?->nodeName === 'cross-domain-policy') {
-            $this->events[] = new ConnectionEstabilishedEvent();
+            $events[] = new ConnectionEstabilishedEvent();
         }
+
+        return $events;
     }
 
     private function interpretDelimited(DelimitedMessage $message)
     {
+        $events = [];
         if ($message->type === DelimitedMessageType::LoginResponse) {
-            $this->events[] = new LoginResponseEvent((bool) $message->data[0] ?? false);
+            $events[] = new LoginResponseEvent((bool) $message->data[0] ?? false);
         }
+        
+        return $events;
     }
 }
