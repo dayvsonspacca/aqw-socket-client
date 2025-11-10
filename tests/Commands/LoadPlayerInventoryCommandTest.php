@@ -19,13 +19,13 @@ final class LoadPlayerInventoryCommandTest extends TestCase
     }
 
     #[Test]
-    public function should_create_first_login_command()
+    public function should_create_load_player_inventory_command()
     {
         $this->assertInstanceOf(LoadPlayerInventoryCommand::class, $this->command);
     }
 
     #[Test]
-    public function should_pack_to_correct_first_login_packet()
+    public function should_pack_to_correct_load_player_inventory_packet()
     {
         $packet = $this->command->pack();
 
