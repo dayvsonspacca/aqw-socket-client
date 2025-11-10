@@ -16,7 +16,7 @@ class PlayersInterpreterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->interpreter = new PlayersInterpreter('Hilise');
+        $this->interpreter = new PlayersInterpreter();
     }
 
     #[Test]
