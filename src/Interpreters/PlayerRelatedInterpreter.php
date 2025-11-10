@@ -28,7 +28,8 @@ class PlayerRelatedInterpreter implements InterpreterInterface
                 $events[] = new JoinedAreaEvent(
                     $command->data['strMapName'],
                     (int) explode('-', $command->data['areaName'])[1],
-                    (int) $command->data['areaId']
+                    (int) $command->data['areaId'],
+                    array_map(fn($player) => $player['strUsername'], $command->data['uoBranch'])
                 );
             }
         }
