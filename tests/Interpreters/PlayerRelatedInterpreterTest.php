@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests;
 
-use AqwSocketClient\Events\{JoinedAreaEvent, PlayerDetectedEvent};
+use AqwSocketClient\Events\{JoinedAreaEvent};
 use AqwSocketClient\Interpreters\PlayerRelatedInterpreter;
-use AqwSocketClient\Messages\{DelimitedMessage, JsonMessage};
+use AqwSocketClient\Messages\{JsonMessage};
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

@@ -38,7 +38,7 @@ final class JoinMapCommandTest extends TestCase
     public function should_pack_to_join_command_without_room_number()
     {
         $command = new JoinMapCommand('Hilise', 'yulgar');
-        $packet = $command->pack();
+        $packet  = $command->pack();
 
         $this->assertInstanceOf(Packet::class, $packet);
         $this->assertSame($packet->unpacketify(), "%xt%zm%cmd%1%tfer%Hilise%yulgar%\u{0000}");
