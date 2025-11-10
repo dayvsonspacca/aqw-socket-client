@@ -45,7 +45,7 @@ final class LoginTranslatorTest extends TestCase
     #[Test]
     public function should_translate_login_response_to_first_login_command()
     {
-        $command = $this->translator->translate(new LoginResponseEvent(true));
+        $command = $this->translator->translate(new LoginResponseEvent(true, 2));
 
         $this->assertInstanceOf(FirstLoginCommand::class, $command);
     }

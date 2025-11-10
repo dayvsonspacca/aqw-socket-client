@@ -51,9 +51,9 @@ class LoginInterpreter implements InterpreterInterface
     {
         $events = [];
         if ($message->type === DelimitedMessageType::LoginResponse) {
-            $events[] = new LoginResponseEvent((bool) $message->data[0] ?? false);
+            $events[] = new LoginResponseEvent((bool) $message->data[0] ?? false, (int) $message->data[1] ?? null);
         }
-        
+
         return $events;
     }
 }
