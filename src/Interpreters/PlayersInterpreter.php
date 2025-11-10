@@ -32,7 +32,10 @@ class PlayersInterpreter implements InterpreterInterface
      */
     public function interpret(MessageInterface $message): array
     {
-        $this->interpretDelimited($message);
+        match ($message::class) {
+            DelimitedMessage::class => $this->interpretDelimited($message),
+            default => null
+        };
 
         return $this->events;
     }

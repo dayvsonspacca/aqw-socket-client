@@ -33,9 +33,12 @@ class LoginInterpreter implements InterpreterInterface
      */
     public function interpret(MessageInterface $message): array
     {
-        $this->interpretXml($message);
-        $this->interpretDelimited($message);
-
+        match ($message::class) {
+            XmlMessage::class => $this->interpretXml($message),
+            DelimitedMessage::class => $this->interpretDelimited($message),
+            default => null
+        };
+        
         return $this->events;
     }
 
