@@ -111,12 +111,12 @@ class Client
 
         $commands = [];
         foreach ($events as $event) {
-            foreach ($this->configuration->translators as $translator) {
-                $commands[] = $translator->translate($event);
-            }
-
             foreach ($this->configuration->listeners as $listener) {
                 $listener->listen($event);
+            }
+
+            foreach ($this->configuration->translators as $translator) {
+                $commands[] = $translator->translate($event);
             }
         }
 
