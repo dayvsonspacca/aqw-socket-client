@@ -6,6 +6,7 @@ namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\JsonCommandType;
 use AqwSocketClient\Events\JoinedAreaEvent;
+use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
 use AqwSocketClient\Messages\JsonMessage;
 
@@ -29,6 +30,15 @@ class PlayerRelatedInterpreter implements InterpreterInterface
                     (int) explode('-', $command->data['areaName'])[1],
                     (int) $command->data['areaId'],
                     array_map(fn ($player) => $player['strUsername'], $command->data['uoBranch'])
+                );
+            } else if ($command->type === JsonCommandType::LoadInventoryBig) {
+                $events[] = new PlayerInventoryLoadedEvent(
+                    array_map(fn($item) => [
+                        'name' => $item['sName'],
+                        'description' => $item['sDesc'],
+                        'type' => $item['sType'],
+                        'file_name' => $item['sFile'] ?? null
+                    ], $command->data['items'])
                 );
             }
         }
