@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\JsonMessageType;
-use AqwSocketClient\Events\JoinedAreaEvent;
-use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
+use AqwSocketClient\Events\{JoinedAreaEvent, PlayerInventoryLoadedEvent};
 use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
 use AqwSocketClient\Messages\JsonMessage;
 
@@ -42,9 +41,9 @@ class PlayerRelatedInterpreter implements InterpreterInterface
                 (int) $message->data['areaId'],
                 array_map(fn ($player) => $player['strUsername'], $message->data['uoBranch'])
             );
-        } else if ($message->type === JsonMessageType::LoadInventoryBig) {
+        } elseif ($message->type === JsonMessageType::LoadInventoryBig) {
             $events[] = new PlayerInventoryLoadedEvent(
-                array_map(fn($item) => [
+                array_map(fn ($item) => [
                     'name' => $item['sName'],
                     'description' => $item['sDesc'],
                     'type' => $item['sType'],

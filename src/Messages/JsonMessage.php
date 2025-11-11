@@ -53,7 +53,7 @@ class JsonMessage implements MessageInterface
         if (!isset($messageData['cmd']) || !is_string($messageData['cmd'])) {
             return false;
         }
-        
+
         $type = JsonMessageType::fromString($messageData['cmd']);
         if (!$type) {
             return false;
