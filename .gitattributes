@@ -4,3 +4,4 @@
 /phpunit.xml export-ignore
 /.php-cs-fixer.dist.php export-ignore
 /tests/ export-ignore
+/examples/ export-ignore
