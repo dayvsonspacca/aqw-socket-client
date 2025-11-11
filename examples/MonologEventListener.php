@@ -5,8 +5,9 @@ use AqwSocketClient\Interfaces\ListenerInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use ReflectionClass;
 
-class LogEventListerner implements ListenerInterface
+class MonologEventListener implements ListenerInterface
 {
     private Logger $logger;
 
