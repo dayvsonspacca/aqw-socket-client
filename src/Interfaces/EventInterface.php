@@ -12,7 +12,7 @@ namespace AqwSocketClient\Interfaces;
  *
  * 1. Consumable by the {@see AqwSocketClient\Interfaces\TranslatorInterface} to generate a
  * {@see CommandInterface} if an action/response is required.
- * 2. Processed by a {@see  AqwSocketClient\Interfaces\ListenerInterface} to execute application
+ * 2. Processed by a {@see AqwSocketClient\Interfaces\ListenerInterface} to execute application
  * logic based on the event instead of generating a command.
  */
 interface EventInterface

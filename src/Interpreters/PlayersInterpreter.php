@@ -18,12 +18,6 @@ use AqwSocketClient\Messages\{DelimitedMessage};
 class PlayersInterpreter implements InterpreterInterface
 {
     /**
-     * Currently handles:
-     * - **ExitArea** delimited messages (for player detection, based on your logic).
-     * - **PlayerChange** delimited messages (for player movement/presence updates).
-     *
-     * Both result in a {@see AqwSocketClient\Events\PlayerDetectedEvent} with the player's name.
-     *
      * @param MessageInterface $message The raw, uninterpreted message object.
      * @return array The list of {@see AqwSocketClient\Interfaces\EventInterface} objects generated from the message.
      */
