@@ -31,6 +31,11 @@ enum JsonCommandType
     case MoveToArea;
 
     /**
+     * Command related to the player inventory loaded.
+     */
+    case LoadInventoryBig;
+
+    /**
      * Creates an enum case from the raw string identifier found within the JSON command structure.
      *
      * @param string $string The raw command type identifier (e.g., 'equipItem', 'wearItem').
@@ -42,6 +47,7 @@ enum JsonCommandType
             'equipItem' => self::EquipItem,
             'wearItem' => self::WearItem,
             'moveToArea' => self::MoveToArea,
+            'loadInventoryBig' => self::LoadInventoryBig,
             default => false
         };
     }
