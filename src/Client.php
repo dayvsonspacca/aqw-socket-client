@@ -101,7 +101,6 @@ class Client
             $this->buffer = substr($this->buffer, $delimiterPosition + 1);
 
             $this->processRawMessage($rawMessage);
-            break;
         }
     }
 
