@@ -19,16 +19,17 @@ class MonologEventListener implements ListenerInterface
 
     public function listen(EventInterface $event)
     {
-        $event = new ReflectionClass($event);
+        $class = new ReflectionClass($event);
 
         $params = [];
-        foreach ($event->getAttributes() as $attribute) {
-            $name = $attribute->getName();
-            $value = $attribute->getArguments();
+        foreach ($class->getProperties() as $property) {
+            $property->setAccessible(true);
+            $name = $property->getName();
+            $value = $property->getValue($event);
             $params[$name] = $value;
         }
 
-        $this->logger->debug('Event ' . $event->getShortName(), [
+        $this->logger->debug('Event ' . $class->getShortName(), [
             'params' => $params
         ]);
     }
