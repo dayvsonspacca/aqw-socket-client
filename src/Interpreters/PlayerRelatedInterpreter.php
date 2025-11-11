@@ -39,7 +39,10 @@ class PlayerRelatedInterpreter implements InterpreterInterface
                 $message->data['strMapName'],
                 (int) explode('-', $message->data['areaName'])[1],
                 (int) $message->data['areaId'],
-                array_map(fn ($player) => $player['strUsername'], $message->data['uoBranch'])
+                array_map(fn ($player) => [
+                    'socket_id' => $player['entID'],
+                    'name' => $player['strUsername']
+                ], $message->data['uoBranch'])
             );
         } elseif ($message->type === JsonMessageType::LoadInventoryBig) {
             $events[] = new PlayerInventoryLoadedEvent(

@@ -34,6 +34,7 @@ class PlayerRelatedInterpreterTest extends TestCase
         $this->assertSame($events[0]->areaId, 3);
         $this->assertIsArray($events[0]->players);
         $this->assertCount(9, $events[0]->players);
+        $this->assertIsArray($events[0]->players[0]);
     }
 
     #[Test]
