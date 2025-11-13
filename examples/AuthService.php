@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Services;
-
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 use RuntimeException;

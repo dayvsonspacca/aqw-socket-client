@@ -48,10 +48,8 @@ $client = new Client($server, $config);
 $promise = $client->connect(); 
 ```
 
-You can use **AuthService** class to generate you auth token
+Checkout **AuthService** class example to generate you auth token
 ```php
-use AqwSocketClient\Services\AuthService;
-
 $token = AuthService::getAuthToken('you-user', 'you-pass');
 ```
 
