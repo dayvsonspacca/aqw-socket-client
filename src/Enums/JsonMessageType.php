@@ -26,14 +26,14 @@ enum JsonMessageType
     case WearItem;
 
     /**
-     * Message related to the player moving between areas.
+     * Message related to the player joining areas.
      */
-    case MoveToArea;
+    case JoinedArea;
 
     /**
      * Message related to the player inventory loaded.
      */
-    case LoadInventoryBig;
+    case InventoryLoaded;
 
     /**
      * Creates an enum case from the raw string identifier found within the JSON message structure.
@@ -46,8 +46,8 @@ enum JsonMessageType
         return match($string) {
             'equipItem' => self::EquipItem,
             'wearItem' => self::WearItem,
-            'moveToArea' => self::MoveToArea,
-            'loadInventoryBig' => self::LoadInventoryBig,
+            'moveToArea' => self::JoinedArea,
+            'loadInventoryBig' => self::InventoryLoaded,
             default => false
         };
     }

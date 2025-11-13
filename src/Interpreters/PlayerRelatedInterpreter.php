@@ -34,7 +34,7 @@ class PlayerRelatedInterpreter implements InterpreterInterface
     {
         $events = [];
 
-        if ($message->type === JsonMessageType::MoveToArea) {
+        if ($message->type === JsonMessageType::JoinedArea) {
             $events[] = new JoinedAreaEvent(
                 $message->data['strMapName'],
                 (int) explode('-', $message->data['areaName'])[1],
@@ -44,7 +44,7 @@ class PlayerRelatedInterpreter implements InterpreterInterface
                     'name' => $player['strUsername']
                 ], $message->data['uoBranch'])
             );
-        } elseif ($message->type === JsonMessageType::LoadInventoryBig) {
+        } elseif ($message->type === JsonMessageType::InventoryLoaded) {
             $events[] = new PlayerInventoryLoadedEvent(
                 array_map(fn ($item) => [
                     'name' => $item['sName'],
