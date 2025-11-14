@@ -36,7 +36,7 @@ class ShopInterpreter implements InterpreterInterface
                 $message->data['shopinfo']['sName'],
                 (bool) $message->data['shopinfo']['bUpgrd'],
                 (bool) $message->data['shopinfo']['bHouse'],
-                array_map(fn($item) => [
+                array_map(fn ($item) => [
                     'id' => $item['ItemID'],
                     'name' => $item['sName'],
                     'description' => $item['sDesc']
