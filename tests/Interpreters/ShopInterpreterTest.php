@@ -7,6 +7,8 @@ namespace AqwSocketClient\Tests;
 use AqwSocketClient\Events\{ShopLoadedEvent};
 use AqwSocketClient\Interpreters\ShopInterpreter;
 use AqwSocketClient\Messages\{JsonMessage};
+use AqwSocketClient\Objects\Item;
+use AqwSocketClient\Objects\Shop;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -29,10 +31,29 @@ class ShopInterpreterTest extends TestCase
         $this->assertCount(1, $events);
 
         $this->assertInstanceOf(ShopLoadedEvent::class, $events[0]);
-        $this->assertSame($events[0]->shopId, 216);
-        $this->assertSame($events[0]->shopName, 'Undead Legion Shop');
-        $this->assertFalse($events[0]->isUpgrade);
-        $this->assertFalse($events[0]->isHouseShop);
-        $this->assertIsArray($events[0]->items);
+
+        /** @var Shop $shop */
+        $shop = $events[0]->shop;
+
+        $this->assertSame($shop->id, 216);
+        $this->assertSame($shop->name, 'Undead Legion Shop');
+        $this->assertFalse($shop->memberOnly);
+        $this->assertSame($shop->type, Shop::ITEMS);
+        $this->assertIsArray($shop->items);
+        
+        $this->assertCount(1, $shop->items);
+        
+        /** @var Item $item */
+        $item = $shop->items[0];
+
+        $this->assertInstanceOf(Item::class, $item);
+        $this->assertSame($item->id, 47482);
+        $this->assertSame($item->name, 'Legion Symbiote');
+        $this->assertSame($item->description, 'The parasite infecting this armor was created especially for Dage\'s Legion. Now truly be one with the Dark Lord.');
+        $this->assertSame($item->type, 'Armor');
+        $this->assertFalse($item->memberOnly);
+        $this->assertSame($item->assetUrl, 'ULS.swf');
+        $this->assertSame($item->coinType, Item::AC);
+        $this->assertSame($item->coinAmount, 750);
     }
 }
