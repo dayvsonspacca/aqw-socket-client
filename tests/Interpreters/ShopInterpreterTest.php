@@ -7,8 +7,7 @@ namespace AqwSocketClient\Tests;
 use AqwSocketClient\Events\{ShopLoadedEvent};
 use AqwSocketClient\Interpreters\ShopInterpreter;
 use AqwSocketClient\Messages\{JsonMessage};
-use AqwSocketClient\Objects\Item;
-use AqwSocketClient\Objects\Shop;
+use AqwSocketClient\Objects\{Item, Shop};
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -40,9 +39,9 @@ class ShopInterpreterTest extends TestCase
         $this->assertFalse($shop->memberOnly);
         $this->assertSame($shop->type, Shop::ITEMS);
         $this->assertIsArray($shop->items);
-        
+
         $this->assertCount(1, $shop->items);
-        
+
         /** @var Item $item */
         $item = $shop->items[0];
 
