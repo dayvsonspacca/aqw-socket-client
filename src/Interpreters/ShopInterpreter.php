@@ -43,7 +43,7 @@ class ShopInterpreter implements InterpreterInterface
                         $item['sName'],
                         $item['sDesc'],
                         $item['sType'],
-                        $item['sFile'],
+                        $item['sFile'] ?? null,
                         (bool) $item['bUpg'],
                         ((int) $item['bCoins']) ? Item::AC : Item::COINS,
                         (int) $item['iCost']

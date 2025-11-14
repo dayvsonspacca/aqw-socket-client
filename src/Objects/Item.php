@@ -14,7 +14,7 @@ class Item
         public readonly string $name,
         public readonly string $description,
         public readonly string $type,
-        public readonly string $assetUrl,
+        public readonly ?string $assetUrl,
         public readonly bool $memberOnly,
         public readonly int $coinType,
         public readonly int $coinAmount
