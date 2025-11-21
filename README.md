@@ -76,7 +76,7 @@ These classes implement the **`MessageInterface`** and are responsible for deser
 
 * **`MessageInterface`**: Defines the contract (`fromString()`) to create an object from the raw string.
 * **`XmlMessage`**: Handles the **XML format**, converting it into a navigable `DOMDocument`.
-* **`JsonMessage`**: Handles the **concatenated JSON format**, pre-processing it into internal `JsonCommand` objects.
+* **`JsonMessage`**: Handles the **JSON format**, pre-processing it into internal `JsonMessageType` objects.
 * **`DelimitedMessage`**: Handles the **`%`-delimited format**, extracting the message type and payload data.
 
 ---
