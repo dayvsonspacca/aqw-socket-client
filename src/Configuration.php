@@ -15,7 +15,7 @@ use AqwSocketClient\Translators\LoginTranslator;
  * This class ensures essential components, like the {@see AqwSocketClient\Interpreters\LoginInterpreter} and
  * {@see LoginTranslator}, are registered by default.
  */
-class Configuration
+final class Configuration
 {
     /**
      * @var InterpreterInterface[] A collection of message interpreters responsible for

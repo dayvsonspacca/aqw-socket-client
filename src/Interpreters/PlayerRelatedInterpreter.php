@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\JsonMessageType;
-use AqwSocketClient\Events\{JoinedAreaEvent, PlayerInventoryLoadedEvent};
+use AqwSocketClient\Events\{AreaJoinedEvent, PlayerInventoryLoadedEvent};
 use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
 use AqwSocketClient\Messages\JsonMessage;
 
 /**
  * Interprets messages related to the player's status, inventory, and location.
  */
-class PlayerRelatedInterpreter implements InterpreterInterface
+final class PlayerRelatedInterpreter implements InterpreterInterface
 {
     /**
      * @param MessageInterface $message The message received from the socket client.
@@ -35,7 +35,7 @@ class PlayerRelatedInterpreter implements InterpreterInterface
         $events = [];
 
         if ($message->type === JsonMessageType::JoinedArea) {
-            $events[] = new JoinedAreaEvent(
+            $events[] = new AreaJoinedEvent(
                 $message->data['strMapName'],
                 (int) explode('-', $message->data['areaName'])[1],
                 (int) $message->data['areaId'],

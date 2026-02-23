@@ -12,7 +12,7 @@ use AqwSocketClient\Interfaces\EventInterface;
  *
  * This event signals whether the authentication was successful or failed.
  */
-class LoginResponseEvent implements EventInterface
+final class LoginRespondedEvent implements EventInterface
 {
     /**
      * @param bool $success Indicates whether the login attempt was successful (**true**)

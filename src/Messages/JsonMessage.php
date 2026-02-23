@@ -13,7 +13,7 @@ use AqwSocketClient\Interfaces\MessageInterface;
  * This class is responsible for decoding the raw string data received from the
  * server and extracting the core message details: its type and raw associated data.
  */
-class JsonMessage implements MessageInterface
+final class JsonMessage implements MessageInterface
 {
     /**
      * Constructs the JsonMessage object with the parsed message type and data.

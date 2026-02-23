@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\DelimitedMessageType;
-use AqwSocketClient\Events\{ConnectionEstabilishedEvent, LoginResponseEvent};
+use AqwSocketClient\Events\{ConnectionEstablishedEvent, LoginRespondedEvent};
 use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
 use AqwSocketClient\Messages\{DelimitedMessage, XmlMessage};
 
@@ -15,7 +15,7 @@ use AqwSocketClient\Messages\{DelimitedMessage, XmlMessage};
  *
  * It handles the cross-domain policy message and the login response message.
  */
-class LoginInterpreter implements InterpreterInterface
+final class LoginInterpreter implements InterpreterInterface
 {
     /**
      * Attempts to convert a server message (XML or Delimited) into
@@ -41,7 +41,7 @@ class LoginInterpreter implements InterpreterInterface
     {
         $events = [];
         if ($message->dom->firstChild?->nodeName === 'cross-domain-policy') {
-            $events[] = new ConnectionEstabilishedEvent();
+            $events[] = new ConnectionEstablishedEvent();
         }
 
         return $events;
@@ -51,7 +51,7 @@ class LoginInterpreter implements InterpreterInterface
     {
         $events = [];
         if ($message->type === DelimitedMessageType::LoginResponse) {
-            $events[] = new LoginResponseEvent((bool) $message->data[0] ?? false, (int) $message->data[1] ?? null);
+            $events[] = new LoginRespondedEvent((bool) $message->data[0] ?? false, (int) $message->data[1] ?? null);
         }
 
         return $events;

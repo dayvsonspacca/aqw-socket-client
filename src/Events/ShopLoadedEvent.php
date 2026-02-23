@@ -15,7 +15,7 @@ use AqwSocketClient\Objects\Shop;
  * This event contains all the meta-information and the list of items available
  * in the loaded shop.
  */
-class ShopLoadedEvent implements EventInterface
+final class ShopLoadedEvent implements EventInterface
 {
     public function __construct(
         public readonly Shop $shop

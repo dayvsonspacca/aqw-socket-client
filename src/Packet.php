@@ -11,7 +11,7 @@ namespace AqwSocketClient;
  * the null terminator character to the raw data. It also provides methods to
  * extract the raw packet data.
  */
-class Packet
+final class Packet
 {
     /**
      * @param string $data The raw data of the packet.

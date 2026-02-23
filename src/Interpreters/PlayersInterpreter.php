@@ -15,7 +15,7 @@ use AqwSocketClient\Messages\{DelimitedMessage};
  *
  * It generates events for players entering the screen/area.
  */
-class PlayersInterpreter implements InterpreterInterface
+final class PlayersInterpreter implements InterpreterInterface
 {
     /**
      * @param MessageInterface $message The raw, uninterpreted message object.

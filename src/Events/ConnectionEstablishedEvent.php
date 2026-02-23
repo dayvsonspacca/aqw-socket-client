@@ -12,6 +12,6 @@ use AqwSocketClient\Interfaces\EventInterface;
  * This event is triggered when the client successfully connects to the server
  * and is ready to send {@see AqwSocketClient\Packet} or receive further {@see AqwSocketClient\Interfaces\MessageInterface}.
  */
-class ConnectionEstabilishedEvent implements EventInterface
+final class ConnectionEstablishedEvent implements EventInterface
 {
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests;
 
-use AqwSocketClient\Events\{JoinedAreaEvent, PlayerInventoryLoadedEvent};
+use AqwSocketClient\Events\{AreaJoinedEvent, PlayerInventoryLoadedEvent};
 use AqwSocketClient\Interpreters\PlayerRelatedInterpreter;
 use AqwSocketClient\Messages\{JsonMessage};
 use PHPUnit\Framework\Attributes\Test;
@@ -28,7 +28,7 @@ class PlayerRelatedInterpreterTest extends TestCase
         $this->assertIsArray($events);
         $this->assertCount(1, $events);
 
-        $this->assertInstanceOf(JoinedAreaEvent::class, $events[0]);
+        $this->assertInstanceOf(AreaJoinedEvent::class, $events[0]);
         $this->assertSame($events[0]->mapName, 'battleon');
         $this->assertSame($events[0]->mapNumber, 1);
         $this->assertSame($events[0]->areaId, 3);

@@ -17,7 +17,7 @@ use AqwSocketClient\Objects\{Item, Shop};
  *
  * This class implements the core parsing logic for shop-related data.
  */
-class ShopInterpreter implements InterpreterInterface
+final class ShopInterpreter implements InterpreterInterface
 {
     /**
      * Parses a raw server message and generates an array of event objects.
