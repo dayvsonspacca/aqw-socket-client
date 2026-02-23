@@ -17,51 +17,46 @@ class Server
      * @param string $hostname The hostname or IP address of the server.
      * @param int $port The port used to connect to the server.
      */
-    private function __construct(
+    public function __construct(
         public readonly string $name,
         public readonly string $hostname,
         public readonly int $port
     ) {
     }
 
-    public static function espada(): Server
-    {
-        return new self('Espada', 'socket2.aq.com', 5591);
-    }
-
     public static function twilly(): Server
     {
-        return new self('Twilly', 'socket5.aq.com', 5588);
+        return new self('Twilly', 'sockett4.aq.com', 5593);
     }
 
     public static function twig(): Server
     {
-        return new self('Twig', 'socket4.aq.com', 5588);
+        return new self('Twig', 'sockett5.aq.com', 5589);
     }
 
     public static function artix(): Server
     {
-        return new self('Artix', 'socket.aq.com', 5588);
+        return new self('Artix', 'sockett4.aq.com', 5588);
     }
 
     public static function sepulchure(): Server
     {
-        return new self('Sepulchure', 'socket2.aq.com', 5590);
+        return new self('Sepulchure', 'sockett4.aq.com', 5591);
     }
 
     public static function gravelyn(): Server
     {
-        return new self('Gravelyn', 'socket4.aq.com', 5589);
+        return new self('Gravelyn', 'sockett5.aq.com', 5590);
     }
 
     public static function safiria(): Server
     {
-        return new self('Safiria', 'socket6.aq.com', 5588);
+        return new self('Safiria', 'sockett4.aq.com', 5594);
     }
 
     public static function sir_ver(): Server
     {
-        return new self('Sir Ver', 'socket2.aq.com', 5588);
+        return new self('Sir Ver', 'sockett4.aq.com', 5589);
     }
 
     public static function swordhaven(): Server
@@ -71,22 +66,27 @@ class Server
 
     public static function galanoth(): Server
     {
-        return new self('Galanoth', 'socket6.aq.com', 5589);
+        return new self('Galanoth', 'sockett5.aq.com', 5593);
     }
 
     public static function alteon(): Server
     {
-        return new self('Alteon', 'socket4.aq.com', 5590);
+        return new self('Alteon', 'sockett5.aq.com', 5591);
     }
 
     public static function yorumi(): Server
     {
-        return new self('Yorumi', 'socket3.aq.com', 5588);
+        return new self('Yorumi', 'sockett5.aq.com', 5588);
     }
 
     public static function yokai(): Server
     {
         return new self('Yokai (SEA)', 'asia.game.artix.com', 5588);
+    }
+
+    public static function espada(): Server
+    {
+        return new self('Espada', 'sockett4.aq.com', 5592);
     }
 
     /**

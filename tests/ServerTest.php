@@ -43,19 +43,19 @@ class ServerTest extends TestCase
     public function factory_methods_return_server_instances(): void
     {
         $factories = [
-            'twilly' => ['Twilly', 'socket5.aq.com', 5588],
-            'twig' => ['Twig', 'socket4.aq.com', 5588],
-            'artix' => ['Artix', 'socket.aq.com', 5588],
-            'sepulchure' => ['Sepulchure', 'socket2.aq.com', 5590],
-            'gravelyn' => ['Gravelyn', 'socket4.aq.com', 5589],
-            'safiria' => ['Safiria', 'socket6.aq.com', 5588],
-            'sir_ver' => ['Sir Ver', 'socket2.aq.com', 5588],
-            'swordhaven' => ['Swordhaven (EU)', 'euro.aqw.artix.com', 5588],
-            'galanoth' => ['Galanoth', 'socket6.aq.com', 5589],
-            'alteon' => ['Alteon', 'socket4.aq.com', 5590],
-            'yorumi' => ['Yorumi', 'socket3.aq.com', 5588],
-            'yokai' => ['Yokai (SEA)', 'asia.game.artix.com', 5588],
-            'espada' => ['Espada', 'socket2.aq.com', 5591],
+            'twilly' => ['Twilly',          'sockett4.aq.com',      5593],
+            'twig' => ['Twig',             'sockett5.aq.com',      5589],
+            'artix' => ['Artix',            'sockett4.aq.com',      5588],
+            'sepulchure' => ['Sepulchure',       'sockett4.aq.com',      5591],
+            'gravelyn' => ['Gravelyn',         'sockett5.aq.com',      5590],
+            'safiria' => ['Safiria',          'sockett4.aq.com',      5594],
+            'sir_ver' => ['Sir Ver',          'sockett4.aq.com',      5589],
+            'swordhaven' => ['Swordhaven (EU)',  'euro.aqw.artix.com',   5588],
+            'galanoth' => ['Galanoth',         'sockett5.aq.com',      5593],
+            'alteon' => ['Alteon',           'sockett5.aq.com',      5591],
+            'yorumi' => ['Yorumi',           'sockett5.aq.com',      5588],
+            'yokai' => ['Yokai (SEA)',      'asia.game.artix.com',  5588],
+            'espada' => ['Espada',           'sockett4.aq.com',      5592],
         ];
 
         foreach ($factories as $method => [$name, $host, $port]) {
