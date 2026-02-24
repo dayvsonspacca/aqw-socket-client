@@ -5,28 +5,30 @@ declare(strict_types=1);
 namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\DelimitedMessageType;
-use AqwSocketClient\Events\{ConnectionEstablishedEvent, LoginRespondedEvent};
+use AqwSocketClient\Events\{ConnectionEstablishedEvent, LoginRespondedEvent, PlayerLoggedOutEvent};
 use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
 use AqwSocketClient\Messages\{DelimitedMessage, XmlMessage};
 
 /**
  * An interpreter responsible for parsing incoming server messages that are
- * strictly related to the **initial socket connection and client login** process.
+ * strictly related to the **connection, login, and logout** processes.
  *
- * It handles the cross-domain policy message and the login response message.
+ * It handles the cross-domain policy message, the login response message,
+ * and the logout confirmation message.
  */
-final class LoginInterpreter implements InterpreterInterface
+final class AuthenticationInterpreter implements InterpreterInterface
 {
     /**
      * Attempts to convert a server message (XML or Delimited) into
-     * relevant events during the connection and login phase.
+     * relevant events during the authentication lifecycle.
      *
      * Currently handles:
-     * - The **cross-domain-policy** XML message, resulting in a {@see AqwSocketClient\Events\ConnectionEstabilishedEvent}.
-     * - The **LoginResponse** delimited message, resulting in a {@see AqwSocketClient\Events\LoginResponseEvent}.
+     * - The **cross-domain-policy** XML message, resulting in a {@see ConnectionEstablishedEvent}.
+     * - The **logout** XML message, resulting in a {@see PlayerLoggedOutEvent}.
+     * - The **LoginResponse** delimited message, resulting in a {@see LoginRespondedEvent}.
      *
      * @param MessageInterface $message The raw, uninterpreted message object.
-     * @return EventInterface[] The list of {@see AqwSocketClient\Interfaces\EventInterface} objects generated from the message.
+     * @return array The list of {@see \AqwSocketClient\Interfaces\EventInterface} objects generated from the message.
      */
     public function interpret(MessageInterface $message): array
     {
@@ -37,19 +39,26 @@ final class LoginInterpreter implements InterpreterInterface
         };
     }
 
-    private function interpretXml(XmlMessage $message)
+    private function interpretXml(XmlMessage $message): array
     {
         $events = [];
+
         if ($message->dom->firstChild?->nodeName === 'cross-domain-policy') {
             $events[] = new ConnectionEstablishedEvent();
+        }
+
+        $action = $message->dom->getElementsByTagName('body')->item(0)?->getAttribute('action');
+        if ($action === 'logout') {
+            $events[] = new PlayerLoggedOutEvent();
         }
 
         return $events;
     }
 
-    private function interpretDelimited(DelimitedMessage $message)
+    private function interpretDelimited(DelimitedMessage $message): array
     {
         $events = [];
+
         if ($message->type === DelimitedMessageType::LoginResponse) {
             $events[] = new LoginRespondedEvent((bool) $message->data[0] ?? false, (int) $message->data[1] ?? null);
         }

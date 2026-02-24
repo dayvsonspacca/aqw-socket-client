@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Translators;
 
-use AqwSocketClient\Commands\{FirstLoginCommand, LoginCommand};
+use AqwSocketClient\Commands\{JoinInitialAreaCommand, LoginCommand};
 use AqwSocketClient\Events\{ConnectionEstablishedEvent, LoginRespondedEvent};
 use AqwSocketClient\Interfaces\{CommandInterface, EventInterface, TranslatorInterface};
 
@@ -29,8 +29,8 @@ class LoginTranslator implements TranslatorInterface
     /**
      * Translates specific login-related events into commands.
      *
-     * - **ConnectionEstabilishedEvent**: Generates a {@see AqwSocketClient\Commands\LoginCommand} using the stored credentials.
-     * - **LoginResponseEvent**: Generates a {@see AqwSocketClient\Commands\FirstLoginCommand} only if the login was successful.
+     * - **ConnectionEstablishedEvent**: Generates a {@see LoginCommand} using the stored credentials.
+     * - **LoginRespondedEvent**: Generates a {@see JoinInitialAreaCommand} only if the login was successful.
      *
      * @param EventInterface $event The incoming event to be translated.
      * @return CommandInterface|false The next command to be sent to the server, or **false**
@@ -40,7 +40,7 @@ class LoginTranslator implements TranslatorInterface
     {
         return match ($event::class) {
             ConnectionEstablishedEvent::class => new LoginCommand($this->username, $this->token),
-            LoginRespondedEvent::class => (fn () => $event->success ? new FirstLoginCommand() : false)(),
+            LoginRespondedEvent::class => (fn () => $event->success ? new JoinInitialAreaCommand() : false)(),
             default => false
         };
     }

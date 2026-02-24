@@ -1,6 +1,5 @@
 <?php
 
-
 declare(strict_types=1);
 
 namespace AqwSocketClient\Commands;
@@ -15,7 +14,7 @@ use AqwSocketClient\Packet;
  * This command triggers a server response that typically results in a
  * {@see AqwSocketClient\Events\ShopLoadedEvent}.
  */
-class LoadShopCommand implements CommandInterface
+final class LoadShopCommand implements CommandInterface
 {
     /**
      * @param int $areaId The ID of the current screen/area where the player is located.
@@ -27,10 +26,6 @@ class LoadShopCommand implements CommandInterface
     ) {
     }
 
-    /**
-     * Converts the command object into a ready-to-send {@see AqwSocketClient\Packet} object.
-     * @return Packet The final packet object ready for transmission.
-     */
     public function pack(): Packet
     {
         return Packet::packetify(

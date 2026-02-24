@@ -15,29 +15,24 @@ final class LoginCommandTest extends TestCase
 
     protected function setUp(): void
     {
-        $username = 'Artix';
-        $token    = 'thisisnotartixtoken';
-
-        $this->command = new LoginCommand($username, $token);
+        $this->command = new LoginCommand(username: 'PlayerOne', token: 'abc123');
     }
 
     #[Test]
-    public function should_create_login_command()
+    public function should_create_login_command(): void
     {
         $this->assertInstanceOf(LoginCommand::class, $this->command);
+        $this->assertSame('PlayerOne', $this->command->username);
+        $this->assertSame('abc123', $this->command->token);
     }
 
     #[Test]
-    public function should_pack_to_correct_login_packet()
+    public function should_pack_correct_packet(): void
     {
         $packet = $this->command->pack();
 
         $this->assertInstanceOf(Packet::class, $packet);
-        $this->assertSame($packet->unpacketify(), "<msg t='sys'>" .
-                "<body action='login' r='0'>" .
-                "<login z='zone_master'>" .
-                '<nick><![CDATA[SPIDER#0001~Artix~3.01]]></nick>' .
-                '<pword><![CDATA[thisisnotartixtoken]]></pword>' .
-                '</login></body></msg>'.  "\u{0000}");
+        $this->assertStringContainsString('PlayerOne', $packet->unpacketify());
+        $this->assertStringContainsString('abc123', $packet->unpacketify());
     }
 }

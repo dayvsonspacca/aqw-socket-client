@@ -15,21 +15,23 @@ final class LoadPlayerInventoryCommandTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->command = new LoadPlayerInventoryCommand(5, 8);
+        $this->command = new LoadPlayerInventoryCommand(areaId: 42, socketId: 7);
     }
 
     #[Test]
-    public function should_create_load_player_inventory_command()
+    public function should_create_load_player_inventory_command(): void
     {
         $this->assertInstanceOf(LoadPlayerInventoryCommand::class, $this->command);
+        $this->assertSame(42, $this->command->areaId);
+        $this->assertSame(7, $this->command->socketId);
     }
 
     #[Test]
-    public function should_pack_to_correct_load_player_inventory_packet()
+    public function should_pack_correct_packet(): void
     {
         $packet = $this->command->pack();
 
         $this->assertInstanceOf(Packet::class, $packet);
-        $this->assertSame($packet->unpacketify(), "%xt%zm%retrieveInventory%5%8%\u{0000}");
+        $this->assertSame("%xt%zm%retrieveInventory%42%7%\u{0000}", $packet->unpacketify());
     }
 }

@@ -16,14 +16,8 @@ use AqwSocketClient\Packet;
  *
  * Move player to battleon
  */
-class FirstLoginCommand implements CommandInterface
+final class JoinInitialAreaCommand implements CommandInterface
 {
-    /**
-     * Serializes the command into the raw string format expected by the server
-     * and wraps it in a {@see AqwSocketClient\Packet} object.
-     *
-     * @return Packet The final packet object containing the '%xt%zm%firstJoin%1%' string.
-     */
     public function pack(): Packet
     {
         return Packet::packetify('%xt%zm%firstJoin%1%');

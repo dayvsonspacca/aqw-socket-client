@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient;
 
 use AqwSocketClient\Interfaces\{InterpreterInterface, ListenerInterface, TranslatorInterface};
-use AqwSocketClient\Interpreters\LoginInterpreter;
+use AqwSocketClient\Interpreters\{AuthenticationInterpreter};
 use AqwSocketClient\Translators\LoginTranslator;
 
 /**
@@ -53,7 +53,7 @@ final class Configuration
         array $listeners = [],
         public readonly bool $logMessages = false
     ) {
-        $this->interpreters = array_merge([new LoginInterpreter()], $interpreters);
+        $this->interpreters = array_merge([new AuthenticationInterpreter()], $interpreters);
         $this->translators  = array_merge([new LoginTranslator($username, $token)], $translators);
         $this->listeners    = $listeners;
     }

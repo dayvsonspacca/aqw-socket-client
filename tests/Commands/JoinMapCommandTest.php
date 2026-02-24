@@ -11,36 +11,34 @@ use PHPUnit\Framework\TestCase;
 
 final class JoinMapCommandTest extends TestCase
 {
-    private readonly JoinMapCommand $command;
-
-    protected function setUp(): void
+    #[Test]
+    public function should_create_join_map_command(): void
     {
-        $this->command = new JoinMapCommand('Hilise', 'yulgar', 5);
+        $command = new JoinMapCommand('PlayerOne', 'battleon');
+
+        $this->assertInstanceOf(JoinMapCommand::class, $command);
+        $this->assertSame('PlayerOne', $command->username);
+        $this->assertSame('battleon', $command->mapName);
+        $this->assertSame(0, $command->room);
     }
 
     #[Test]
-    public function should_create_join_map_command()
+    public function should_pack_packet_without_room_when_room_is_zero(): void
     {
-        $this->assertInstanceOf(JoinMapCommand::class, $this->command);
-    }
-
-    #[Test]
-    public function should_pack_to_join_command_with_room_number()
-    {
-        $packet = $this->command->pack();
-
-        $this->assertInstanceOf(Packet::class, $packet);
-        $this->assertSame($packet->unpacketify(), "%xt%zm%cmd%1%tfer%Hilise%yulgar-5%\u{0000}");
-    }
-
-
-    #[Test]
-    public function should_pack_to_join_command_without_room_number()
-    {
-        $command = new JoinMapCommand('Hilise', 'yulgar');
+        $command = new JoinMapCommand('PlayerOne', 'battleon');
         $packet  = $command->pack();
 
         $this->assertInstanceOf(Packet::class, $packet);
-        $this->assertSame($packet->unpacketify(), "%xt%zm%cmd%1%tfer%Hilise%yulgar%\u{0000}");
+        $this->assertSame("%xt%zm%cmd%1%tfer%PlayerOne%battleon%\u{0000}", $packet->unpacketify());
+    }
+
+    #[Test]
+    public function should_pack_packet_with_room_when_room_is_provided(): void
+    {
+        $command = new JoinMapCommand('PlayerOne', 'battleon', 2);
+        $packet  = $command->pack();
+
+        $this->assertInstanceOf(Packet::class, $packet);
+        $this->assertSame("%xt%zm%cmd%1%tfer%PlayerOne%battleon-2%\u{0000}", $packet->unpacketify());
     }
 }

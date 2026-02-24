@@ -6,7 +6,8 @@ namespace AqwSocketClient;
 
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Messages\{DelimitedMessage, JsonMessage, XmlMessage};
-use React\Promise\Deferred;
+use Psr\Log\{LoggerInterface, NullLogger};
+use React\Promise\{Deferred, PromiseInterface};
 use React\Socket\{ConnectionInterface, Connector};
 use RuntimeException;
 
@@ -28,10 +29,12 @@ final class Client
     /**
      * @param Server $server The configuration object describing the target AQW server (hostname, port, name).
      * @param Configuration $configuration The application configuration, including interpreters and translators.
+     * @param LoggerInterface $logger A PSR-3 logger instance. Defaults to NullLogger if not provided.
      */
     public function __construct(
         private readonly Server $server,
-        private readonly Configuration $configuration
+        private readonly Configuration $configuration,
+        private readonly LoggerInterface $logger = new NullLogger()
     ) {
     }
 
@@ -39,29 +42,33 @@ final class Client
      * Attempts to establish an asynchronous TCP connection to the configured AQW server.
      *
      * This method initializes the connection, sets up handlers for data and connection
-     * lifecycle events, and returns a promise for tracking connection status.
-     *
-     * @return \React\Promise\PromiseInterface A promise that resolves upon successful connection
+     * lifecycle events, and returns a promise that resolves upon successful connection
      * or rejects upon failure.
+     *
+     * @return PromiseInterface A promise that resolves upon successful connection or rejects upon failure.
      */
-    public function connect()
+    public function connect(): PromiseInterface
     {
         $connector = new Connector();
         $deferred  = new Deferred();
 
         $target = "tcp://{$this->server->hostname}:{$this->server->port}";
-        echo "Attempting to connect to {$this->server->name} at {$target}" . PHP_EOL;
+        $this->logger->info("Attempting to connect to {$this->server->name} at {$target}.");
 
-        $connector->connect($target)
-            ->then(
-                function (ConnectionInterface $connection) use ($deferred) {
-                    echo "Connection to {$this->server->name} established." . PHP_EOL;
+        $connector->connect($target)->then(
+            function (ConnectionInterface $connection) use ($deferred): void {
+                $this->logger->info("Connection to {$this->server->name} established.");
 
-                    $this->connection = $connection;
-                    $this->setupConnectionHandlers($connection);
-                },
-                fn (\Throwable $e) => $deferred->reject($e)
-            );
+                $this->connection = $connection;
+                $this->setupConnectionHandlers($connection);
+
+                $deferred->resolve($connection);
+            },
+            function (\Throwable $e) use ($deferred): void {
+                $this->logger->error("Failed to connect to {$this->server->name}: {$e->getMessage()}.");
+                $deferred->reject($e);
+            }
+        );
 
         return $deferred->promise();
     }
@@ -72,23 +79,25 @@ final class Client
      * Registers handlers for 'close' (connection termination) and 'data' (incoming server messages).
      *
      * @param ConnectionInterface $connection The active connection instance.
-     * @return void
      */
     private function setupConnectionHandlers(ConnectionInterface $connection): void
     {
-        $connection->on('close', function () {
-            echo "Connection to {$this->server->name} closed." . PHP_EOL;
+        $connection->on('close', function (): void {
+            $this->logger->info("Connection to {$this->server->name} closed.");
             $this->connection = null;
             $this->buffer     = '';
         });
 
-        $connection->on('data', function (string $data) {
+        $connection->on('data', function (string $data): void {
             $this->buffer .= $data;
             $this->processBuffer();
         });
     }
 
-    private function processBuffer()
+    /**
+     * Processes the internal buffer, extracting and handling complete null-terminated messages.
+     */
+    private function processBuffer(): void
     {
         while (true) {
             $delimiterPosition = strpos($this->buffer, "\x00");
@@ -104,68 +113,94 @@ final class Client
         }
     }
 
+    /**
+     * Handles a single complete raw message extracted from the buffer.
+     *
+     * Parses the message, generates events via interpreters, dispatches them
+     * to listeners, and sends back any resulting commands.
+     *
+     * @param string $rawMessage A complete null-terminated raw message string.
+     */
     private function processRawMessage(string $rawMessage): void
     {
-        $events = $this->handleMessage($rawMessage);
+        $events = $this->parseEvents($rawMessage);
 
-        $commands = [];
+        $this->dispatchEvents($events);
+        $this->sendCommands($events);
+    }
+
+    /**
+     * Dispatches the given events to all registered listeners.
+     *
+     * @param EventInterface[] $events
+     */
+    private function dispatchEvents(array $events): void
+    {
         foreach ($events as $event) {
             foreach ($this->configuration->listeners as $listener) {
                 $listener->listen($event);
             }
-
-            foreach ($this->configuration->translators as $translator) {
-                $commands[] = $translator->translate($event);
-            }
-        }
-
-        $commands = array_filter($commands, fn ($command) => $command);
-        foreach ($commands as $command) {
-            $this->sendPacket($command->pack());
         }
     }
 
     /**
-     * Writes a pre-packaged {@see AqwSocketClient\Packet} object to the active socket connection.
+     * Runs all given events through translators and sends any resulting commands.
+     *
+     * @param EventInterface[] $events
+     */
+    private function sendCommands(array $events): void
+    {
+        foreach ($events as $event) {
+            foreach ($this->configuration->translators as $translator) {
+                $command = $translator->translate($event);
+
+                if ($command !== null) {
+                    $this->sendPacket($command->pack());
+                }
+            }
+        }
+    }
+
+    /**
+     * Writes a pre-packaged {@see Packet} to the active socket connection.
      *
      * @param Packet $packet The packet ready to be sent.
-     * @return void
      * @throws RuntimeException If called when the connection is not active.
      */
     private function sendPacket(Packet $packet): void
     {
         if ($this->connection === null) {
-            throw new RuntimeException('Cannot send packet, connection is not open.');
+            throw new RuntimeException('Cannot send packet: connection is not open.');
         }
 
         $this->connection->write($packet->unpacketify());
     }
 
     /**
-     * Processes raw incoming data from the server.
+     * Sanitizes a raw message, parses it into all known message types,
+     * and runs each through all configured interpreters to produce events.
      *
-     * 1. Sanitizes the data (removes null terminators).
-     * 2. Attempts to parse the data into all known message types (XML, Delimited, JSON).
-     * 3. Passes successful message objects through all configured interpreters to generate events.
-     *
-     * @param string $data The raw string data received from the socket.
+     * @param string $rawMessage The raw null-terminated string received from the socket.
      * @return EventInterface[] An array of events generated by all interpreters.
      */
-    private function handleMessage(string $data): array
+    private function parseEvents(string $rawMessage): array
     {
-        $data = str_replace(["\x00"], '', $data);
+        $sanitized = str_replace("\x00", '', $rawMessage);
 
         if ($this->configuration->logMessages) {
-            echo $data . PHP_EOL;
+            $this->logger->debug($sanitized);
         }
 
-        $messages = [XmlMessage::fromString($data), DelimitedMessage::fromString($data), JsonMessage::fromString($data)];
-        $messages = array_filter($messages, fn ($message) => $message);
+        $messages = array_filter([
+            XmlMessage::fromString($sanitized),
+            DelimitedMessage::fromString($sanitized),
+            JsonMessage::fromString($sanitized),
+        ]);
 
         $events = [];
         foreach ($this->configuration->interpreters as $interpreter) {
             foreach ($messages as $message) {
-                $events = array_merge($interpreter->interpret($message), $events);
+                $events = array_merge($events, $interpreter->interpret($message));
             }
         }
 

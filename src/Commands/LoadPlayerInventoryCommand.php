@@ -13,7 +13,7 @@ use AqwSocketClient\Packet;
  *
  * @see AqwSocketClient\Interfaces\CommandInterface
  */
-class LoadPlayerInventoryCommand implements CommandInterface
+final class LoadPlayerInventoryCommand implements CommandInterface
 {
     /**
      * @param int $areaId The ID of the current screen or area the player is in.

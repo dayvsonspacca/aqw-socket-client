@@ -15,7 +15,7 @@ use AqwSocketClient\Packet;
  *
  * @see AqwSocketClient\Interfaces\CommandInterface
  */
-class JoinMapCommand implements CommandInterface
+final class JoinMapCommand implements CommandInterface
 {
     /**
      * @param string $username The username of the player attempting to join the map.
@@ -29,14 +29,6 @@ class JoinMapCommand implements CommandInterface
     ) {
     }
 
-    /**
-     * Converts the command object into a ready-to-send {@see AqwSocketClient\Packet} object,
-     * serializing the join map request according to the AQW protocol.
-     *
-     * The resulting packet format changes based on whether a specific room number is provided.
-     *
-     * @return Packet The final packet object ready for transmission.
-     */
     public function pack(): Packet
     {
         return Packet::packetify(

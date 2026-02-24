@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Translators;
 
-use AqwSocketClient\Commands\{FirstLoginCommand, LoginCommand};
+use AqwSocketClient\Commands\{JoinInitialAreaCommand, LoginCommand};
 use AqwSocketClient\Events\{ConnectionEstablishedEvent, LoginRespondedEvent};
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Translators\LoginTranslator;
@@ -47,6 +47,6 @@ final class LoginTranslatorTest extends TestCase
     {
         $command = $this->translator->translate(new LoginRespondedEvent(true, 2));
 
-        $this->assertInstanceOf(FirstLoginCommand::class, $command);
+        $this->assertInstanceOf(JoinInitialAreaCommand::class, $command);
     }
 }
