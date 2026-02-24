@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AqwSocketClient;
 
+use AqwSocketClient\Events\PlayerLoggedOutEvent;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Messages\{DelimitedMessage, JsonMessage, XmlMessage};
 use Psr\Log\{LoggerInterface, NullLogger};
@@ -127,6 +128,10 @@ final class Client
 
         $this->dispatchEvents($events);
         $this->sendCommands($events);
+
+        if (!empty(array_filter($events, fn ($event) => $event instanceof PlayerLoggedOutEvent))) {
+            $this->connection?->close();
+        }
     }
 
     /**
