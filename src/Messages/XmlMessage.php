@@ -11,7 +11,7 @@ use DOMDocument;
  * This class wraps a raw string and attempts to parse it into a
  * {@see \DOMDocument} object for easy access and interpretation.
  */
-class XmlMessage implements MessageInterface
+final class XmlMessage implements MessageInterface
 {
     /**
      * @param DOMDocument $dom The parsed XML data of the message, accessible as a DOMDocument.

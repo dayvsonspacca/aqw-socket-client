@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Listeners;
 
-use AqwSocketClient\Events\{JoinedAreaEvent, LoginResponseEvent};
+use AqwSocketClient\Events\{AreaJoinedEvent, LoginRespondedEvent};
 use AqwSocketClient\Interfaces\{EventInterface, ListenerInterface};
 
 /**
@@ -13,7 +13,7 @@ use AqwSocketClient\Interfaces\{EventInterface, ListenerInterface};
  *
  * @see AqwSocketClient\Interfaces\ListenerInterface
  */
-class GlobalPlayerListener implements ListenerInterface
+final class GlobalPlayerListener implements ListenerInterface
 {
     /**
      * @var int The **temporary socket ID** assigned to the client by the server
@@ -36,11 +36,11 @@ class GlobalPlayerListener implements ListenerInterface
      */
     public function listen(EventInterface $event)
     {
-        if ($event instanceof LoginResponseEvent) {
+        if ($event instanceof LoginRespondedEvent) {
             $this->socketId = $event->socketId;
         }
 
-        if ($event instanceof JoinedAreaEvent) {
+        if ($event instanceof AreaJoinedEvent) {
             $this->areaId = $event->areaId;
         }
     }

@@ -14,7 +14,7 @@ use AqwSocketClient\Interfaces\MessageInterface;
  * This class handles the parsing of the delimited string, extracting the
  * message type and the subsequent data payload.
  */
-class DelimitedMessage implements MessageInterface
+final class DelimitedMessage implements MessageInterface
 {
     /**
      * @param DelimitedMessageType $type The enumerated type of the delimited message.

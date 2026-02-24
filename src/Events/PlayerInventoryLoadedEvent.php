@@ -12,7 +12,7 @@ use AqwSocketClient\Interfaces\EventInterface;
  *
  * This event provides the list of items currently held by the player.
  */
-class PlayerInventoryLoadedEvent implements EventInterface
+final class PlayerInventoryLoadedEvent implements EventInterface
 {
     /**
      * @param array $items An array containing the player's inventory items.

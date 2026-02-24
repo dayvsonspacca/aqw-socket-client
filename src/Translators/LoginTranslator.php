@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Translators;
 
-use AqwSocketClient\Commands\{FirstLoginCommand, LoginCommand};
-use AqwSocketClient\Events\{ConnectionEstabilishedEvent, LoginResponseEvent};
+use AqwSocketClient\Commands\{JoinInitialAreaCommand, LoginCommand};
+use AqwSocketClient\Events\{ConnectionEstablishedEvent, LoginRespondedEvent};
 use AqwSocketClient\Interfaces\{CommandInterface, EventInterface, TranslatorInterface};
 
 /**
@@ -29,19 +29,19 @@ class LoginTranslator implements TranslatorInterface
     /**
      * Translates specific login-related events into commands.
      *
-     * - **ConnectionEstabilishedEvent**: Generates a {@see AqwSocketClient\Commands\LoginCommand} using the stored credentials.
-     * - **LoginResponseEvent**: Generates a {@see AqwSocketClient\Commands\FirstLoginCommand} only if the login was successful.
+     * - **ConnectionEstablishedEvent**: Generates a {@see LoginCommand} using the stored credentials.
+     * - **LoginRespondedEvent**: Generates a {@see JoinInitialAreaCommand} only if the login was successful.
      *
      * @param EventInterface $event The incoming event to be translated.
-     * @return CommandInterface|false The next command to be sent to the server, or **false**
+     * @return CommandInterface|null The next command to be sent to the server, or **null**
      * if the event does not require a command response.
      */
-    public function translate(EventInterface $event): CommandInterface|false
+    public function translate(EventInterface $event): ?CommandInterface
     {
         return match ($event::class) {
-            ConnectionEstabilishedEvent::class => new LoginCommand($this->username, $this->token),
-            LoginResponseEvent::class => (fn () => $event->success ? new FirstLoginCommand() : false)(),
-            default => false
+            ConnectionEstablishedEvent::class => new LoginCommand($this->username, $this->token),
+            LoginRespondedEvent::class => (fn () => $event->success ? new JoinInitialAreaCommand() : null)(),
+            default => null
         };
     }
 }

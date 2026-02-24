@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient;
 
 use AqwSocketClient\Interfaces\{InterpreterInterface, ListenerInterface, TranslatorInterface};
-use AqwSocketClient\Interpreters\LoginInterpreter;
+use AqwSocketClient\Interpreters\{AuthenticationInterpreter};
 use AqwSocketClient\Translators\LoginTranslator;
 
 /**
@@ -15,7 +15,7 @@ use AqwSocketClient\Translators\LoginTranslator;
  * This class ensures essential components, like the {@see AqwSocketClient\Interpreters\LoginInterpreter} and
  * {@see LoginTranslator}, are registered by default.
  */
-class Configuration
+final class Configuration
 {
     /**
      * @var InterpreterInterface[] A collection of message interpreters responsible for
@@ -53,7 +53,7 @@ class Configuration
         array $listeners = [],
         public readonly bool $logMessages = false
     ) {
-        $this->interpreters = array_merge([new LoginInterpreter()], $interpreters);
+        $this->interpreters = array_merge([new AuthenticationInterpreter()], $interpreters);
         $this->translators  = array_merge([new LoginTranslator($username, $token)], $translators);
         $this->listeners    = $listeners;
     }

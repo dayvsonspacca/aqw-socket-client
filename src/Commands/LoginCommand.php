@@ -13,15 +13,15 @@ use AqwSocketClient\Packet;
  * This is the first command sent to authenticate a player using their username
  * and authentication token. It constructs an XML-based packet required by the server.
  */
-class LoginCommand implements CommandInterface
+final class LoginCommand implements CommandInterface
 {
     /**
      * @param string $username The player's username.
      * @param string $token The authentication token for the player.
      */
     public function __construct(
-        private readonly string $username,
-        private readonly string $token
+        public readonly string $username,
+        public readonly string $token
     ) {
     }
 
