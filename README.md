@@ -86,7 +86,7 @@ These classes implement the **`MessageInterface`** and are responsible for deser
 This stage transforms the decoded raw messages into high-level, strongly-typed events:
 
 * **`InterpreterInterface`**: The contract for classes that convert a `MessageInterface` object into an array of `EventInterface` objects. It acts as the core **parser**.
-* **`EventInterface`**: The marker interface for any **event** received and **interpreted** from the server (e.g., `LoginResponseEvent`, `PlayerDetectedEvent`).
+* **`EventInterface`**: The marker interface for any **event** received and **interpreted** from the server (e.g., `LoginRespondedEvent`, `PlayerDetectedEvent`).
 
 ---
 
@@ -100,7 +100,7 @@ The interpreted event is dispatched to two types of components, allowing the app
 
 #### **B. Server Responses (Translators)**
 
-* **`TranslatorInterface`**: Converts an `EventInterface` into a `CommandInterface` (response command) if a direct action is required. For instance, the **`LoginTranslator`** converts the `ConnectionEstabilishedEvent` into the `LoginCommand`.
+* **`TranslatorInterface`**: Converts an `EventInterface` into a `CommandInterface` (response command) if a direct action is required. For instance, the **`LoginTranslator`** converts the `ConnectionEstablishedEvent` into the `LoginCommand`.
 
 ---
 
@@ -108,4 +108,4 @@ The interpreted event is dispatched to two types of components, allowing the app
 
 * **`CommandInterface`**: Defines a **command** or **action** to be sent back to the server.
 * The required method `pack()` serializes the command into the necessary protocol format (XML, Delimited, etc.) and wraps it in a **`Packet`** ready for transmission.
-* Examples: `LoginCommand`, `FirstLoginCommand`.
+* Examples: `LoginCommand`, `JoinInitialAreaCommand`.
