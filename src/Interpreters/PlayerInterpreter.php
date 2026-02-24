@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\JsonMessageType;
-use AqwSocketClient\Events\{AreaJoinedEvent, PlayerInventoryLoadedEvent};
+use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
 use AqwSocketClient\Messages\JsonMessage;
 
 /**
- * Interprets messages related to the player's status, inventory, and location.
+ * Interprets messages related to the player's data, such as inventory.
  */
-final class PlayerRelatedInterpreter implements InterpreterInterface
+final class PlayerInterpreter implements InterpreterInterface
 {
     /**
      * @param MessageInterface $message The message received from the socket client.
-     * @return array An array of domain events generated from the message (e.g., {@see AqwSocketClient\Events\JoinedAreaEvent}).
+     * @return array An array of domain events generated from the message.
      */
     public function interpret(MessageInterface $message): array
     {
@@ -26,25 +26,11 @@ final class PlayerRelatedInterpreter implements InterpreterInterface
         };
     }
 
-    /**
-     * @param JsonMessage $message The single parsed JSON message.
-     * @return array A list of generated events.
-     */
     private function interpretJson(JsonMessage $message): array
     {
         $events = [];
 
-        if ($message->type === JsonMessageType::JoinedArea) {
-            $events[] = new AreaJoinedEvent(
-                $message->data['strMapName'],
-                (int) explode('-', $message->data['areaName'])[1],
-                (int) $message->data['areaId'],
-                array_map(fn ($player) => [
-                    'socket_id' => $player['entID'],
-                    'name' => $player['strUsername']
-                ], $message->data['uoBranch'])
-            );
-        } elseif ($message->type === JsonMessageType::InventoryLoaded) {
+        if ($message->type === JsonMessageType::InventoryLoaded) {
             $events[] = new PlayerInventoryLoadedEvent(
                 array_map(fn ($item) => [
                     'name' => $item['sName'],

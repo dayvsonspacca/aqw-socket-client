@@ -35,11 +35,11 @@ final class LoginTranslatorTest extends TestCase
     }
 
     #[Test]
-    public function should_return_false_when_dont_translate_any_event()
+    public function should_return_null_when_dont_translate_any_event()
     {
         $event   = new class () implements EventInterface {};
         $command = $this->translator->translate($event);
-        $this->assertFalse($command);
+        $this->assertNull($command);
     }
 
     #[Test]
