@@ -20,12 +20,14 @@ final class AreaJoinedEvent implements EventInterface
      * @param int $mapNumber The specific map instance number that was assigned (e.g., 1, 2, 3...).
      * @param int $areaId The ID of the screen or 'area' within the map that was entered.
      * @param string[] $players A list of usernames of the players detected in the area at the time of joining.
+     * @param array<int, array{name: string, asset_name: string, level: int, race: string, hp: int}> $monsters A list of monsters present in the area at the time of joining (if available).
      */
     public function __construct(
         public readonly string $mapName,
         public readonly int $mapNumber,
         public readonly int $areaId,
-        public readonly array $players
+        public readonly array $players,
+        public readonly array $monsters,
     ) {
     }
 }

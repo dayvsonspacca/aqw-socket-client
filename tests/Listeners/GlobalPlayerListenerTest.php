@@ -33,7 +33,7 @@ final class GlobalPlayerListenerTest extends TestCase
     #[Test]
     public function should_listen_to_joined_area_event_and_update_area_id()
     {
-        $event = new AreaJoinedEvent('yulgar', 2, 6, []);
+        $event = new AreaJoinedEvent('yulgar', 2, 6, [], []);
 
         $this->assertFalse(isset($this->listener->areaId));
 

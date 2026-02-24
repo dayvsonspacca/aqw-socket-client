@@ -31,14 +31,32 @@ final class AreaInterpreter implements InterpreterInterface
         $events = [];
 
         if ($message->type === JsonMessageType::JoinedArea) {
+            $players = array_map(fn ($player) => [
+                'socket_id' => $player['entID'],
+                'name' => $player['strUsername']
+            ], $message->data['uoBranch']);
+            $monBranchByMonId = [];
+            foreach ($message->data['monBranch'] as $mob) {
+                $monId = (string) $mob['MonID'];
+                if (!isset($monBranchByMonId[$monId]) || $mob['intHPMax'] > $monBranchByMonId[$monId]) {
+                    $monBranchByMonId[$monId] = $mob['intHPMax'];
+                }
+            }
+
+            $monsters = array_map(fn ($mon) => [
+                'name' => $mon['strMonName'],
+                'asset_name' => $mon['strMonFileName'],
+                'level' => (int) $mon['intLevel'],
+                'race' => $mon['sRace'],
+                'hp' => $monBranchByMonId[$mon['MonID']] ?? null,
+            ], $message->data['mondef'] ?? []);
+
             $events[] = new AreaJoinedEvent(
                 $message->data['strMapName'],
                 (int) explode('-', $message->data['areaName'])[1],
                 (int) $message->data['areaId'],
-                array_map(fn ($player) => [
-                    'socket_id' => $player['entID'],
-                    'name' => $player['strUsername']
-                ], $message->data['uoBranch'])
+                $players,
+                $monsters
             );
         }
 

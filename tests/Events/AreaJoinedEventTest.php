@@ -14,7 +14,13 @@ final class AreaJoinedEventTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->event = new AreaJoinedEvent('battleon', 1, 42, ['PlayerOne', 'PlayerTwo']);
+        $this->event = new AreaJoinedEvent('battleon', 1, 42, ['PlayerOne', 'PlayerTwo'], [[
+            'name' => 'Goblin',
+            'race' => 'Goblin',
+            'asset_name' => 'goblin_asset',
+            'level' => 5,
+            'hp' => 100,
+        ]]);
     }
 
     #[Test]
@@ -25,5 +31,12 @@ final class AreaJoinedEventTest extends TestCase
         $this->assertSame(1, $this->event->mapNumber);
         $this->assertSame(42, $this->event->areaId);
         $this->assertSame(['PlayerOne', 'PlayerTwo'], $this->event->players);
+        $this->assertSame([[
+            'name' => 'Goblin',
+            'race' => 'Goblin',
+            'asset_name' => 'goblin_asset',
+            'level' => 5,
+            'hp' => 100,
+        ]], $this->event->monsters);
     }
 }
