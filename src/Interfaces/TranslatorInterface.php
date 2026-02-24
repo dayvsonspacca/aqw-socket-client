@@ -18,8 +18,8 @@ interface TranslatorInterface
      * processed and sent to the AQW server.
      *
      * @param EventInterface $event The incoming event to be translated.
-     * @return CommandInterface|false The command object ready to be sent, or **false**
+     * @return CommandInterface|null The command object ready to be sent, or **null**
      * if the event does not require a response/command.
      */
-    public function translate(EventInterface $event): CommandInterface|false;
+    public function translate(EventInterface $event): ?CommandInterface;
 }

@@ -33,15 +33,15 @@ class LoginTranslator implements TranslatorInterface
      * - **LoginRespondedEvent**: Generates a {@see JoinInitialAreaCommand} only if the login was successful.
      *
      * @param EventInterface $event The incoming event to be translated.
-     * @return CommandInterface|false The next command to be sent to the server, or **false**
+     * @return CommandInterface|null The next command to be sent to the server, or **null**
      * if the event does not require a command response.
      */
-    public function translate(EventInterface $event): CommandInterface|false
+    public function translate(EventInterface $event): ?CommandInterface
     {
         return match ($event::class) {
             ConnectionEstablishedEvent::class => new LoginCommand($this->username, $this->token),
-            LoginRespondedEvent::class => (fn () => $event->success ? new JoinInitialAreaCommand() : false)(),
-            default => false
+            LoginRespondedEvent::class => (fn () => $event->success ? new JoinInitialAreaCommand() : null)(),
+            default => null
         };
     }
 }
