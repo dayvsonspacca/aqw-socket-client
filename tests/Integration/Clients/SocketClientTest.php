@@ -31,17 +31,57 @@ final class SocketClientTest extends TestCase
     }
 
     #[Test]
+    public function it_connects_successfully(): void
+    {
+        $this->assertFalse($this->client->isConnected());
+
+        $this->client->connect();
+
+        $this->assertTrue($this->client->isConnected());
+    }
+
+    #[Test]
+    public function it_disconnects_successfully(): void
+    {
+        $this->client->connect();
+        $this->client->disconnect();
+
+        $this->assertFalse($this->client->isConnected());
+    }
+
+    #[Test]
     public function it_starts_disconnected(): void
     {
         $this->assertFalse($this->client->isConnected());
     }
 
     #[Test]
-    public function it_throw_erro_when_try_disconnect_and_its_already_disconnected(): void
+    public function it_throws_when_already_connected(): void
+    {
+        $this->client->connect();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Already connected.');
+
+        $this->client->connect();
+    }
+
+    #[Test]
+    public function it_throws_when_disconnect_without_connection(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Not connected.');
 
         $this->client->disconnect();
+    }
+
+    #[Test]
+    public function it_throws_when_fail_to_connect_with_server(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageMatches('/^Failed to connect:/');
+
+        $client = new SocketClient(Configuration::make(new Server('Fake Server', '127.0.0.1', 0)));
+        $client->connect();
     }
 }

@@ -32,7 +32,7 @@ final class SocketClient implements ClientInterface
             );
         }
 
-        if (!socket_connect($socket, $server->hostname, $server->port)) {
+        if (!@socket_connect($socket, $server->hostname, $server->port)) {
             $error = socket_strerror(socket_last_error($socket));
             socket_close($socket);
 
