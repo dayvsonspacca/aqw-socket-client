@@ -6,6 +6,7 @@ namespace AqwSocketClient\Messages;
 
 use AqwSocketClient\Interfaces\MessageInterface;
 use DOMDocument;
+use Override;
 
 /**
  * This class wraps a raw string and attempts to parse it into a
@@ -29,10 +30,12 @@ final class XmlMessage implements MessageInterface
      * @return MessageInterface|false The newly created message object containing the
      * parsed DOMDocument, or **false** on failure to load the XML.
      */
+    #[Override]
     public static function fromString(string $message): MessageInterface|false
     {
         $dom = new DOMDocument();
 
+        // @mago-expect lint:no-error-control-operator
         $success = @$dom->loadXML($message);
         if (!$success) {
             return false;

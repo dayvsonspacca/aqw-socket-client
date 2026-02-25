@@ -12,6 +12,7 @@ use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Objects\Item;
 use AqwSocketClient\Objects\Shop;
+use Override;
 
 /**
  * Interprets a raw server message (specifically a JSON message) to check if a
@@ -30,6 +31,7 @@ final class ShopInterpreter implements InterpreterInterface
      * @param MessageInterface $message The raw message received from the socket.
      * @return EventInterface[] An array containing one or more event objects.
      */
+    #[Override]
     public function interpret(MessageInterface $message): array
     {
         $events = [];

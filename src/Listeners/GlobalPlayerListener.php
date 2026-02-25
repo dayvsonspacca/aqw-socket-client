@@ -8,6 +8,7 @@ use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\ListenerInterface;
+use Override;
 
 /**
  * A listener responsible for updating and maintaining global state information
@@ -36,6 +37,7 @@ final class GlobalPlayerListener implements ListenerInterface
      * @param EventInterface $event The interpreted event object to be processed.
      * @return void
      */
+    #[Override]
     public function listen(EventInterface $event)
     {
         if ($event instanceof LoginRespondedEvent) {

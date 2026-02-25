@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ShopLoadedEventTest extends TestCase
 {
-    private readonly ShopLoadedEvent $event;
+    private ShopLoadedEvent $event;
 
     protected function setUp(): void
     {

@@ -6,6 +6,7 @@ namespace AqwSocketClient\Commands;
 
 use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Packet;
+use Override;
 
 /**
  * Represents a command sent to the server to request the loading and retrieval
@@ -30,6 +31,7 @@ final class LoadPlayerInventoryCommand implements CommandInterface
      *
      * @return Packet The final packet object ready for transmission.
      */
+    #[Override]
     public function pack(): Packet
     {
         return Packet::packetify("%xt%zm%retrieveInventory%{$this->areaId}%{$this->socketId}%");

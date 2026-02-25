@@ -6,6 +6,7 @@ namespace AqwSocketClient\Commands;
 
 use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Packet;
+use Override;
 
 /**
  * Represents the initial **'firstJoin' command** sent to the AQW server
@@ -18,6 +19,7 @@ use AqwSocketClient\Packet;
  */
 final class JoinInitialAreaCommand implements CommandInterface
 {
+    #[Override]
     public function pack(): Packet
     {
         return Packet::packetify('%xt%zm%firstJoin%1%');

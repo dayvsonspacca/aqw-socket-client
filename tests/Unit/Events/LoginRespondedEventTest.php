@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class LoginRespondedEventTest extends TestCase
 {
-    private readonly LoginRespondedEvent $event;
+    private LoginRespondedEvent $event;
 
     protected function setUp(): void
     {

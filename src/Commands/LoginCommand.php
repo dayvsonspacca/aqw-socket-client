@@ -6,6 +6,8 @@ namespace AqwSocketClient\Commands;
 
 use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Packet;
+use Override;
+use SensitiveParameter;
 
 /**
  * Represents a command to log in a player to the AQW server.
@@ -21,10 +23,11 @@ final class LoginCommand implements CommandInterface
      */
     public function __construct(
         public readonly string $username,
-        #[\SensitiveParameter]
+        #[SensitiveParameter]
         public readonly string $token,
     ) {}
 
+    #[Override]
     public function pack(): Packet
     {
         return Packet::packetify(

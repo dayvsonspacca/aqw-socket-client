@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class LogoutCommandTest extends TestCase
 {
-    private readonly LogoutCommand $command;
+    private LogoutCommand $command;
 
     protected function setUp(): void
     {

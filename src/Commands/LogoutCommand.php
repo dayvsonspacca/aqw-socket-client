@@ -6,6 +6,7 @@ namespace AqwSocketClient\Commands;
 
 use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Packet;
+use Override;
 
 /**
  * Represents a command to gracefully log out the current player from the AQW server.
@@ -14,6 +15,7 @@ use AqwSocketClient\Packet;
  */
 final class LogoutCommand implements CommandInterface
 {
+    #[Override]
     public function pack(): Packet
     {
         return Packet::packetify('%xt%zm%cmd%1%logout%');

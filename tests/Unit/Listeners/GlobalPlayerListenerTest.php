@@ -24,7 +24,7 @@ final class GlobalPlayerListenerTest extends TestCase
     {
         $event = new LoginRespondedEvent(true, 5);
 
-        $this->assertFalse(isset($this->listener->socketId));
+        $this->assertNull($this->listener->socketId);
 
         $this->listener->listen($event);
 
@@ -36,7 +36,7 @@ final class GlobalPlayerListenerTest extends TestCase
     {
         $event = new AreaJoinedEvent('yulgar', 2, 6, [], []);
 
-        $this->assertFalse(isset($this->listener->areaId));
+        $this->assertNull($this->listener->areaId);
 
         $this->listener->listen($event);
 

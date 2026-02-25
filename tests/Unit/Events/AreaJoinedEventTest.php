@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class AreaJoinedEventTest extends TestCase
 {
-    private readonly AreaJoinedEvent $event;
+    private AreaJoinedEvent $event;
 
     protected function setUp(): void
     {

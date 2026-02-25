@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PlayerDetectedEventTest extends TestCase
 {
-    private readonly PlayerDetectedEvent $event;
+    private PlayerDetectedEvent $event;
 
     protected function setUp(): void
     {

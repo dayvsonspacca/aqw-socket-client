@@ -6,6 +6,7 @@ namespace AqwSocketClient\Commands;
 
 use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Packet;
+use Override;
 
 /**
  * Represents a command to instruct the client to join a specific map or area
@@ -28,6 +29,7 @@ final class JoinMapCommand implements CommandInterface
         public readonly int $room = 0,
     ) {}
 
+    #[Override]
     public function pack(): Packet
     {
         return Packet::packetify(

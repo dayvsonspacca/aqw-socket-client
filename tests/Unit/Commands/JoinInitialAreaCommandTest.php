@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class JoinInitialAreaCommandTest extends TestCase
 {
-    private readonly JoinInitialAreaCommand $command;
+    private JoinInitialAreaCommand $command;
 
     protected function setUp(): void
     {

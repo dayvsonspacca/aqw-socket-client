@@ -9,6 +9,7 @@ namespace AqwSocketClient;
  *
  * This class provides a simple representation of a server, including its hostname, port, and name.
  * It also includes predefined factory methods for known servers.
+ * @mago-ignore lint:too-many-methods
  */
 final class Server
 {

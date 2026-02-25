@@ -6,6 +6,7 @@ namespace AqwSocketClient\Messages;
 
 use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Interfaces\MessageInterface;
+use Override;
 
 /**
  * Represents a server message that is formatted using a **delimiter**
@@ -36,6 +37,7 @@ final class DelimitedMessage implements MessageInterface
      * @return DelimitedMessage|false The newly created message object, or **false**
      * if the message format is invalid or the message type cannot be determined.
      */
+    #[Override]
     public static function fromString(string $message): DelimitedMessage|false
     {
         if (!str_starts_with($message, '%') && !str_ends_with($message, '%')) {
@@ -43,7 +45,7 @@ final class DelimitedMessage implements MessageInterface
         }
 
         $parts = explode('%', $message);
-        $parts = array_filter($parts, static fn($part) => !empty($part));
+        $parts = array_filter($parts, static fn($part) => !mb_strlen($part) === 0);
 
         unset($parts[1]);
         unset($parts[3]);

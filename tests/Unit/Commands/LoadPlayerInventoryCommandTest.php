@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class LoadPlayerInventoryCommandTest extends TestCase
 {
-    private readonly LoadPlayerInventoryCommand $command;
+    private LoadPlayerInventoryCommand $command;
 
     protected function setUp(): void
     {

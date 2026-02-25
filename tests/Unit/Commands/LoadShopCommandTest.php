@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class LoadShopCommandTest extends TestCase
 {
-    private readonly LoadShopCommand $command;
+    private LoadShopCommand $command;
 
     protected function setUp(): void
     {

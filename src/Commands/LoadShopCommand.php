@@ -6,6 +6,7 @@ namespace AqwSocketClient\Commands;
 
 use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Packet;
+use Override;
 
 /**
  * Represents a command sent from the client to the server to request
@@ -25,6 +26,7 @@ final class LoadShopCommand implements CommandInterface
         public readonly int $shopId,
     ) {}
 
+    #[Override]
     public function pack(): Packet
     {
         return Packet::packetify("%xt%zm%loadShop%{$this->areaId}%{$this->shopId}%");

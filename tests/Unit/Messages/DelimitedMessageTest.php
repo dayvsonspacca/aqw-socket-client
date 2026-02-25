@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 final class DelimitedMessageTest extends TestCase
 {
     #[Test]
-    public function should_create_delimited_message()
+    public function should_create_delimited_message(): void
     {
         $rawMessage = '%xt%server%-1%You joined "battleon-2"%';
         $message = DelimitedMessage::fromString($rawMessage);
@@ -22,7 +22,7 @@ final class DelimitedMessageTest extends TestCase
     }
 
     #[Test]
-    public function should_return_false_when_cant_parse_to_delimited()
+    public function should_return_false_when_cant_parse_to_delimited(): void
     {
         $rawMessage = '{"msg": "hello"}';
         $message = DelimitedMessage::fromString($rawMessage);
@@ -31,7 +31,7 @@ final class DelimitedMessageTest extends TestCase
     }
 
     #[Test]
-    public function should_return_false_when_cant_parse_the_delimited_type()
+    public function should_return_false_when_cant_parse_the_delimited_type(): void
     {
         $rawMessage = '%xt%artixsupercommand%-1%You joined "battleon-2"%';
         $message = DelimitedMessage::fromString($rawMessage);

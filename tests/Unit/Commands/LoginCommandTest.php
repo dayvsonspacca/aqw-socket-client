@@ -11,11 +11,11 @@ use PHPUnit\Framework\TestCase;
 
 final class LoginCommandTest extends TestCase
 {
-    private readonly LoginCommand $command;
+    private LoginCommand $command;
 
     protected function setUp(): void
     {
-        $this->command = new LoginCommand(username: 'PlayerOne', token: 'abc123');
+        $this->command = new LoginCommand(username: 'PlayerOne', token: md5(random_bytes(4)));
     }
 
     #[Test]

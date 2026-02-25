@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PlayerInventoryLoadedEventTest extends TestCase
 {
-    private readonly PlayerInventoryLoadedEvent $event;
+    private PlayerInventoryLoadedEvent $event;
 
     protected function setUp(): void
     {

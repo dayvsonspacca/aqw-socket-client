@@ -13,9 +13,9 @@ final class SocketClient implements ClientInterface
 {
     private ?Socket $socket = null;
 
-    public function __construct(public readonly Configuration $configuration)
-    {
-    }
+    public function __construct(
+        public readonly Configuration $configuration,
+    ) {}
 
     public function connect(): void
     {
@@ -27,18 +27,15 @@ final class SocketClient implements ClientInterface
 
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         if ($socket === false) {
-            throw new RuntimeException(
-                'Failed to create socket: ' . socket_strerror(socket_last_error())
-            );
+            throw new RuntimeException('Failed to create socket: ' . socket_strerror(socket_last_error()));
         }
 
+        // @mago-expect lint:no-error-control-operator
         if (!@socket_connect($socket, $server->hostname, $server->port)) {
             $error = socket_strerror(socket_last_error($socket));
             socket_close($socket);
 
-            throw new RuntimeException(
-                'Failed to connect: ' . $error
-            );
+            throw new RuntimeException('Failed to connect: ' . $error);
         }
 
         $this->socket = $socket;
