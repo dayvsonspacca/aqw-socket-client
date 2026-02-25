@@ -15,6 +15,4 @@ namespace AqwSocketClient\Interfaces;
  * 2. Processed by a {@see AqwSocketClient\Interfaces\ListenerInterface} to execute application
  * logic based on the event instead of generating a command.
  */
-interface EventInterface
-{
-}
+interface EventInterface {}

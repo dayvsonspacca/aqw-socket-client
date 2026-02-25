@@ -6,6 +6,7 @@ namespace AqwSocketClient\Messages;
 
 use AqwSocketClient\Interfaces\MessageInterface;
 use DOMDocument;
+use Override;
 
 /**
  * This class wraps a raw string and attempts to parse it into a
@@ -16,9 +17,9 @@ final class XmlMessage implements MessageInterface
     /**
      * @param DOMDocument $dom The parsed XML data of the message, accessible as a DOMDocument.
      */
-    private function __construct(public readonly DOMDocument $dom)
-    {
-    }
+    private function __construct(
+        public readonly DOMDocument $dom,
+    ) {}
 
     /**
      * Attempts to create an XmlMessage object by loading the raw string as XML.
@@ -29,10 +30,12 @@ final class XmlMessage implements MessageInterface
      * @return MessageInterface|false The newly created message object containing the
      * parsed DOMDocument, or **false** on failure to load the XML.
      */
+    #[Override]
     public static function fromString(string $message): MessageInterface|false
     {
         $dom = new DOMDocument();
 
+        // @mago-expect lint:no-error-control-operator
         $success = @$dom->loadXML($message);
         if (!$success) {
             return false;

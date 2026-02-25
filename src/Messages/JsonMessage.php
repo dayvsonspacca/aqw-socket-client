@@ -6,6 +6,7 @@ namespace AqwSocketClient\Messages;
 
 use AqwSocketClient\Enums\JsonMessageType;
 use AqwSocketClient\Interfaces\MessageInterface;
+use Override;
 
 /**
  * Represents a parsed socket message that is structured as a **single JSON object**.
@@ -23,9 +24,8 @@ final class JsonMessage implements MessageInterface
      */
     private function __construct(
         public readonly JsonMessageType $type,
-        public readonly array $data
-    ) {
-    }
+        public readonly array $data,
+    ) {}
 
     /**
      * Attempts to create a JsonMessage object by decoding the raw JSON string received from the socket.
@@ -36,25 +36,33 @@ final class JsonMessage implements MessageInterface
      * @param string $message The raw string data received from the socket (expected to be a single JSON object).
      * @return JsonMessage|false The successfully created message object, or **false** if parsing fails
      * due to invalid JSON, missing required fields, or an unknown message type.
+     * @mago-ignore analyzer:mixed-assignment
      */
+    #[Override]
     public static function fromString(string $message): JsonMessage|false
     {
         $json = json_decode($message, true);
-        if (json_last_error() !== JSON_ERROR_NONE || !is_array($json)) {
+
+        if (!is_array($json)) {
             return false;
         }
 
-        if (!isset($json['b']['o']) || !is_array($json['b']['o'])) {
+        $b = $json['b'] ?? null;
+        if (!is_array($b)) {
             return false;
         }
 
-        $messageData = $json['b']['o'];
-
-        if (!isset($messageData['cmd']) || !is_string($messageData['cmd'])) {
+        $messageData = $b['o'] ?? null;
+        if (!is_array($messageData)) {
             return false;
         }
 
-        $type = JsonMessageType::fromString($messageData['cmd']);
+        $cmd = $messageData['cmd'] ?? null;
+        if (!is_string($cmd)) {
+            return false;
+        }
+
+        $type = JsonMessageType::fromString($cmd);
         if (!$type) {
             return false;
         }

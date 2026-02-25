@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Listeners;
 
-use AqwSocketClient\Events\{AreaJoinedEvent, LoginRespondedEvent};
-use AqwSocketClient\Interfaces\{EventInterface, ListenerInterface};
+use AqwSocketClient\Events\AreaJoinedEvent;
+use AqwSocketClient\Events\LoginRespondedEvent;
+use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\ListenerInterface;
+use Override;
 
 /**
  * A listener responsible for updating and maintaining global state information
@@ -16,15 +19,15 @@ use AqwSocketClient\Interfaces\{EventInterface, ListenerInterface};
 final class GlobalPlayerListener implements ListenerInterface
 {
     /**
-     * @var int The **temporary socket ID** assigned to the client by the server
+     * @var ?int The **temporary socket ID** assigned to the client by the server
      * upon successful connection/login.
      */
-    public int $socketId;
+    public ?int $socketId = null;
 
     /**
-     * @var int The ID of the current screen or **area** the player is in within a map.
+     * @var ?int The ID of the current screen or **area** the player is in within a map.
      */
-    public int $areaId;
+    public ?int $areaId = null;
 
     /**
      * Executes logic based on the received event, specifically updating the
@@ -34,6 +37,7 @@ final class GlobalPlayerListener implements ListenerInterface
      * @param EventInterface $event The interpreted event object to be processed.
      * @return void
      */
+    #[Override]
     public function listen(EventInterface $event)
     {
         if ($event instanceof LoginRespondedEvent) {

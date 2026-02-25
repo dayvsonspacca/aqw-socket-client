@@ -21,7 +21,6 @@ final class LoginRespondedEvent implements EventInterface
      */
     public function __construct(
         public readonly bool $success,
-        public readonly ?int $socketId
-    ) {
-    }
+        public readonly ?int $socketId,
+    ) {}
 }

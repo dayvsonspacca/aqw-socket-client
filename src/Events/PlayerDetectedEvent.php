@@ -16,7 +16,6 @@ final class PlayerDetectedEvent implements EventInterface
      * @param string $name The **username** of the player that was detected.
      */
     public function __construct(
-        public readonly string $name
-    ) {
-    }
+        public readonly string $name,
+    ) {}
 }
