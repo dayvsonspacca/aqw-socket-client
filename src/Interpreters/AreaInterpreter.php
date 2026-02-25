@@ -12,13 +12,12 @@ use Override;
 
 /**
  * Interprets messages related to the player's location and area transitions.
+ *
+ * ### Events:
+ * - {@see AqwSocketClient\Events\AreaJoinedEvent}
  */
 final class AreaInterpreter implements InterpreterInterface
 {
-    /**
-     * @param MessageInterface $message The message received from the socket client.
-     * @return array An array of domain events generated from the message.
-     */
     #[Override]
     public function interpret(MessageInterface $message): array
     {

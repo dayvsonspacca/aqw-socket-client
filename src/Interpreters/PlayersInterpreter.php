@@ -13,17 +13,13 @@ use AqwSocketClient\Messages\DelimitedMessage;
 use Override;
 
 /**
- * An interpreter responsible for parsing incoming server messages that are
- * related to the presence and movement of **other players** in the current area.
+ * Interprets messages related to the players in the area.
  *
- * It generates events for players entering the screen/area.
+ * ### Events:
+ * - {@see AqwSocketClient\Events\PlayerDetectedEvent}
  */
 final class PlayersInterpreter implements InterpreterInterface
 {
-    /**
-     * @param MessageInterface $message The raw, uninterpreted message object.
-     * @return array The list of {@see AqwSocketClient\Interfaces\EventInterface} objects generated from the message.
-     */
     #[Override]
     public function interpret(MessageInterface $message): array
     {

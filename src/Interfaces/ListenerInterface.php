@@ -21,5 +21,5 @@ interface ListenerInterface
      * @param EventInterface $event The interpreted event object to be processed.
      * @return void
      */
-    public function listen(EventInterface $event);
+    public function listen(EventInterface $event): void;
 }
