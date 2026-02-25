@@ -6,7 +6,8 @@ namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\JsonMessageType;
 use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
-use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
+use AqwSocketClient\Interfaces\InterpreterInterface;
+use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
 
 /**
@@ -22,7 +23,7 @@ final class PlayerInterpreter implements InterpreterInterface
     {
         return match ($message::class) {
             JsonMessage::class => $this->interpretJson($message),
-            default => []
+            default => [],
         };
     }
 
@@ -31,14 +32,12 @@ final class PlayerInterpreter implements InterpreterInterface
         $events = [];
 
         if ($message->type === JsonMessageType::InventoryLoaded) {
-            $events[] = new PlayerInventoryLoadedEvent(
-                array_map(fn ($item) => [
-                    'name' => $item['sName'],
-                    'description' => $item['sDesc'],
-                    'type' => $item['sType'],
-                    'file_name' => $item['sFile'] ?? null
-                ], $message->data['items'])
-            );
+            $events[] = new PlayerInventoryLoadedEvent(array_map(static fn($item) => [
+                'name' => $item['sName'],
+                'description' => $item['sDesc'],
+                'type' => $item['sType'],
+                'file_name' => $item['sFile'] ?? null,
+            ], $message->data['items']));
         }
 
         return $events;

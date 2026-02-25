@@ -23,9 +23,8 @@ final class DelimitedMessage implements MessageInterface
      */
     private function __construct(
         public readonly DelimitedMessageType $type,
-        public readonly array $data
-    ) {
-    }
+        public readonly array $data,
+    ) {}
 
     /**
      * Attempts to create a DelimitedMessage object by parsing the raw string.
@@ -44,7 +43,7 @@ final class DelimitedMessage implements MessageInterface
         }
 
         $parts = explode('%', $message);
-        $parts = array_filter($parts, fn ($part) => !empty($part));
+        $parts = array_filter($parts, static fn($part) => !empty($part));
 
         unset($parts[1]);
         unset($parts[3]);
@@ -56,11 +55,8 @@ final class DelimitedMessage implements MessageInterface
             return false;
         }
 
-        $data = array_filter($parts, fn ($key) => $key !== 0, ARRAY_FILTER_USE_KEY);
+        $data = array_filter($parts, static fn($key) => $key !== 0, ARRAY_FILTER_USE_KEY);
 
-        return new self(
-            $type,
-            array_values($data)
-        );
+        return new self($type, array_values($data));
     }
 }

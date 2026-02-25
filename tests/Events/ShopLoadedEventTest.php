@@ -15,7 +15,7 @@ final class ShopLoadedEventTest extends TestCase
 
     protected function setUp(): void
     {
-        $shop        = $this->createMock(Shop::class);
+        $shop = $this->createMock(Shop::class);
         $this->event = new ShopLoadedEvent($shop);
     }
 

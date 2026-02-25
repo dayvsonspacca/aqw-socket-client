@@ -48,7 +48,7 @@ enum DelimitedMessageType
             'server' => self::Server,
             'exitArea' => self::ExitArea,
             'uotls' => self::PlayerChange,
-            default => false
+            default => false,
         };
     }
 }

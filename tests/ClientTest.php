@@ -4,9 +4,16 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests;
 
-use AqwSocketClient\{Client, Configuration, Packet, Server};
+use AqwSocketClient\Client;
+use AqwSocketClient\Configuration;
 use AqwSocketClient\Events\PlayerLoggedOutEvent;
-use AqwSocketClient\Interfaces\{CommandInterface, EventInterface, InterpreterInterface, ListenerInterface, TranslatorInterface};
+use AqwSocketClient\Interfaces\CommandInterface;
+use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\InterpreterInterface;
+use AqwSocketClient\Interfaces\ListenerInterface;
+use AqwSocketClient\Interfaces\TranslatorInterface;
+use AqwSocketClient\Packet;
+use AqwSocketClient\Server;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -54,9 +61,9 @@ final class ClientTest extends TestCase
         array $interpreters = [],
         array $translators = [],
         array $listeners = [],
-        bool $logMessages = false
+        bool $logMessages = false,
     ): Configuration {
-        $config = new Configuration(
+        return new Configuration(
             username: 'test_user',
             password: 'test_pass',
             token: 'test_token',
@@ -65,18 +72,14 @@ final class ClientTest extends TestCase
             listeners: $listeners,
             logMessages: $logMessages,
         );
-
-        return $config;
     }
 
     /**
      * Builds a Client wired with the given Configuration and an optional logger mock.
      * The real ReactPHP Connector is never touched because we never call connect().
      */
-    private function makeClient(
-        Configuration $configuration,
-        ?LoggerInterface $logger = null
-    ): Client {
+    private function makeClient(Configuration $configuration, ?LoggerInterface $logger = null): Client
+    {
         return new Client(
             server: Server::twilly(),
             configuration: $configuration,
@@ -95,7 +98,7 @@ final class ClientTest extends TestCase
         $this->assertSame(
             'incomplete message without terminator',
             $this->getPrivate($client, 'buffer'),
-            'Buffer must remain unchanged when no null terminator is found.'
+            'Buffer must remain unchanged when no null terminator is found.',
         );
     }
 
@@ -107,7 +110,7 @@ final class ClientTest extends TestCase
 
         $rawJson = '{"t":"xt","b":{"r":-1,"o":{"bankCount":0,"cmd":"loadInventoryBig","items":[{"ItemID":3,"sElmt":"None","sLink":"","bExtra2":0,"bStaff":0,"iRng":10,"iDPS":0,"bCoins":0,"sES":"Weapon","bExtra1":0,"bWear":0,"sType":"Staff","EnhLvl":1,"metaValues":{},"iCost":100,"EnhPatternID":1,"iRty":13,"iQSValue":0,"iQty":1,"sReqQuests":"","iLvl":1,"sIcon":"iwstaff","iEnh":1856,"bTemp":0,"ProcID":"","CharItemID":1.073108779E9,"bPTR":0,"iHrs":769,"sFile":"items/staves/staff01.swf","iQSIndex":-1,"EnhID":1856,"EnhDPS":100,"sDesc":"Staff","iStk":1,"bBank":0,"EnhRty":1,"bEquip":1,"bHouse":0,"bUpg":0,"EnhRng":10,"sName":"Default Staff"}],"hitems":[]}}}';
 
-        $event       = $this->createStub(EventInterface::class);
+        $event = $this->createStub(EventInterface::class);
         $interpreter = $this->createMock(InterpreterInterface::class);
         $interpreter->method('interpret')->willReturn([$event]);
 
@@ -118,7 +121,11 @@ final class ClientTest extends TestCase
 
         $this->callPrivate($client, 'processBuffer');
 
-        $this->assertSame('', $this->getPrivate($client, 'buffer'), 'Buffer must be empty after consuming the message.');
+        $this->assertSame(
+            '',
+            $this->getPrivate($client, 'buffer'),
+            'Buffer must be empty after consuming the message.',
+        );
     }
 
     #[Test]
@@ -126,14 +133,16 @@ final class ClientTest extends TestCase
     {
         $listenCallCount = 0;
 
-        $event       = $this->createStub(EventInterface::class);
+        $event = $this->createStub(EventInterface::class);
         $interpreter = $this->createMock(InterpreterInterface::class);
         $interpreter->method('interpret')->willReturn([$event]);
 
         $listener = $this->createMock(ListenerInterface::class);
-        $listener->method('listen')->willReturnCallback(function () use (&$listenCallCount): void {
-            $listenCallCount++;
-        });
+        $listener
+            ->method('listen')
+            ->willReturnCallback(static function () use (&$listenCallCount): void {
+                $listenCallCount++;
+            });
 
         $config = $this->makeConfiguration(interpreters: [$interpreter], listeners: [$listener]);
         $client = $this->makeClient($config);
@@ -192,8 +201,8 @@ final class ClientTest extends TestCase
     #[Test]
     public function send_commands_writes_packet_when_translator_returns_command(): void
     {
-        $event   = $this->createStub(EventInterface::class);
-        $packet  = Packet::packetify('some-data');
+        $event = $this->createStub(EventInterface::class);
+        $packet = Packet::packetify('some-data');
 
         $command = $this->createMock(CommandInterface::class);
         $command->method('pack')->willReturn($packet);
@@ -235,14 +244,14 @@ final class ClientTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Cannot send packet: connection is not open.');
 
-        $packet  = Packet::packetify('some-data');
+        $packet = Packet::packetify('some-data');
         $command = $this->createMock(CommandInterface::class);
         $command->method('pack')->willReturn($packet);
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translator->method('translate')->willReturn($command);
 
-        $event  = $this->createStub(EventInterface::class);
+        $event = $this->createStub(EventInterface::class);
         $config = $this->makeConfiguration(translators: [$translator]);
         $client = $this->makeClient($config);
 
@@ -274,9 +283,7 @@ final class ClientTest extends TestCase
     public function parse_events_logs_raw_message_when_log_messages_is_enabled(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())
-            ->method('debug')
-            ->with('hello-log-test');
+        $logger->expects($this->once())->method('debug')->with('hello-log-test');
 
         $config = $this->makeConfiguration(logMessages: true);
         $client = $this->makeClient($config, $logger);

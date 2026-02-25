@@ -18,7 +18,7 @@ final class ConfigurationTest extends TestCase
             password: 'this is not artix password',
             token: 'thisisnotartixtoken',
             logMessages: true,
-            listeners: []
+            listeners: [],
         );
 
         $this->assertTrue($configuration->logMessages);

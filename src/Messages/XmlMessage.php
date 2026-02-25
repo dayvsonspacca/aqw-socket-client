@@ -16,9 +16,9 @@ final class XmlMessage implements MessageInterface
     /**
      * @param DOMDocument $dom The parsed XML data of the message, accessible as a DOMDocument.
      */
-    private function __construct(public readonly DOMDocument $dom)
-    {
-    }
+    private function __construct(
+        public readonly DOMDocument $dom,
+    ) {}
 
     /**
      * Attempts to create an XmlMessage object by loading the raw string as XML.

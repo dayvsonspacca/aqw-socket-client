@@ -1,15 +1,17 @@
 <?php
 
-
 declare(strict_types=1);
 
 namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\JsonMessageType;
 use AqwSocketClient\Events\ShopLoadedEvent;
-use AqwSocketClient\Interfaces\{EventInterface, InterpreterInterface, MessageInterface};
+use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\InterpreterInterface;
+use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
-use AqwSocketClient\Objects\{Item, Shop};
+use AqwSocketClient\Objects\Item;
+use AqwSocketClient\Objects\Shop;
 
 /**
  * Interprets a raw server message (specifically a JSON message) to check if a
@@ -35,21 +37,21 @@ final class ShopInterpreter implements InterpreterInterface
             $shop = new Shop(
                 (int) $message->data['shopinfo']['ShopID'],
                 $message->data['shopinfo']['sName'],
-                !((bool) $message->data['shopinfo']['bHouse']) ? Shop::ITEMS : Shop::HOUSE,
+                !(bool) $message->data['shopinfo']['bHouse'] ? Shop::ITEMS : Shop::HOUSE,
                 (bool) $message->data['shopinfo']['bUpgrd'],
                 array_map(
-                    fn ($item) => new Item(
+                    static fn($item) => new Item(
                         (int) $item['ItemID'],
                         $item['sName'],
                         $item['sDesc'],
                         $item['sType'],
                         $item['sFile'] ?? null,
                         (bool) $item['bUpg'],
-                        ((int) $item['bCoins']) ? Item::AC : Item::COINS,
-                        (int) $item['iCost']
+                        (int) $item['bCoins'] ? Item::AC : Item::COINS,
+                        (int) $item['iCost'],
                     ),
-                    array_merge($message->data['shopinfo']['items'])
-                )
+                    array_merge($message->data['shopinfo']['items']),
+                ),
             );
 
             $events[] = new ShopLoadedEvent($shop);

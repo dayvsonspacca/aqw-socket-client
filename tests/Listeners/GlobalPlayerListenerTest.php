@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Listeners;
 
-use AqwSocketClient\Events\{AreaJoinedEvent, LoginRespondedEvent};
+use AqwSocketClient\Events\AreaJoinedEvent;
+use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Listeners\GlobalPlayerListener;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

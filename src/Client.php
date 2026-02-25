@@ -6,10 +6,15 @@ namespace AqwSocketClient;
 
 use AqwSocketClient\Events\PlayerLoggedOutEvent;
 use AqwSocketClient\Interfaces\EventInterface;
-use AqwSocketClient\Messages\{DelimitedMessage, JsonMessage, XmlMessage};
-use Psr\Log\{LoggerInterface, NullLogger};
-use React\Promise\{Deferred, PromiseInterface};
-use React\Socket\{ConnectionInterface, Connector};
+use AqwSocketClient\Messages\DelimitedMessage;
+use AqwSocketClient\Messages\JsonMessage;
+use AqwSocketClient\Messages\XmlMessage;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use React\Promise\Deferred;
+use React\Promise\PromiseInterface;
+use React\Socket\ConnectionInterface;
+use React\Socket\Connector;
 use RuntimeException;
 
 /**
@@ -25,7 +30,7 @@ final class Client
      * @var ConnectionInterface|null The active socket connection instance, or null if disconnected.
      */
     private ?ConnectionInterface $connection = null;
-    private string $buffer                   = '';
+    private string $buffer = '';
 
     /**
      * @param Server $server The configuration object describing the target AQW server (hostname, port, name).
@@ -35,9 +40,8 @@ final class Client
     public function __construct(
         private readonly Server $server,
         private readonly Configuration $configuration,
-        private readonly LoggerInterface $logger = new NullLogger()
-    ) {
-    }
+        private readonly LoggerInterface $logger = new NullLogger(),
+    ) {}
 
     /**
      * Attempts to establish an asynchronous TCP connection to the configured AQW server.
@@ -51,25 +55,22 @@ final class Client
     public function connect(): PromiseInterface
     {
         $connector = new Connector();
-        $deferred  = new Deferred();
+        $deferred = new Deferred();
 
         $target = "tcp://{$this->server->hostname}:{$this->server->port}";
         $this->logger->info("Attempting to connect to {$this->server->name} at {$target}.");
 
-        $connector->connect($target)->then(
-            function (ConnectionInterface $connection) use ($deferred): void {
-                $this->logger->info("Connection to {$this->server->name} established.");
+        $connector->connect($target)->then(function (ConnectionInterface $connection) use ($deferred): void {
+            $this->logger->info("Connection to {$this->server->name} established.");
 
-                $this->connection = $connection;
-                $this->setupConnectionHandlers($connection);
+            $this->connection = $connection;
+            $this->setupConnectionHandlers($connection);
 
-                $deferred->resolve($connection);
-            },
-            function (\Throwable $e) use ($deferred): void {
-                $this->logger->error("Failed to connect to {$this->server->name}: {$e->getMessage()}.");
-                $deferred->reject($e);
-            }
-        );
+            $deferred->resolve($connection);
+        }, function (\Throwable $e) use ($deferred): void {
+            $this->logger->error("Failed to connect to {$this->server->name}: {$e->getMessage()}.");
+            $deferred->reject($e);
+        });
 
         return $deferred->promise();
     }
@@ -86,7 +87,7 @@ final class Client
         $connection->on('close', function (): void {
             $this->logger->info("Connection to {$this->server->name} closed.");
             $this->connection = null;
-            $this->buffer     = '';
+            $this->buffer = '';
         });
 
         $connection->on('data', function (string $data): void {
@@ -107,7 +108,7 @@ final class Client
                 break;
             }
 
-            $rawMessage   = substr($this->buffer, 0, $delimiterPosition + 1);
+            $rawMessage = substr($this->buffer, 0, $delimiterPosition + 1);
             $this->buffer = substr($this->buffer, $delimiterPosition + 1);
 
             $this->processRawMessage($rawMessage);
@@ -129,7 +130,7 @@ final class Client
         $this->dispatchEvents($events);
         $this->sendCommands($events);
 
-        if (!empty(array_filter($events, fn ($event) => $event instanceof PlayerLoggedOutEvent))) {
+        if (!empty(array_filter($events, static fn($event) => $event instanceof PlayerLoggedOutEvent))) {
             $this->connection?->close();
         }
     }

@@ -6,7 +6,8 @@ namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\JsonMessageType;
 use AqwSocketClient\Events\AreaJoinedEvent;
-use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
+use AqwSocketClient\Interfaces\InterpreterInterface;
+use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
 
 /**
@@ -22,7 +23,7 @@ final class AreaInterpreter implements InterpreterInterface
     {
         return match ($message::class) {
             JsonMessage::class => $this->interpretJson($message),
-            default => []
+            default => [],
         };
     }
 
@@ -31,9 +32,9 @@ final class AreaInterpreter implements InterpreterInterface
         $events = [];
 
         if ($message->type === JsonMessageType::JoinedArea) {
-            $players = array_map(fn ($player) => [
+            $players = array_map(static fn($player) => [
                 'socket_id' => $player['entID'],
-                'name' => $player['strUsername']
+                'name' => $player['strUsername'],
             ], $message->data['uoBranch']);
             $monBranchByMonId = [];
             foreach ($message->data['monBranch'] as $mob) {
@@ -43,7 +44,7 @@ final class AreaInterpreter implements InterpreterInterface
                 }
             }
 
-            $monsters = array_map(fn ($mon) => [
+            $monsters = array_map(static fn($mon) => [
                 'name' => $mon['strMonName'],
                 'asset_name' => $mon['strMonFileName'],
                 'level' => (int) $mon['intLevel'],
@@ -56,7 +57,7 @@ final class AreaInterpreter implements InterpreterInterface
                 (int) explode('-', $message->data['areaName'])[1],
                 (int) $message->data['areaId'],
                 $players,
-                $monsters
+                $monsters,
             );
         }
 

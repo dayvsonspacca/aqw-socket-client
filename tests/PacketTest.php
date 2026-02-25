@@ -13,7 +13,7 @@ class PacketTest extends TestCase
     #[Test]
     public function packetify_adds_null_terminator(): void
     {
-        $data   = 'hello';
+        $data = 'hello';
         $packet = Packet::packetify($data);
 
         $this->assertSame("hello\0", $packet->unpacketify());

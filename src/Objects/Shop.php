@@ -22,9 +22,8 @@ class Shop implements IteratorAggregate, Countable
         public readonly string $name,
         public readonly int $type,
         public readonly bool $memberOnly,
-        public readonly array $items
-    ) {
-    }
+        public readonly array $items,
+    ) {}
 
     public function getIterator(): Traversable
     {

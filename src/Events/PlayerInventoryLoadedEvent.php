@@ -18,7 +18,6 @@ final class PlayerInventoryLoadedEvent implements EventInterface
      * @param array $items An array containing the player's inventory items.
      */
     public function __construct(
-        public readonly array $items
-    ) {
-    }
+        public readonly array $items,
+    ) {}
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 declare(strict_types=1);
 
 namespace AqwSocketClient\Events;
@@ -18,7 +17,6 @@ use AqwSocketClient\Objects\Shop;
 final class ShopLoadedEvent implements EventInterface
 {
     public function __construct(
-        public readonly Shop $shop
-    ) {
-    }
+        public readonly Shop $shop,
+    ) {}
 }

@@ -28,6 +28,5 @@ final class AreaJoinedEvent implements EventInterface
         public readonly int $areaId,
         public readonly array $players,
         public readonly array $monsters,
-    ) {
-    }
+    ) {}
 }

@@ -21,19 +21,19 @@ final class LoginCommand implements CommandInterface
      */
     public function __construct(
         public readonly string $username,
-        public readonly string $token
-    ) {
-    }
+        #[\SensitiveParameter]
+        public readonly string $token,
+    ) {}
 
     public function pack(): Packet
     {
         return Packet::packetify(
-            "<msg t='sys'>" .
-                "<body action='login' r='0'>" .
-                "<login z='zone_master'>" .
-                "<nick><![CDATA[SPIDER#0001~{$this->username}~3.01]]></nick>" .
-                "<pword><![CDATA[{$this->token}]]></pword>" .
-                '</login></body></msg>'
+            "<msg t='sys'>"
+            . "<body action='login' r='0'>"
+            . "<login z='zone_master'>"
+            . "<nick><![CDATA[SPIDER#0001~{$this->username}~3.01]]></nick>"
+            . "<pword><![CDATA[{$this->token}]]></pword>"
+            . '</login></body></msg>',
         );
     }
 }

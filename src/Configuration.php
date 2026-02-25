@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace AqwSocketClient;
 
-use AqwSocketClient\Interfaces\{InterpreterInterface, ListenerInterface, TranslatorInterface};
-use AqwSocketClient\Interpreters\{AuthenticationInterpreter};
+use AqwSocketClient\Interfaces\InterpreterInterface;
+use AqwSocketClient\Interfaces\ListenerInterface;
+use AqwSocketClient\Interfaces\TranslatorInterface;
+use AqwSocketClient\Interpreters\AuthenticationInterpreter;
 use AqwSocketClient\Translators\LoginTranslator;
 
 /**
@@ -46,15 +48,17 @@ final class Configuration
      */
     public function __construct(
         public readonly string $username,
+        #[\SensitiveParameter]
         public readonly string $password,
+        #[\SensitiveParameter]
         public readonly string $token,
         array $interpreters = [],
         array $translators = [],
         array $listeners = [],
-        public readonly bool $logMessages = false
+        public readonly bool $logMessages = false,
     ) {
         $this->interpreters = array_merge([new AuthenticationInterpreter()], $interpreters);
-        $this->translators  = array_merge([new LoginTranslator($username, $token)], $translators);
-        $this->listeners    = $listeners;
+        $this->translators = array_merge([new LoginTranslator($username, $token)], $translators);
+        $this->listeners = $listeners;
     }
 }

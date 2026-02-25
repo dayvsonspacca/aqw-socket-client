@@ -26,7 +26,7 @@ final class JoinMapCommandTest extends TestCase
     public function should_pack_packet_without_room_when_room_is_zero(): void
     {
         $command = new JoinMapCommand('PlayerOne', 'battleon');
-        $packet  = $command->pack();
+        $packet = $command->pack();
 
         $this->assertInstanceOf(Packet::class, $packet);
         $this->assertSame("%xt%zm%cmd%1%tfer%PlayerOne%battleon%\u{0000}", $packet->unpacketify());
@@ -36,7 +36,7 @@ final class JoinMapCommandTest extends TestCase
     public function should_pack_packet_with_room_when_room_is_provided(): void
     {
         $command = new JoinMapCommand('PlayerOne', 'battleon', 2);
-        $packet  = $command->pack();
+        $packet = $command->pack();
 
         $this->assertInstanceOf(Packet::class, $packet);
         $this->assertSame("%xt%zm%cmd%1%tfer%PlayerOne%battleon-2%\u{0000}", $packet->unpacketify());

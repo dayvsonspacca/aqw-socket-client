@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Translators;
 
-use AqwSocketClient\Commands\{JoinInitialAreaCommand, LoginCommand};
-use AqwSocketClient\Events\{ConnectionEstablishedEvent, LoginRespondedEvent};
-use AqwSocketClient\Interfaces\{CommandInterface, EventInterface, TranslatorInterface};
+use AqwSocketClient\Commands\JoinInitialAreaCommand;
+use AqwSocketClient\Commands\LoginCommand;
+use AqwSocketClient\Events\ConnectionEstablishedEvent;
+use AqwSocketClient\Events\LoginRespondedEvent;
+use AqwSocketClient\Interfaces\CommandInterface;
+use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\TranslatorInterface;
 
 /**
  * Translator responsible for converting events related to the **initial connection and login**
@@ -22,9 +26,9 @@ class LoginTranslator implements TranslatorInterface
      */
     public function __construct(
         private readonly string $username,
-        private readonly string $token
-    ) {
-    }
+        #[\SensitiveParameter]
+        private readonly string $token,
+    ) {}
 
     /**
      * Translates specific login-related events into commands.
@@ -40,8 +44,8 @@ class LoginTranslator implements TranslatorInterface
     {
         return match ($event::class) {
             ConnectionEstablishedEvent::class => new LoginCommand($this->username, $this->token),
-            LoginRespondedEvent::class => (fn () => $event->success ? new JoinInitialAreaCommand() : null)(),
-            default => null
+            LoginRespondedEvent::class => (static fn() => $event->success ? new JoinInitialAreaCommand() : null)(),
+            default => null,
         };
     }
 }

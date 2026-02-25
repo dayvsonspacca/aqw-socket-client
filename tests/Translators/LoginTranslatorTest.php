@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Translators;
 
-use AqwSocketClient\Commands\{JoinInitialAreaCommand, LoginCommand};
-use AqwSocketClient\Events\{ConnectionEstablishedEvent, LoginRespondedEvent};
+use AqwSocketClient\Commands\JoinInitialAreaCommand;
+use AqwSocketClient\Commands\LoginCommand;
+use AqwSocketClient\Events\ConnectionEstablishedEvent;
+use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Translators\LoginTranslator;
 use PHPUnit\Framework\Attributes\Test;
@@ -37,7 +39,7 @@ final class LoginTranslatorTest extends TestCase
     #[Test]
     public function should_return_null_when_dont_translate_any_event()
     {
-        $event   = new class () implements EventInterface {};
+        $event = new class() implements EventInterface {};
         $command = $this->translator->translate($event);
         $this->assertNull($command);
     }

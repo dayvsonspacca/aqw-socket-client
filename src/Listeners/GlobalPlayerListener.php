@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Listeners;
 
-use AqwSocketClient\Events\{AreaJoinedEvent, LoginRespondedEvent};
-use AqwSocketClient\Interfaces\{EventInterface, ListenerInterface};
+use AqwSocketClient\Events\AreaJoinedEvent;
+use AqwSocketClient\Events\LoginRespondedEvent;
+use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\ListenerInterface;
 
 /**
  * A listener responsible for updating and maintaining global state information

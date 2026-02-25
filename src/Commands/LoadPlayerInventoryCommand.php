@@ -21,9 +21,8 @@ final class LoadPlayerInventoryCommand implements CommandInterface
      */
     public function __construct(
         public readonly int $areaId,
-        public readonly int $socketId
-    ) {
-    }
+        public readonly int $socketId,
+    ) {}
 
     /**
      * Converts the command object into a ready-to-send {@see AqwSocketClient\Packet} object,
@@ -33,8 +32,6 @@ final class LoadPlayerInventoryCommand implements CommandInterface
      */
     public function pack(): Packet
     {
-        return Packet::packetify(
-            "%xt%zm%retrieveInventory%{$this->areaId}%{$this->socketId}%"
-        );
+        return Packet::packetify("%xt%zm%retrieveInventory%{$this->areaId}%{$this->socketId}%");
     }
 }

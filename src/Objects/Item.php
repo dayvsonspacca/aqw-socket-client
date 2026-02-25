@@ -7,7 +7,7 @@ namespace AqwSocketClient\Objects;
 class Item
 {
     public const COINS = 0;
-    public const AC    = 1;
+    public const AC = 1;
 
     public function __construct(
         public readonly int $id,
@@ -17,7 +17,6 @@ class Item
         public readonly ?string $assetUrl,
         public readonly bool $memberOnly,
         public readonly int $coinType,
-        public readonly int $coinAmount
-    ) {
-    }
+        public readonly int $coinAmount,
+    ) {}
 }

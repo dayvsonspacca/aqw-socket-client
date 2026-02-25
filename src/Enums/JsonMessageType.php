@@ -48,13 +48,13 @@ enum JsonMessageType
      */
     public static function fromString(string $string): self|false
     {
-        return match($string) {
+        return match ($string) {
             'equipItem' => self::EquipItem,
             'wearItem' => self::WearItem,
             'moveToArea' => self::JoinedArea,
             'loadInventoryBig' => self::InventoryLoaded,
             'loadShop' => self::ShopLoaded,
-            default => false
+            default => false,
         };
     }
 }

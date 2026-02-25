@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\DelimitedMessageType;
-use AqwSocketClient\Events\{ConnectionEstablishedEvent, LoginRespondedEvent, PlayerLoggedOutEvent};
-use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
-use AqwSocketClient\Messages\{DelimitedMessage, XmlMessage};
+use AqwSocketClient\Events\ConnectionEstablishedEvent;
+use AqwSocketClient\Events\LoginRespondedEvent;
+use AqwSocketClient\Events\PlayerLoggedOutEvent;
+use AqwSocketClient\Interfaces\InterpreterInterface;
+use AqwSocketClient\Interfaces\MessageInterface;
+use AqwSocketClient\Messages\DelimitedMessage;
+use AqwSocketClient\Messages\XmlMessage;
 
 /**
  * An interpreter responsible for parsing incoming server messages that are
@@ -35,7 +39,7 @@ final class AuthenticationInterpreter implements InterpreterInterface
         return match ($message::class) {
             XmlMessage::class => $this->interpretXml($message),
             DelimitedMessage::class => $this->interpretDelimited($message),
-            default => []
+            default => [],
         };
     }
 

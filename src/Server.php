@@ -20,9 +20,8 @@ final class Server
     public function __construct(
         public readonly string $name,
         public readonly string $hostname,
-        public readonly int $port
-    ) {
-    }
+        public readonly int $port,
+    ) {}
 
     public static function twilly(): Server
     {

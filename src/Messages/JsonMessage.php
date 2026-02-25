@@ -23,9 +23,8 @@ final class JsonMessage implements MessageInterface
      */
     private function __construct(
         public readonly JsonMessageType $type,
-        public readonly array $data
-    ) {
-    }
+        public readonly array $data,
+    ) {}
 
     /**
      * Attempts to create a JsonMessage object by decoding the raw JSON string received from the socket.

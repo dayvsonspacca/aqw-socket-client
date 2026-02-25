@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Interpreters;
 
-use AqwSocketClient\Enums\{DelimitedMessageType};
-use AqwSocketClient\Events\{PlayerDetectedEvent};
-use AqwSocketClient\Interfaces\{InterpreterInterface, MessageInterface};
-use AqwSocketClient\Messages\{DelimitedMessage};
+use AqwSocketClient\Enums\DelimitedMessageType;
+use AqwSocketClient\Events\PlayerDetectedEvent;
+use AqwSocketClient\Interfaces\InterpreterInterface;
+use AqwSocketClient\Interfaces\MessageInterface;
+use AqwSocketClient\Messages\DelimitedMessage;
 
 /**
  * An interpreter responsible for parsing incoming server messages that are
@@ -25,7 +26,7 @@ final class PlayersInterpreter implements InterpreterInterface
     {
         return match ($message::class) {
             DelimitedMessage::class => $this->interpretDelimited($message),
-            default => []
+            default => [],
         };
     }
 
