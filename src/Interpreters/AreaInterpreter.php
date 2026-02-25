@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Interpreters;
 
-use AqwSocketClient\Enums\JsonMessageType;
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Interfaces\InterpreterInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
@@ -24,10 +23,9 @@ final class AreaInterpreter implements InterpreterInterface
     public function interpret(MessageInterface $message): array
     {
         return match ($message::class) {
-            JsonMessage::class => match ($message->type) {
-                JsonMessageType::JoinedArea => [AreaJoinedEvent::fromJsonMessage($message)],
-                default => []
-            },
+            JsonMessage::class => array_filter([
+                AreaJoinedEvent::fromJsonMessage($message),
+            ]),
             default => [],
         };
     }

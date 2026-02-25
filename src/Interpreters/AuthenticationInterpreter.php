@@ -8,6 +8,7 @@ use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Events\PlayerLoggedOutEvent;
+use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\InterpreterInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
@@ -45,6 +46,7 @@ final class AuthenticationInterpreter implements InterpreterInterface
         };
     }
 
+    /** @return EventInterface[] */
     private function interpretXml(XmlMessage $message): array
     {
         $events = [];
@@ -61,12 +63,14 @@ final class AuthenticationInterpreter implements InterpreterInterface
         return $events;
     }
 
+    /** @return EventInterface[] */
+    // @mago-ignore analyzer:possibly-undefined-array-index
     private function interpretDelimited(DelimitedMessage $message): array
     {
         $events = [];
 
         if ($message->type === DelimitedMessageType::LoginResponse) {
-            $events[] = new LoginRespondedEvent((bool) $message->data[0] ?? false, (int) $message->data[1] ?? null);
+            $events[] = new LoginRespondedEvent((bool) $message->data[0], (int) $message->data[1]);
         }
 
         return $events;

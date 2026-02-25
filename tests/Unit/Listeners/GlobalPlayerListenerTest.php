@@ -20,7 +20,7 @@ final class GlobalPlayerListenerTest extends TestCase
     }
 
     #[Test]
-    public function should_listen_to_login_response_event_and_update_socket_id()
+    public function should_listen_to_login_response_event_and_update_socket_id(): void
     {
         $event = new LoginRespondedEvent(true, 5);
 
@@ -32,7 +32,7 @@ final class GlobalPlayerListenerTest extends TestCase
     }
 
     #[Test]
-    public function should_listen_to_joined_area_event_and_update_area_id()
+    public function should_listen_to_joined_area_event_and_update_area_id(): void
     {
         $event = new AreaJoinedEvent('yulgar', 2, 6, [], []);
 

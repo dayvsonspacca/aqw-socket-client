@@ -11,6 +11,7 @@ use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\TranslatorInterface;
+use Override;
 
 /**
  * Translator responsible for converting events related to the **initial connection and login**
@@ -40,6 +41,7 @@ class LoginTranslator implements TranslatorInterface
      * @return CommandInterface|null The next command to be sent to the server, or **null**
      * if the event does not require a command response.
      */
+    #[Override]
     public function translate(EventInterface $event): ?CommandInterface
     {
         return match ($event::class) {

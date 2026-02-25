@@ -24,7 +24,7 @@ final class SocketClientTest extends TestCase
     }
 
     #[Test]
-    public function it_creates_client_with_config()
+    public function it_creates_client_with_config(): void
     {
         $this->assertInstanceOf(SocketClient::class, $this->client);
         $this->assertSame($this->client->configuration, $this->configuration);

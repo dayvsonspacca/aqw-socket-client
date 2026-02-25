@@ -19,7 +19,7 @@ final class DelimitedMessage implements MessageInterface
 {
     /**
      * @param DelimitedMessageType $type The enumerated type of the delimited message.
-     * @param array $data An array containing the payload data of the message,
+     * @param array<int, string> $data An array containing the payload data of the message,
      * following the message type.
      */
     private function __construct(
@@ -36,6 +36,8 @@ final class DelimitedMessage implements MessageInterface
      * @param string $message The raw string data received from the socket.
      * @return DelimitedMessage|false The newly created message object, or **false**
      * if the message format is invalid or the message type cannot be determined.
+     *
+     * @mago-ignore analyzer:possibly-undefined-array-index
      */
     #[Override]
     public static function fromString(string $message): DelimitedMessage|false

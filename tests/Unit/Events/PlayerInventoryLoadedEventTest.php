@@ -15,8 +15,8 @@ final class PlayerInventoryLoadedEventTest extends TestCase
     protected function setUp(): void
     {
         $this->event = new PlayerInventoryLoadedEvent([
-            ['id' => 1, 'name' => 'Iron Sword'],
-            ['id' => 2, 'name' => 'Health Potion'],
+            ['name' => 'Iron Sword', 'description' => 'a sword', 'type' => 'weapon', 'file_name' => 'sword.swf'],
+            ['name' => 'Health Potion', 'description' => 'a sword', 'type' => 'weapon', 'file_name' => 'sword.swf'],
         ]);
     }
 

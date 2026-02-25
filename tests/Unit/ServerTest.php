@@ -15,7 +15,6 @@ class ServerTest extends TestCase
     {
         $servers = Server::all();
 
-        $this->assertIsArray($servers);
         $this->assertCount(13, $servers);
 
         $names = array_map(static fn(Server $s) => $s->name, $servers);

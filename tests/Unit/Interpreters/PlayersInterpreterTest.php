@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class PlayersInterpreterTest extends TestCase
 {
-    private readonly PlayersInterpreter $interpreter;
+    private PlayersInterpreter $interpreter;
 
     protected function setUp(): void
     {
@@ -22,11 +22,11 @@ class PlayersInterpreterTest extends TestCase
     #[Test]
     public function should_interpreter_player_detected_via_exit_area_message(): void
     {
+        /** @var DelimitedMessage $message */
         $message = DelimitedMessage::fromString('%xt%exitArea%-1%213839%authur%');
 
         $events = $this->interpreter->interpret($message);
 
-        $this->assertIsArray($events);
         $this->assertCount(1, $events);
 
         $this->assertInstanceOf(PlayerDetectedEvent::class, $events[0]);
@@ -36,11 +36,11 @@ class PlayersInterpreterTest extends TestCase
     #[Test]
     public function should_interpreter_player_detected_via_player_change(): void
     {
+        /** @var DelimitedMessage $message */
         $message = DelimitedMessage::fromString('%xt%uotls%-1%ninjie_ninjie%sp:8,tx:224,ty:354,strFrame:Enter%');
 
         $events = $this->interpreter->interpret($message);
 
-        $this->assertIsArray($events);
         $this->assertCount(1, $events);
 
         $this->assertInstanceOf(PlayerDetectedEvent::class, $events[0]);

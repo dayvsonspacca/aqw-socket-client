@@ -36,6 +36,7 @@ final class JsonMessage implements MessageInterface
      * @param string $message The raw string data received from the socket (expected to be a single JSON object).
      * @return JsonMessage|false The successfully created message object, or **false** if parsing fails
      * due to invalid JSON, missing required fields, or an unknown message type.
+     * @mago-ignore analyzer:mixed-assignment
      */
     #[Override]
     public static function fromString(string $message): JsonMessage|false

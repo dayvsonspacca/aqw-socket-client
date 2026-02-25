@@ -19,15 +19,15 @@ use Override;
 final class GlobalPlayerListener implements ListenerInterface
 {
     /**
-     * @var int The **temporary socket ID** assigned to the client by the server
+     * @var ?int The **temporary socket ID** assigned to the client by the server
      * upon successful connection/login.
      */
-    public int $socketId;
+    public ?int $socketId = null;
 
     /**
-     * @var int The ID of the current screen or **area** the player is in within a map.
+     * @var ?int The ID of the current screen or **area** the player is in within a map.
      */
-    public int $areaId;
+    public ?int $areaId = null;
 
     /**
      * Executes logic based on the received event, specifically updating the

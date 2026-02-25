@@ -6,6 +6,7 @@ namespace AqwSocketClient\Interpreters;
 
 use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Events\PlayerDetectedEvent;
+use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\InterpreterInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
@@ -32,13 +33,16 @@ final class PlayersInterpreter implements InterpreterInterface
         };
     }
 
-    private function interpretDelimited(DelimitedMessage $message)
+    /** @return EventInterface[] */
+    private function interpretDelimited(DelimitedMessage $message): array
     {
         $events = [];
         if ($message->type === DelimitedMessageType::ExitArea) {
+            // @mago-expect analyzer:possibly-undefined-array-index
             $events[] = new PlayerDetectedEvent($message->data[1]);
         }
         if ($message->type === DelimitedMessageType::PlayerChange) {
+            // @mago-expect analyzer:possibly-undefined-array-index
             $events[] = new PlayerDetectedEvent($message->data[0]);
         }
 

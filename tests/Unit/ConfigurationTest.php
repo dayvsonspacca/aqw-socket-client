@@ -22,14 +22,14 @@ final class ConfigurationTest extends TestCase
     }
 
     #[Test]
-    public function make_method_creates_configuration()
+    public function make_method_creates_configuration(): void
     {
         $this->assertInstanceOf(Configuration::class, $this->configuration);
         $this->assertInstanceOf(Server::class, $this->configuration->server);
     }
 
     #[Test]
-    public function it_can_add_a_new_interpreter()
+    public function it_can_add_a_new_interpreter(): void
     {
         $this->assertEmpty($this->configuration->interpreters);
 
@@ -41,7 +41,7 @@ final class ConfigurationTest extends TestCase
     }
 
     #[Test]
-    public function it_can_add_a_new_translator()
+    public function it_can_add_a_new_translator(): void
     {
         $this->assertEmpty($this->configuration->translators);
 
@@ -53,7 +53,7 @@ final class ConfigurationTest extends TestCase
     }
 
     #[Test]
-    public function it_can_add_a_new_listener()
+    public function it_can_add_a_new_listener(): void
     {
         $this->assertEmpty($this->configuration->listeners);
 

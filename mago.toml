@@ -36,5 +36,6 @@ register-super-globals = true
 
 ignore = [
     { code = 'unhandled-thrown-type', in = 'tests/'},
-    { code = 'missing-override-attribute', in = 'tests/'}
+    { code = 'missing-override-attribute', in = 'tests/'},
+    { code = 'possibly-undefined-array-index', in = 'tests/'}
 ]

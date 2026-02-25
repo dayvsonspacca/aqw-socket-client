@@ -18,7 +18,7 @@ final class LoginRespondedEventTest extends TestCase
     }
 
     #[Test]
-    public function should_create_login_responded_event()
+    public function should_create_login_responded_event(): void
     {
         $this->assertInstanceOf(LoginRespondedEvent::class, $this->event);
         $this->assertSame($this->event->socketId, 2);

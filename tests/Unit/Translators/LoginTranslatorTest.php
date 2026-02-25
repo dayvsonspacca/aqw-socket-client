@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 final class LoginTranslatorTest extends TestCase
 {
-    private readonly LoginTranslator $translator;
+    private LoginTranslator $translator;
 
     protected function setUp(): void
     {
@@ -23,13 +23,13 @@ final class LoginTranslatorTest extends TestCase
     }
 
     #[Test]
-    public function should_create_login_translator()
+    public function should_create_login_translator(): void
     {
         $this->assertInstanceOf(LoginTranslator::class, $this->translator);
     }
 
     #[Test]
-    public function should_translate_connection_established_to_login_command()
+    public function should_translate_connection_established_to_login_command(): void
     {
         $command = $this->translator->translate(new ConnectionEstablishedEvent());
 
@@ -37,7 +37,7 @@ final class LoginTranslatorTest extends TestCase
     }
 
     #[Test]
-    public function should_return_null_when_dont_translate_any_event()
+    public function should_return_null_when_dont_translate_any_event(): void
     {
         $event = new class() implements EventInterface {};
         $command = $this->translator->translate($event);
@@ -45,7 +45,7 @@ final class LoginTranslatorTest extends TestCase
     }
 
     #[Test]
-    public function should_translate_login_responded_to_first_login_command()
+    public function should_translate_login_responded_to_first_login_command(): void
     {
         $command = $this->translator->translate(new LoginRespondedEvent(true, 2));
 
