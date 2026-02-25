@@ -24,37 +24,6 @@ Allows login, sending commands, and processing server events in a modular way.
 
 ---
 
-## **Usage**
-
-```php
-use AqwSocketClient\Client;
-use AqwSocketClient\Server;
-use AqwSocketClient\Configuration;
-use YourApp\Listeners\CustomGameLogicListener; 
-
-$server = Server::espada();
-
-$config = new Configuration(
-    username: 'PlayerName',
-    password: 'Password',
-    token: 'AuthenticationToken',
-    listeners: [new CustomGameLogicListener()], 
-    translators: [/* your custom translators here */],
-    logMessages: true // Optional: to see raw messages in the console
-);
-
-$client = new Client($server, $config);
-
-$promise = $client->connect(); 
-```
-
-Checkout **AuthService** class example to generate you auth token
-```php
-$token = AuthService::getAuthToken('you-user', 'you-pass');
-```
-
----
-
 ## ✨ Architecture
 
 The `AqwSocketClient` architecture is based on an **Event-Oriented Pipeline**, ensuring high modularity, strict typing, and **separation of concerns**. The data flow follows the cycle: **Message $\rightarrow$ Interpreter $\rightarrow$ Event $\rightarrow$ Listener/Translator $\rightarrow$ Command**.
