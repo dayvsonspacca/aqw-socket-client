@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Tests\Clients;
+namespace AqwSocketClient\Tests\Integration\Clients;
 
 use AqwSocketClient\Clients\SocketClient;
 use AqwSocketClient\Configuration;
