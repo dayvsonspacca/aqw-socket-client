@@ -45,7 +45,7 @@ final class DelimitedMessage implements MessageInterface
         }
 
         $parts = explode('%', $message);
-        $parts = array_filter($parts, static fn($part) => !mb_strlen($part) === 0);
+        $parts = array_filter($parts, static fn($part) => !(mb_strlen($part) === 0));
 
         unset($parts[1]);
         unset($parts[3]);

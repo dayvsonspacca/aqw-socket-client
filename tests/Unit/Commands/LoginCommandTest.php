@@ -12,10 +12,12 @@ use PHPUnit\Framework\TestCase;
 final class LoginCommandTest extends TestCase
 {
     private LoginCommand $command;
+    private string $token;
 
     protected function setUp(): void
     {
-        $this->command = new LoginCommand(username: 'PlayerOne', token: md5(random_bytes(4)));
+        $this->token = md5(random_bytes(4));
+        $this->command = new LoginCommand(username: 'PlayerOne', token: $this->token);
     }
 
     #[Test]
@@ -23,7 +25,7 @@ final class LoginCommandTest extends TestCase
     {
         $this->assertInstanceOf(LoginCommand::class, $this->command);
         $this->assertSame('PlayerOne', $this->command->username);
-        $this->assertSame('abc123', $this->command->token);
+        $this->assertSame($this->token, $this->command->token);
     }
 
     #[Test]
@@ -33,6 +35,6 @@ final class LoginCommandTest extends TestCase
 
         $this->assertInstanceOf(Packet::class, $packet);
         $this->assertStringContainsString('PlayerOne', $packet->unpacketify());
-        $this->assertStringContainsString('abc123', $packet->unpacketify());
+        $this->assertStringContainsString($this->token, $packet->unpacketify());
     }
 }

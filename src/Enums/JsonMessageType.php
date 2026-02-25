@@ -36,11 +36,6 @@ enum JsonMessageType
     case InventoryLoaded;
 
     /**
-     * Message related to when a shop is loaded
-     */
-    case ShopLoaded;
-
-    /**
      * Creates an enum case from the raw string identifier found within the JSON message structure.
      *
      * @param string $string The raw message type identifier (e.g., 'equipItem', 'wearItem').
@@ -53,7 +48,6 @@ enum JsonMessageType
             'wearItem' => self::WearItem,
             'moveToArea' => self::JoinedArea,
             'loadInventoryBig' => self::InventoryLoaded,
-            'loadShop' => self::ShopLoaded,
             default => false,
         };
     }
