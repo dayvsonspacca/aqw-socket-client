@@ -4,8 +4,17 @@
     "license": "MIT",
     "scripts": {
         "test": "./vendor/bin/phpunit",
-        "fmt": "./vendor/bin/php-cs-fixer fix --allow-risky=yes",
-        "test:coverage": "./vendor/bin/phpunit --coverage-html coverage/"
+        "test:coverage": "./vendor/bin/phpunit --coverage-html coverage/",
+        "lint": "./vendor/bin/mago lint",
+        "lint:fix": "./vendor/bin/mago lint --fix",
+        "analyze": "./vendor/bin/mago analyze",
+        "fmt": "./vendor/bin/mago fmt",
+        "fmt:check": "./vendor/bin/mago fmt --check",
+        "quality": [
+            "@lint",
+            "@analyze",
+            "@fmt:check"
+        ]
     },
     "autoload": {
         "psr-4": {
@@ -29,7 +38,8 @@
     "require-dev": {
         "symfony/var-dumper": "^7.3",
         "phpunit/phpunit": "^12.3",
-        "friendsofphp/php-cs-fixer": "^3.88"
+        "friendsofphp/php-cs-fixer": "^3.88",
+        "carthage-software/mago": "^1.12.0"
     },
     "minimum-stability": "stable"
 }
