@@ -7,7 +7,6 @@ namespace AqwSocketClient\Tests\Unit;
 use AqwSocketClient\Configuration;
 use AqwSocketClient\Interpreters\AreaInterpreter;
 use AqwSocketClient\Listeners\GlobalPlayerListener;
-use AqwSocketClient\Server;
 use AqwSocketClient\Translators\LoginTranslator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -18,14 +17,13 @@ final class ConfigurationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->configuration = Configuration::make(Server::espada());
+        $this->configuration = Configuration::make();
     }
 
     #[Test]
     public function make_method_creates_configuration(): void
     {
         $this->assertInstanceOf(Configuration::class, $this->configuration);
-        $this->assertInstanceOf(Server::class, $this->configuration->server);
     }
 
     #[Test]
