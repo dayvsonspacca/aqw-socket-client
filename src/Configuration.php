@@ -9,7 +9,7 @@ use AqwSocketClient\Interfaces\ListenerInterface;
 use AqwSocketClient\Interfaces\TranslatorInterface;
 
 /**
- * Encapsulates all necessary configuration for the {@see AqwSocketClient\Client}, including
+ * Encapsulates all necessary configuration for the {@see AqwSocketClient\Interfaces\ClientInterface}, including
  * server settings and the collection of pipeline components.
  */
 final class Configuration

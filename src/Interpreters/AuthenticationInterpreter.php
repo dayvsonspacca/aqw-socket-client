@@ -16,26 +16,15 @@ use AqwSocketClient\Messages\XmlMessage;
 use Override;
 
 /**
- * An interpreter responsible for parsing incoming server messages that are
- * strictly related to the **connection, login, and logout** processes.
+ * Interprets messages related to the game authentication and session status
  *
- * It handles the cross-domain policy message, the login response message,
- * and the logout confirmation message.
+ * ### Events:
+ * - {@see AqwSocketClient\Events\ConnectionEstablishedEvent}
+ * - {@see AqwSocketClient\Events\PlayerLoggedOutEvent}
+ * - {@see AqwSocketClient\Events\LoginRespondedEvent}
  */
 final class AuthenticationInterpreter implements InterpreterInterface
 {
-    /**
-     * Attempts to convert a server message (XML or Delimited) into
-     * relevant events during the authentication lifecycle.
-     *
-     * Currently handles:
-     * - The **cross-domain-policy** XML message, resulting in a {@see ConnectionEstablishedEvent}.
-     * - The **logout** XML message, resulting in a {@see PlayerLoggedOutEvent}.
-     * - The **LoginResponse** delimited message, resulting in a {@see LoginRespondedEvent}.
-     *
-     * @param MessageInterface $message The raw, uninterpreted message object.
-     * @return array The list of {@see \AqwSocketClient\Interfaces\EventInterface} objects generated from the message.
-     */
     #[Override]
     public function interpret(MessageInterface $message): array
     {

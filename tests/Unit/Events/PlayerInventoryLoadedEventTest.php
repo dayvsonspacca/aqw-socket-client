@@ -29,7 +29,7 @@ final class PlayerInventoryLoadedEventTest extends TestCase
         $this->assertSame('Iron Sword', $this->event->items[0]['name']);
         $this->assertSame('Health Potion', $this->event->items[1]['name']);
     }
-    
+
     #[Test]
     public function should_return_null_when_json_message_type_is_not_inventory_loaded(): void
     {

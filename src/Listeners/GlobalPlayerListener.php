@@ -11,10 +11,11 @@ use AqwSocketClient\Interfaces\ListenerInterface;
 use Override;
 
 /**
- * A listener responsible for updating and maintaining global state information
- * related to the player's connection and location, such as the current socket ID and area ID.
+ * Listens to player-related events, useful for maintaining the current state of the player's information.
  *
- * @see AqwSocketClient\Interfaces\ListenerInterface
+ * ### Events:
+ * - {@see AqwSocketClient\Events\LoginRespondedEvent}
+ * - {@see AqwSocketClient\Events\AreaJoinedEvent}
  */
 final class GlobalPlayerListener implements ListenerInterface
 {
@@ -29,16 +30,8 @@ final class GlobalPlayerListener implements ListenerInterface
      */
     public ?int $areaId = null;
 
-    /**
-     * Executes logic based on the received event, specifically updating the
-     * internal $socketId upon a successful {@see AqwSocketClient\Events\LoginResponseEvent}
-     * and the $areaId upon a {@see AqwSocketClient\Events\JoinedAreaEvent}.
-     *
-     * @param EventInterface $event The interpreted event object to be processed.
-     * @return void
-     */
     #[Override]
-    public function listen(EventInterface $event)
+    public function listen(EventInterface $event): void
     {
         if ($event instanceof LoginRespondedEvent) {
             $this->socketId = $event->socketId;

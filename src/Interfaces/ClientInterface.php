@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Interfaces;
 
+/**
+ * Represents the game client to a {@see AqwSocketClient\Server}
+ */
 interface ClientInterface
 {
     public function connect(): void;
