@@ -41,21 +41,27 @@ final class JsonMessage implements MessageInterface
     public static function fromString(string $message): JsonMessage|false
     {
         $json = json_decode($message, true);
-        if (json_last_error() !== JSON_ERROR_NONE || !is_array($json)) {
+
+        if (!is_array($json)) {
             return false;
         }
 
-        if ($json['b']['o'] === null || !is_array($json['b']['o'])) {
+        $b = $json['b'] ?? null;
+        if (!is_array($b)) {
             return false;
         }
 
-        $messageData = $json['b']['o'];
-
-        if ($messageData['cmd'] === null || !is_string($messageData['cmd'])) {
+        $messageData = $b['o'] ?? null;
+        if (!is_array($messageData)) {
             return false;
         }
 
-        $type = JsonMessageType::fromString($messageData['cmd']);
+        $cmd = $messageData['cmd'] ?? null;
+        if (!is_string($cmd)) {
+            return false;
+        }
+
+        $type = JsonMessageType::fromString($cmd);
         if (!$type) {
             return false;
         }
