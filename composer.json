@@ -13,7 +13,12 @@
         "quality": [
             "@lint",
             "@analyze",
-            "@fmt:check"
+            "@fmt:check",
+            "@test"
+        ],
+        "quality:fix": [
+            "@lint:fix",
+            "@fmt"
         ]
     },
     "autoload": {
