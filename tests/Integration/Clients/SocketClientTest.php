@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace AqwSocketClient\Tests\Integration\Clients;
 
 use AqwSocketClient\Clients\SocketClient;
+use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Interfaces\ClientInterface;
+use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\XmlMessage;
 use AqwSocketClient\Server;
 use PHPUnit\Framework\Attributes\Test;
@@ -87,10 +89,27 @@ final class SocketClientTest extends TestCase
     {
         $this->client->connect();
         $messages = $this->client->receive();
-        
+
         /** @var XmlMessage $message */
         $message = $messages[0];
-        
+
         $this->assertInstanceOf(XmlMessage::class, $message);
+    }
+
+    #[Test]
+    public function it_can_send_packets_from_server(): void
+    {
+        $this->client->connect();
+        $this->client->receive();
+        $this->client->send(new LoginCommand('PlayerOne', md5(random_bytes(4)))->pack());
+        $messages = $this->client->receive();
+
+        /** @var DelimitedMessage $message */
+        $message = $messages[0];
+
+        $this->assertInstanceOf(DelimitedMessage::class, $message);
+        $this->assertSame($message->data[2], 'Character data could not be retrieved. Please Login and try again.');
+
+        $this->client->disconnect();
     }
 }

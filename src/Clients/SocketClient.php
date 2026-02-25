@@ -9,6 +9,7 @@ use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Messages\XmlMessage;
+use AqwSocketClient\Packet;
 use AqwSocketClient\Server;
 use Override;
 use RuntimeException;
@@ -100,6 +101,26 @@ final class SocketClient implements ClientInterface
             JsonMessage::fromString($buffer),
             XmlMessage::fromString($buffer),
         ]));
+    }
+
+    /**
+     * @throws RuntimeException When not connected or fail to send data
+     */
+    #[Override]
+    public function send(Packet $packet): void
+    {
+        $this->ensureConnected();
+
+        $length = strlen($packet->unpacketify());
+        $sent = socket_send($this->socket, $packet->unpacketify(), $length, 0);
+
+        if ($sent === false) {
+            throw new RuntimeException('Failed to send data: ' . socket_strerror(socket_last_error($this->socket)));
+        }
+
+        if ($sent < $length) {
+            throw new RuntimeException("Incomplete send: sent {$sent} of {$length} bytes.");
+        }
     }
 
     #[Override]

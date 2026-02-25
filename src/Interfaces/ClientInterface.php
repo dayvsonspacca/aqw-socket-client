@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Interfaces;
 
+use AqwSocketClient\Packet;
+
 /**
  * Represents the game client to a {@see AqwSocketClient\Server}
  */
@@ -21,4 +23,6 @@ interface ClientInterface
      * @return MessageInterface[]
      * */
     public function receive(): array;
+
+    public function send(Packet $packet): void;
 }
