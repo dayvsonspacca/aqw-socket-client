@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace AqwSocketClient\Tests\Integration\Clients;
 
 use AqwSocketClient\Clients\SocketClient;
-use AqwSocketClient\Configuration;
+use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Interfaces\ClientInterface;
+use AqwSocketClient\Messages\DelimitedMessage;
+use AqwSocketClient\Messages\XmlMessage;
 use AqwSocketClient\Server;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -15,19 +17,16 @@ use RuntimeException;
 final class SocketClientTest extends TestCase
 {
     private ClientInterface $client;
-    private Configuration $configuration;
 
     protected function setUp(): void
     {
-        $this->configuration = Configuration::make(Server::espada());
-        $this->client = new SocketClient($this->configuration);
+        $this->client = new SocketClient(Server::espada());
     }
 
     #[Test]
     public function it_creates_client_with_config(): void
     {
         $this->assertInstanceOf(SocketClient::class, $this->client);
-        $this->assertSame($this->client->configuration, $this->configuration);
     }
 
     #[Test]
@@ -81,7 +80,36 @@ final class SocketClientTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageMatches('/^Failed to connect:/');
 
-        $client = new SocketClient(Configuration::make(new Server('Fake Server', '127.0.0.1', 0)));
+        $client = new SocketClient(new Server('Fake Server', '127.0.0.1', 0));
         $client->connect();
+    }
+
+    #[Test]
+    public function it_can_receive_messages_from_server(): void
+    {
+        $this->client->connect();
+        $messages = $this->client->receive();
+
+        /** @var XmlMessage $message */
+        $message = $messages[0];
+
+        $this->assertInstanceOf(XmlMessage::class, $message);
+    }
+
+    #[Test]
+    public function it_can_send_packets_from_server(): void
+    {
+        $this->client->connect();
+        $this->client->receive();
+        $this->client->send(new LoginCommand('PlayerOne', md5(random_bytes(4)))->pack());
+        $messages = $this->client->receive();
+
+        /** @var DelimitedMessage $message */
+        $message = $messages[0];
+
+        $this->assertInstanceOf(DelimitedMessage::class, $message);
+        $this->assertSame($message->data[2], 'Character data could not be retrieved. Please Login and try again.');
+
+        $this->client->disconnect();
     }
 }

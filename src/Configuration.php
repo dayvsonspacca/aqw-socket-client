@@ -29,13 +29,9 @@ final class Configuration
      */
     public array $listeners = [];
 
-    private function __construct(
-        public readonly Server $server,
-    ) {}
-
-    public static function make(Server $server): self
+    public static function make(): self
     {
-        return new self($server);
+        return new self();
     }
 
     /**
