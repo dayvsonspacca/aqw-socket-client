@@ -14,4 +14,11 @@ interface ClientInterface
     public function disconnect(): void;
 
     public function isConnected(): bool;
+
+    /**
+     * Returns the next messages from server
+     *
+     * @return MessageInterface[]
+     * */
+    public function receive(): array;
 }

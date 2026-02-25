@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace AqwSocketClient\Clients;
 
 use AqwSocketClient\Interfaces\ClientInterface;
+use AqwSocketClient\Interfaces\MessageInterface;
+use AqwSocketClient\Messages\DelimitedMessage;
+use AqwSocketClient\Messages\JsonMessage;
+use AqwSocketClient\Messages\XmlMessage;
 use AqwSocketClient\Server;
 use Override;
 use RuntimeException;
@@ -59,10 +63,56 @@ final class SocketClient implements ClientInterface
         $this->connected = false;
     }
 
+    /**
+     * @throws RuntimeException When fail to receive data
+     * @return MessageInterface[]
+     */
+    #[Override]
+    public function receive(): array
+    {
+        $this->ensureConnected();
+
+        $buffer = '';
+
+        while (true) {
+            $chunk = '';
+            $bytes = socket_recv($this->socket, $chunk, 1, 0);
+
+            if ($bytes === false) {
+                throw new RuntimeException(
+                    'Failed to receive data: ' . socket_strerror(socket_last_error($this->socket)),
+                );
+            }
+
+            if ($bytes === 0) {
+                $this->disconnect();
+            }
+
+            if ($chunk === "\0") {
+                break;
+            }
+
+            $buffer .= $chunk;
+        }
+
+        return array_values(array_filter([
+            DelimitedMessage::fromString($buffer),
+            JsonMessage::fromString($buffer),
+            XmlMessage::fromString($buffer),
+        ]));
+    }
+
     #[Override]
     public function isConnected(): bool
     {
         return $this->connected;
+    }
+
+    private function ensureConnected(): void
+    {
+        if (!$this->isConnected()) {
+            throw new RuntimeException('Not connected.');
+        }
     }
 
     public function __destruct()

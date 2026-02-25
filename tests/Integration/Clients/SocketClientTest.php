@@ -6,6 +6,7 @@ namespace AqwSocketClient\Tests\Integration\Clients;
 
 use AqwSocketClient\Clients\SocketClient;
 use AqwSocketClient\Interfaces\ClientInterface;
+use AqwSocketClient\Messages\XmlMessage;
 use AqwSocketClient\Server;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -79,5 +80,17 @@ final class SocketClientTest extends TestCase
 
         $client = new SocketClient(new Server('Fake Server', '127.0.0.1', 0));
         $client->connect();
+    }
+
+    #[Test]
+    public function it_can_receive_messages_from_server(): void
+    {
+        $this->client->connect();
+        $messages = $this->client->receive();
+        
+        /** @var XmlMessage $message */
+        $message = $messages[0];
+        
+        $this->assertInstanceOf(XmlMessage::class, $message);
     }
 }
