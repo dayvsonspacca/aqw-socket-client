@@ -7,58 +7,64 @@ namespace AqwSocketClient;
 use AqwSocketClient\Interfaces\InterpreterInterface;
 use AqwSocketClient\Interfaces\ListenerInterface;
 use AqwSocketClient\Interfaces\TranslatorInterface;
-use AqwSocketClient\Interpreters\AuthenticationInterpreter;
-use AqwSocketClient\Translators\LoginTranslator;
 
 /**
  * Encapsulates all necessary configuration for the {@see AqwSocketClient\Client}, including
- * user credentials and the collection of pipeline components.
- *
- * This class ensures essential components, like the {@see AqwSocketClient\Interpreters\LoginInterpreter} and
- * {@see LoginTranslator}, are registered by default.
+ * server settings and the collection of pipeline components.
  */
 final class Configuration
 {
     /**
-     * @var InterpreterInterface[] A collection of message interpreters responsible for
-     * converting raw messages into {@see AqwSocketClient\Interfaces\EventInterface} objects.
+     * @var InterpreterInterface[]
      */
-    public readonly array $interpreters;
+    public array $interpreters = [];
 
     /**
-     * @var TranslatorInterface[] A collection of event translators responsible for
-     * converting {@see EventInterface} objects into {@see AqwSocketClient\Interfaces\CommandInterface} objects.
+     * @var TranslatorInterface[]
      */
-    public readonly array $translators;
+    public array $translators = [];
 
     /**
-     * @var ListenerInterface[] A collection of listeners that execute application logic
+     * @var ListenerInterface[]
+     */
+    public array $listeners = [];
+
+    private function __construct(
+        public readonly Server $server,
+    ) {}
+
+    public static function make(Server $server): self
+    {
+        return new self($server);
+    }
+
+    /**
+     * Registers a message interpreter responsible for converting raw messages
+     * into {@see AqwSocketClient\Interfaces\EventInterface} objects.
+     */
+    public function addInterpreter(InterpreterInterface $interpreter): self
+    {
+        $this->interpreters[] = $interpreter;
+        return $this;
+    }
+
+    /**
+     * Registers an event translator responsible for converting
+     * {@see AqwSocketClient\Interfaces\EventInterface} objects into {@see AqwSocketClient\Interfaces\CommandInterface} objects.
+     */
+    public function addTranslator(TranslatorInterface $translator): self
+    {
+        $this->translators[] = $translator;
+        return $this;
+    }
+
+    /**
+     * Registers a listener that executes application logic
      * based on received {@see AqwSocketClient\Interfaces\EventInterface} objects.
      */
-    public readonly array $listeners;
-
-    /**
-     * @param string $username The client's username for authentication.
-     * @param string $password The client's password (often not used directly for socket login, but stored).
-     * @param string $token The client's authentication token (or ticket) used for socket login.
-     * @param array $interpreters Additional custom interpreters to be registered.
-     * @param array $translators Additional custom translators to be registered.
-     * @param array $listeners Custom listeners to be registered.
-     * @param bool $logMessages If **true**, all raw incoming server messages will be logged to the console.
-     */
-    public function __construct(
-        public readonly string $username,
-        #[\SensitiveParameter]
-        public readonly string $password,
-        #[\SensitiveParameter]
-        public readonly string $token,
-        array $interpreters = [],
-        array $translators = [],
-        array $listeners = [],
-        public readonly bool $logMessages = false,
-    ) {
-        $this->interpreters = array_merge([new AuthenticationInterpreter()], $interpreters);
-        $this->translators = array_merge([new LoginTranslator($username, $token)], $translators);
-        $this->listeners = $listeners;
+    public function addListener(ListenerInterface $listener): self
+    {
+        $this->listeners[] = $listener;
+        return $this;
     }
 }
