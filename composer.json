@@ -3,8 +3,13 @@
     "type": "library",
     "license": "MIT",
     "scripts": {
-        "test": "./vendor/bin/phpunit",
-        "test:coverage": "./vendor/bin/phpunit --coverage-html coverage/",
+        "test:coverage": "./vendor/bin/phpunit --testdox --coverage-html coverage/",
+        "test:unit": "./vendor/bin/phpunit --testdox --testsuite Unit",
+        "test:integration": "./vendor/bin/phpunit --testdox --testsuite Integration",
+        "test": [
+            "@test:unit",
+            "@test:integration"
+        ],
         "lint": "./vendor/bin/mago lint",
         "lint:fix": "./vendor/bin/mago lint --fix",
         "analyze": "./vendor/bin/mago analyze",
@@ -37,9 +42,6 @@
             "email": "spacca.dayvson@gmail.com"
         }
     ],
-    "require": {
-        "react/socket": "^1.16"
-    },
     "require-dev": {
         "symfony/var-dumper": "^7.3",
         "phpunit/phpunit": "^12.3",
