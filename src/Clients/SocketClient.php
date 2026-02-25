@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Clients;
 
-use AqwSocketClient\Configuration;
 use AqwSocketClient\Interfaces\ClientInterface;
+use AqwSocketClient\Server;
 use Override;
 use RuntimeException;
 use Socket;
@@ -19,7 +19,7 @@ final class SocketClient implements ClientInterface
     private bool $connected = false;
 
     public function __construct(
-        public readonly Configuration $configuration,
+        public readonly Server $server,
     ) {
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         if ($socket === false) {
@@ -36,10 +36,8 @@ final class SocketClient implements ClientInterface
             throw new RuntimeException('Already connected.');
         }
 
-        $server = $this->configuration->server;
-
         // @mago-expect lint:no-error-control-operator
-        if (!@socket_connect($this->socket, $server->hostname, $server->port)) {
+        if (!@socket_connect($this->socket, $this->server->hostname, $this->server->port)) {
             $error = socket_strerror(socket_last_error($this->socket));
             socket_close($this->socket);
 
