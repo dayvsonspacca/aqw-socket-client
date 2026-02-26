@@ -6,6 +6,7 @@ namespace AqwSocketClient\Tests\Unit\Commands;
 
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Messages\JsonMessage;
+use AqwSocketClient\Objects\AreaIdentifier;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +19,7 @@ final class AreaJoinedEventTest extends TestCase
         $this->event = new AreaJoinedEvent(
             'battleon',
             1,
-            42,
+            new AreaIdentifier(42),
             [['socket_id' => 1, 'name' => 'PlayerOne'], ['socket_id' => 2, 'name' => 'PlayerTwo']],
             [[
                 'name' => 'Goblin',
@@ -36,7 +37,7 @@ final class AreaJoinedEventTest extends TestCase
         $this->assertInstanceOf(AreaJoinedEvent::class, $this->event);
         $this->assertSame('battleon', $this->event->mapName);
         $this->assertSame(1, $this->event->mapNumber);
-        $this->assertSame(42, $this->event->areaId);
+        $this->assertSame(42, $this->event->areaId->value);
         $this->assertSame(
             [['socket_id' => 1, 'name' => 'PlayerOne'], ['socket_id' => 2, 'name' => 'PlayerTwo']],
             $this->event->players,

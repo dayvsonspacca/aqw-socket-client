@@ -8,6 +8,7 @@ use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Interfaces\InterpreterInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
+use InvalidArgumentException;
 use Override;
 
 /**
@@ -18,6 +19,9 @@ use Override;
  */
 final class AreaInterpreter implements InterpreterInterface
 {
+    /**
+     * @throws InvalidArgumentException When interprete a {@see AqwSocketClient\Events\AreaJoinedEvent} and area id is negative or zero.
+     */
     #[Override]
     public function interpret(MessageInterface $message): array
     {

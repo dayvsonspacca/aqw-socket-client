@@ -36,7 +36,7 @@ final class AreaInterpreterTest extends TestCase
         $this->assertInstanceOf(AreaJoinedEvent::class, $event);
         $this->assertSame($event->mapName, 'battleon');
         $this->assertSame($event->mapNumber, 1);
-        $this->assertSame($event->areaId, 3);
+        $this->assertSame($event->areaId->value, 3);
         $this->assertCount(9, $event->players);
         $this->assertIsArray($event->players[0]);
     }

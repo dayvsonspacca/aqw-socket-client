@@ -7,6 +7,8 @@ namespace AqwSocketClient\Events;
 use AqwSocketClient\Enums\JsonMessageType;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Messages\JsonMessage;
+use AqwSocketClient\Objects\AreaIdentifier;
+use InvalidArgumentException;
 
 /**
  * Represents an event triggered after the client successfully joined a specific
@@ -20,18 +22,21 @@ final class AreaJoinedEvent implements EventInterface
     /**
      * @param string $mapName The name of the map or area that was joined (e.g., 'battleon').
      * @param int $mapNumber The specific map instance number that was assigned (e.g., 1, 2, 3...).
-     * @param int $areaId The ID of the screen or 'area' within the map that was entered.
+     * @param AreaIdentifier $areaId The ID of the screen or 'area' within the map that was entered.
      * @param array<int, array{socket_id: int, name: string}> $players A list of usernames of the players detected in the area at the time of joining.
      * @param array<int, array{name: string, asset_name: string|null, level: int, race: string, hp: int}> $monsters A list of monsters present in the area at the time of joining (if available).
      */
     public function __construct(
         public readonly string $mapName,
         public readonly int $mapNumber,
-        public readonly int $areaId,
+        public readonly AreaIdentifier $areaId,
         public readonly array $players,
         public readonly array $monsters,
     ) {}
 
+    /**
+     * @throws InvalidArgumentException When area id negative or zero.
+     */
     public static function fromJsonMessage(JsonMessage $message): ?self
     {
         if ($message->type !== JsonMessageType::JoinedArea) {
@@ -94,7 +99,7 @@ final class AreaJoinedEvent implements EventInterface
         return new self(
             $data['strMapName'],
             (int) explode('-', $data['areaName'])[1],
-            (int) $data['areaId'],
+            new AreaIdentifier((int) $data['areaId']),
             $players,
             $monsters,
         );

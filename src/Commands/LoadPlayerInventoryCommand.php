@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Commands;
 
 use AqwSocketClient\Interfaces\CommandInterface;
+use AqwSocketClient\Objects\AreaIdentifier;
 use AqwSocketClient\Objects\SocketIdentifier;
 use AqwSocketClient\Packet;
 use Override;
@@ -18,11 +19,11 @@ use Override;
 final class LoadPlayerInventoryCommand implements CommandInterface
 {
     /**
-     * @param int $areaId The ID of the current screen or area the player is in.
+     * @param AreaIdentifier $areaId The ID of the current screen or area the player is in.
      * @param SocketIdentifier $socketId The temporary socket ID for the current client connection.
      */
     public function __construct(
-        public readonly int $areaId,
+        public readonly AreaIdentifier $areaId,
         public readonly SocketIdentifier $socketId,
     ) {}
 
@@ -35,6 +36,6 @@ final class LoadPlayerInventoryCommand implements CommandInterface
     #[Override]
     public function pack(): Packet
     {
-        return Packet::packetify("%xt%zm%retrieveInventory%{$this->areaId}%{$this->socketId->value}%");
+        return Packet::packetify("%xt%zm%retrieveInventory%{$this->areaId->value}%{$this->socketId->value}%");
     }
 }
