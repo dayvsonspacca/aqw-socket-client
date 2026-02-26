@@ -35,6 +35,10 @@ final class XmlMessage implements MessageInterface
     {
         $dom = new DOMDocument();
 
+        if (empty($message)) {
+            return false;
+        }
+
         // @mago-expect lint:no-error-control-operator
         $success = @$dom->loadXML($message);
         if (!$success) {
