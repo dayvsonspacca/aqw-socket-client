@@ -8,7 +8,6 @@ use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\InterpreterInterface;
 use AqwSocketClient\Interfaces\ScriptInterface;
-use AqwSocketClient\Interfaces\TranslatorInterface;
 use Override;
 
 /**
@@ -25,13 +24,6 @@ abstract class AbstractScript implements ScriptInterface
     /** @return InterpreterInterface[] */
     #[Override]
     public function interpreters(): array
-    {
-        return [];
-    }
-
-    /** @return TranslatorInterface[] */
-    #[Override]
-    public function translators(): array
     {
         return [];
     }

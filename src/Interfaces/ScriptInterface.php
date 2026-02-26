@@ -21,13 +21,6 @@ interface ScriptInterface
     public function interpreters(): array;
 
     /**
-     * The translators this script uses to respond to events automatically.
-     *
-     * @return TranslatorInterface[]
-     */
-    public function translators(): array;
-
-    /**
      * Reacts to an incoming event, returning any commands to be sent.
      *
      * @return CommandInterface[]

@@ -10,7 +10,5 @@ namespace AqwSocketClient\Interfaces;
  * This interface serves as a **type-hinting** marker. Implementations are
  * expected to be either:
  *
- * 1. Consumable by the {@see AqwSocketClient\Interfaces\TranslatorInterface} to generate a
- * {@see CommandInterface} if an action/response is required.
  */
 interface EventInterface {}

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Scripts;
 
+use AqwSocketClient\Commands\JoinInitialAreaCommand;
 use AqwSocketClient\Commands\LoadPlayerInventoryCommand;
+use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Events\AreaJoinedEvent;
+use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interpreters\AreaInterpreter;
@@ -13,7 +16,6 @@ use AqwSocketClient\Interpreters\AuthenticationInterpreter;
 use AqwSocketClient\Interpreters\PlayerInterpreter;
 use AqwSocketClient\Objects\AreaIdentifier;
 use AqwSocketClient\Objects\SocketIdentifier;
-use AqwSocketClient\Translators\AuthenticationTranslator;
 use Override;
 
 final class LoginScript extends AbstractScript
@@ -38,16 +40,15 @@ final class LoginScript extends AbstractScript
     }
 
     #[Override]
-    public function translators(): array
-    {
-        return [new AuthenticationTranslator($this->username, $this->token)];
-    }
-
-    #[Override]
     public function handle(EventInterface $event): array
     {
+        if ($event instanceof ConnectionEstablishedEvent) {
+            return [new LoginCommand($this->username, $this->token)];
+        }
+
         if ($event instanceof LoginRespondedEvent && $event->success) {
             $this->socketId = $event->socketId;
+            return [new JoinInitialAreaCommand()];
         }
 
         if ($event instanceof AreaJoinedEvent && $event->mapName === 'battleon') {

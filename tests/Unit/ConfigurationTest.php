@@ -6,7 +6,6 @@ namespace AqwSocketClient\Tests\Unit;
 
 use AqwSocketClient\Configuration;
 use AqwSocketClient\Interpreters\AreaInterpreter;
-use AqwSocketClient\Translators\AuthenticationTranslator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -35,17 +34,5 @@ final class ConfigurationTest extends TestCase
 
         $this->assertCount(1, $this->configuration->interpreters);
         $this->assertContains($interpreter, $this->configuration->interpreters);
-    }
-
-    #[Test]
-    public function it_can_add_a_new_translator(): void
-    {
-        $this->assertEmpty($this->configuration->translators);
-
-        $translator = new AuthenticationTranslator('Hilise', 'Not a token');
-        $this->configuration->addTranslator($translator);
-
-        $this->assertCount(1, $this->configuration->translators);
-        $this->assertContains($translator, $this->configuration->translators);
     }
 }

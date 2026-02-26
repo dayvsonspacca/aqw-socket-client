@@ -141,17 +141,6 @@ final class SocketClient implements ClientInterface
                 foreach ($events as $event) {
                     $commands = $script->handle($event);
 
-                    if ($script->isDone()) {
-                        continue;
-                    }
-
-                    foreach ($script->translators() as $translator) {
-                        $command = $translator->translate($event);
-                        if ($command !== null) {
-                            $commands[] = $command;
-                        }
-                    }
-
                     foreach ($commands as $command) {
                         $this->send($command->pack());
                     }
