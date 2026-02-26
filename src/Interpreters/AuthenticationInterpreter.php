@@ -28,7 +28,7 @@ use Override;
 final class AuthenticationInterpreter implements InterpreterInterface
 {
     /**
-     * @throws InvalidArgumentException When socket id in message is zero or negative
+     * @throws InvalidArgumentException When player logins fails and try to build a valid {@see AqwSocketClient\Objects\SocketIdentifier} instance for {@see AqwSocketClient\Events\LoginRespondedEvent}
      */
     #[Override]
     public function interpret(MessageInterface $message): array
