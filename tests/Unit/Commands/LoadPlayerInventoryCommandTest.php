@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Tests\Unit\Commands;
 
 use AqwSocketClient\Commands\LoadPlayerInventoryCommand;
+use AqwSocketClient\Objects\SocketIdentifier;
 use AqwSocketClient\Packet;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +16,7 @@ final class LoadPlayerInventoryCommandTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->command = new LoadPlayerInventoryCommand(areaId: 42, socketId: 7);
+        $this->command = new LoadPlayerInventoryCommand(areaId: 42, socketId: new SocketIdentifier(7));
     }
 
     #[Test]
@@ -23,7 +24,7 @@ final class LoadPlayerInventoryCommandTest extends TestCase
     {
         $this->assertInstanceOf(LoadPlayerInventoryCommand::class, $this->command);
         $this->assertSame(42, $this->command->areaId);
-        $this->assertSame(7, $this->command->socketId);
+        $this->assertSame(7, $this->command->socketId->value);
     }
 
     #[Test]

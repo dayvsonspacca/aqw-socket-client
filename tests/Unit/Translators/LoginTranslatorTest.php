@@ -9,6 +9,7 @@ use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Objects\SocketIdentifier;
 use AqwSocketClient\Translators\LoginTranslator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -47,7 +48,7 @@ final class LoginTranslatorTest extends TestCase
     #[Test]
     public function should_translate_login_responded_to_first_login_command(): void
     {
-        $command = $this->translator->translate(new LoginRespondedEvent(true, 2));
+        $command = $this->translator->translate(new LoginRespondedEvent(true, new SocketIdentifier(2)));
 
         $this->assertInstanceOf(JoinInitialAreaCommand::class, $command);
     }
