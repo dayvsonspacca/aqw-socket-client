@@ -13,9 +13,9 @@ use RuntimeException;
  * Usage:
  *   $socket = new FakeSocket();
  *   $socket->queueResponse('<msg t="sys">...</msg>');
- *   $socket->failOnConnect();                           
- *   $socket->failOnRecv();                              
- *   $socket->failOnSend();                              
+ *   $socket->failOnConnect();
+ *   $socket->failOnRecv();
+ *   $socket->failOnSend();
  */
 final class FakeSocket implements SocketInterface
 {
@@ -28,8 +28,8 @@ final class FakeSocket implements SocketInterface
     private array $sentData = [];
 
     private bool $shouldFailOnConnect = false;
-    private bool $shouldFailOnRead    = false;
-    private bool $shouldFailOnSend    = false;
+    private bool $shouldFailOnRead = false;
+    private bool $shouldFailOnSend = false;
 
     public function queueResponse(string $message): self
     {

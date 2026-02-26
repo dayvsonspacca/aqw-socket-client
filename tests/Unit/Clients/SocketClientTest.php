@@ -118,7 +118,7 @@ final class SocketClientTest extends TestCase
         $this->client->connect();
 
         $this->assertTrue($this->client->isConnected());
-        
+
         $this->client->receive();
 
         $this->assertFalse($this->client->isConnected());
@@ -150,7 +150,7 @@ final class SocketClientTest extends TestCase
     {
         $this->client->connect();
 
-        $packet = (new LoginCommand('PlayerOne', md5('test')))->pack();
+        $packet = new LoginCommand('PlayerOne', md5('test'))->pack();
         $this->client->send($packet);
 
         $this->assertNotEmpty($this->socket->sentData());
@@ -166,7 +166,7 @@ final class SocketClientTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageMatches('/^Failed to send data:/');
 
-        $packet = (new LoginCommand('PlayerOne', md5('test')))->pack();
+        $packet = new LoginCommand('PlayerOne', md5('test'))->pack();
         $this->client->send($packet);
     }
 
@@ -176,7 +176,7 @@ final class SocketClientTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Not connected.');
 
-        $packet = (new LoginCommand('PlayerOne', md5('test')))->pack();
+        $packet = new LoginCommand('PlayerOne', md5('test'))->pack();
         $this->client->send($packet);
     }
 
@@ -184,14 +184,16 @@ final class SocketClientTest extends TestCase
     public function it_can_receive_and_send_then_receive_response(): void
     {
         $this->socket->queueResponse('<msg t="sys"><body action="onConnect" r="0" /></msg>');
-        $this->socket->queueResponse('%xt%loginResponse%-1%0%Character data could not be retrieved. Please Login and try again.%');
+        $this->socket->queueResponse(
+            '%xt%loginResponse%-1%0%Character data could not be retrieved. Please Login and try again.%',
+        );
 
         $this->client->connect();
 
         $handshake = $this->client->receive();
         $this->assertInstanceOf(XmlMessage::class, $handshake[0]);
 
-        $loginPacket = (new LoginCommand('PlayerOne', md5(random_bytes(4))))->pack();
+        $loginPacket = new LoginCommand('PlayerOne', md5(random_bytes(4)))->pack();
         $this->client->send($loginPacket);
 
         $messages = $this->client->receive();
@@ -200,10 +202,7 @@ final class SocketClientTest extends TestCase
         $message = $messages[0];
 
         $this->assertInstanceOf(DelimitedMessage::class, $message);
-        $this->assertSame(
-            'Character data could not be retrieved. Please Login and try again.',
-            $message->data[1],
-        );
+        $this->assertSame('Character data could not be retrieved. Please Login and try again.', $message->data[1]);
 
         $this->client->disconnect();
         $this->assertFalse($this->client->isConnected());
