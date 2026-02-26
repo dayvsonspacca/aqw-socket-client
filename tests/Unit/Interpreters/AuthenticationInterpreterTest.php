@@ -62,7 +62,7 @@ final class AuthenticationInterpreterTest extends TestCase
         $this->assertCount(1, $events);
         $this->assertInstanceOf(LoginRespondedEvent::class, $events[0]);
         $this->assertTrue($events[0]->success);
-        $this->assertSame(43_472, $events[0]->socketId);
+        $this->assertSame(43_472, $events[0]->socketId->value);
     }
 
     #[Test]

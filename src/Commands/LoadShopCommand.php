@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Commands;
 
 use AqwSocketClient\Interfaces\CommandInterface;
+use AqwSocketClient\Objects\AreaIdentifier;
 use AqwSocketClient\Packet;
 use Override;
 
@@ -18,17 +19,17 @@ use Override;
 final class LoadShopCommand implements CommandInterface
 {
     /**
-     * @param int $areaId The ID of the current screen/area where the player is located.
+     * @param AreaIdentifier $areaId The ID of the current screen/area where the player is located.
      * @param int $shopId The unique identifier of the shop being requested.
      */
     public function __construct(
-        public readonly int $areaId,
+        public readonly AreaIdentifier $areaId,
         public readonly int $shopId,
     ) {}
 
     #[Override]
     public function pack(): Packet
     {
-        return Packet::packetify("%xt%zm%loadShop%{$this->areaId}%{$this->shopId}%");
+        return Packet::packetify("%xt%zm%loadShop%{$this->areaId->value}%{$this->shopId}%");
     }
 }

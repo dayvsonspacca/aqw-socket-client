@@ -13,6 +13,8 @@ use AqwSocketClient\Interfaces\InterpreterInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\XmlMessage;
+use AqwSocketClient\Objects\SocketIdentifier;
+use InvalidArgumentException;
 use Override;
 
 /**
@@ -25,6 +27,9 @@ use Override;
  */
 final class AuthenticationInterpreter implements InterpreterInterface
 {
+    /**
+     * @throws InvalidArgumentException When player logins fails and try to build a valid {@see AqwSocketClient\Objects\SocketIdentifier} instance for {@see AqwSocketClient\Events\LoginRespondedEvent}
+     */
     #[Override]
     public function interpret(MessageInterface $message): array
     {
@@ -52,14 +57,20 @@ final class AuthenticationInterpreter implements InterpreterInterface
         return $events;
     }
 
-    /** @return EventInterface[] */
+    /**
+     * @throws InvalidArgumentException
+     * @return EventInterface[]
+     */
     // @mago-ignore analyzer:possibly-undefined-array-index
     private function interpretDelimited(DelimitedMessage $message): array
     {
         $events = [];
 
         if ($message->type === DelimitedMessageType::LoginResponse) {
-            $events[] = new LoginRespondedEvent((bool) $message->data[0], (int) $message->data[1]);
+            $events[] = new LoginRespondedEvent(
+                (bool) $message->data[0],
+                new SocketIdentifier((int) $message->data[1]),
+            );
         }
 
         return $events;

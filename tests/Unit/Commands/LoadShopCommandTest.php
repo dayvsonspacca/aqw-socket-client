@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Tests\Unit\Commands;
 
 use AqwSocketClient\Commands\LoadShopCommand;
+use AqwSocketClient\Objects\AreaIdentifier;
 use AqwSocketClient\Packet;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -15,14 +16,14 @@ final class LoadShopCommandTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->command = new LoadShopCommand(areaId: 42, shopId: 15);
+        $this->command = new LoadShopCommand(areaId: new AreaIdentifier(42), shopId: 15);
     }
 
     #[Test]
     public function should_create_load_shop_command(): void
     {
         $this->assertInstanceOf(LoadShopCommand::class, $this->command);
-        $this->assertSame(42, $this->command->areaId);
+        $this->assertSame(42, $this->command->areaId->value);
         $this->assertSame(15, $this->command->shopId);
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Events;
 
 use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Objects\SocketIdentifier;
 
 /**
  * Represents the **response** received from the server after a client
@@ -15,12 +16,11 @@ use AqwSocketClient\Interfaces\EventInterface;
 final class LoginRespondedEvent implements EventInterface
 {
     /**
-     * @param bool $success Indicates whether the login attempt was successful (**true**)
-     * or failed (**false**).
-     * @param ?int $socketId The **socket ID** for the current connection. This is a **temporary** identifier assigned by the server, distinct from the permanent user account ID. It changes with every new connection.
+     * @param bool $success Indicates whether the login attempt was successful (**true**) or failed (**false**).
+     * @param SocketIdentifier $socketId The **socket ID** for the current connection. This is a **temporary** identifier assigned by the server, distinct from the permanent user account ID. It changes with every new connection.
      */
     public function __construct(
         public readonly bool $success,
-        public readonly ?int $socketId,
+        public readonly SocketIdentifier $socketId,
     ) {}
 }
