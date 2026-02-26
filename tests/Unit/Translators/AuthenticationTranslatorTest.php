@@ -10,23 +10,23 @@ use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Objects\SocketIdentifier;
-use AqwSocketClient\Translators\LoginTranslator;
+use AqwSocketClient\Translators\AuthenticationTranslator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class LoginTranslatorTest extends TestCase
+final class AuthenticationTranslatorTest extends TestCase
 {
-    private LoginTranslator $translator;
+    private AuthenticationTranslator $translator;
 
     protected function setUp(): void
     {
-        $this->translator = new LoginTranslator('Artirx', 'thisisnotartixpass');
+        $this->translator = new AuthenticationTranslator('Artirx', 'thisisnotartixpass');
     }
 
     #[Test]
     public function should_create_login_translator(): void
     {
-        $this->assertInstanceOf(LoginTranslator::class, $this->translator);
+        $this->assertInstanceOf(AuthenticationTranslator::class, $this->translator);
     }
 
     #[Test]

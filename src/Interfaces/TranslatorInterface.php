@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace AqwSocketClient\Interfaces;
 
 /**
- * Interface responsible for converting an incoming {@see AqwSocketClient\Interfaces\EventInterface}
- * (a server message that has been interpreted) into an outgoing
- * {@see AqwSocketClient\Interfaces\CommandInterface} that can be sent back to the server.
+ * Converts an incoming {@see EventInterface} into an outgoing {@see CommandInterface}.
  *
- * This process allows the application to **respond** to server events.
+ * Translators are designed for **automatic, protocol-level reactions** to server events —
+ * responses that should always happen regardless of script context, such as replying
+ * to a connection handshake or acknowledging a login response.
+ *
+ * For logic that depends on script state or specific conditions,
+ * use {@see AqwSocketClient\Interfaces\ScriptInterface::handle()} instead.
  */
 interface TranslatorInterface
 {

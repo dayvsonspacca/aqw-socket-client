@@ -14,16 +14,17 @@ use AqwSocketClient\Interfaces\TranslatorInterface;
 use Override;
 
 /**
- * Translator responsible for converting events related to the **initial connection and login**
- * phase into executable commands.
+ * Automatically responds to protocol-level authentication events.
  *
- * It holds the client's credentials to generate the necessary login commands.
+ * Handles the mandatory handshake sequence that must always occur
+ * on every connection, regardless of script context:
+ * sending credentials on connection and joining the initial area on successful login.
  */
-class LoginTranslator implements TranslatorInterface
+class AuthenticationTranslator implements TranslatorInterface
 {
     /**
-     * @param string $username The username used for the login process.
-     * @param string $token The authentication token (password/ticket) used for login.
+     * @param string $username The username sent to the server during authentication.
+     * @param string $token The authentication token (password/ticket) sent during authentication.
      */
     public function __construct(
         private readonly string $username,
@@ -32,14 +33,12 @@ class LoginTranslator implements TranslatorInterface
     ) {}
 
     /**
-     * Translates specific login-related events into commands.
+     * Reacts automatically to authentication events.
      *
-     * - **ConnectionEstablishedEvent**: Generates a {@see LoginCommand} using the stored credentials.
-     * - **LoginRespondedEvent**: Generates a {@see JoinInitialAreaCommand} only if the login was successful.
+     * - {@see AqwSocketClient\Events\ConnectionEstablishedEvent}: Responds with a {@see AqwSocketClient\Commands\LoginCommand} using the stored credentials.
+     * - {@see AqwSocketClient\Events\LoginRespondedEvent}: Responds with a {@see AqwSocketClient\Commands\JoinInitialAreaCommand} if login was successful.
      *
-     * @param EventInterface $event The incoming event to be translated.
-     * @return CommandInterface|null The next command to be sent to the server, or **null**
-     * if the event does not require a command response.
+     * @return CommandInterface|null The protocol response command, or **null** if no automatic reaction is needed.
      */
     #[Override]
     public function translate(EventInterface $event): ?CommandInterface
