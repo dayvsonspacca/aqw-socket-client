@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace AqwSocketClient\Clients;
 
 use AqwSocketClient\Interfaces\ClientInterface;
+use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
+use AqwSocketClient\Interfaces\ScriptInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Messages\XmlMessage;
@@ -120,6 +122,41 @@ final class SocketClient implements ClientInterface
 
         if ($sent < $length) {
             throw new RuntimeException("Incomplete send: sent {$sent} of {$length} bytes.");
+        }
+    }
+
+    #[Override]
+    public function run(ScriptInterface $script): void
+    {
+        while ($this->isConnected() && !$script->isDone()) {
+            foreach ($this->receive() as $message) {
+                $events = [];
+
+                foreach ($script->interpreters() as $interpreter) {
+                    $events = array_merge($events, $interpreter->interpret($message));
+                }
+
+                /** @var EventInterface[] $events */
+
+                foreach ($events as $event) {
+                    $commands = $script->handle($event);
+
+                    if ($script->isDone()) {
+                        continue;
+                    }
+
+                    foreach ($script->translators() as $translator) {
+                        $command = $translator->translate($event);
+                        if ($command !== null) {
+                            $commands[] = $command;
+                        }
+                    }
+
+                    foreach ($commands as $command) {
+                        $this->send($command->pack());
+                    }
+                }
+            }
         }
     }
 
