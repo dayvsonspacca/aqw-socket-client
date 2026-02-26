@@ -23,17 +23,11 @@ abstract class AbstractScript implements ScriptInterface
 
     /** @return InterpreterInterface[] */
     #[Override]
-    public function interpreters(): array
-    {
-        return [];
-    }
+    abstract public function interpreters(): array;
 
     /** @return CommandInterface[] */
     #[Override]
-    public function handle(EventInterface $event): array
-    {
-        return [];
-    }
+    abstract public function handle(EventInterface $event): array;
 
     #[Override]
     public function isDone(): bool
