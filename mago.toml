@@ -16,6 +16,7 @@ integrations = ["symfony", "phpunit"]
 [linter.rules]
 ambiguous-function-call = { enabled = false }
 literal-named-argument = { enabled = false }
+too-many-methods = { exclude = ["tests/"] }
 halstead = { effort-threshold = 7000 }
 
 [analyzer]

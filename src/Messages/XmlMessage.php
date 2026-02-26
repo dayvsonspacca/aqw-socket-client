@@ -35,7 +35,7 @@ final class XmlMessage implements MessageInterface
     {
         $dom = new DOMDocument();
 
-        if (empty($message)) {
+        if ($message === '') {
             return false;
         }
 
