@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AqwSocketClient;
 
 use AqwSocketClient\Interfaces\InterpreterInterface;
-use AqwSocketClient\Interfaces\ListenerInterface;
 use AqwSocketClient\Interfaces\TranslatorInterface;
 
 /**
@@ -23,11 +22,6 @@ final class Configuration
      * @var TranslatorInterface[]
      */
     public array $translators = [];
-
-    /**
-     * @var ListenerInterface[]
-     */
-    public array $listeners = [];
 
     public static function make(): self
     {
@@ -51,16 +45,6 @@ final class Configuration
     public function addTranslator(TranslatorInterface $translator): self
     {
         $this->translators[] = $translator;
-        return $this;
-    }
-
-    /**
-     * Registers a listener that executes application logic
-     * based on received {@see AqwSocketClient\Interfaces\EventInterface} objects.
-     */
-    public function addListener(ListenerInterface $listener): self
-    {
-        $this->listeners[] = $listener;
         return $this;
     }
 }
