@@ -5,7 +5,6 @@
     "scripts": {
         "test:coverage": "./vendor/bin/phpunit --testdox --coverage-html public/",
         "test:unit": "./vendor/bin/phpunit --testdox --testsuite Unit",
-        "test:integration": "./vendor/bin/phpunit --testdox --testsuite Integration",
         "test": [
             "@test:unit",
             "@test:integration"
