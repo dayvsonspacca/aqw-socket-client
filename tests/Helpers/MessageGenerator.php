@@ -64,4 +64,9 @@ final class MessageGenerator
     {
         return "<msg t='sys'><body action='logout' r='0'></body></msg>";
     }
+
+    public static function afk(): string
+    {
+        return '%xt%server%-1%Your status is now Away From Keyboard (AFK).%';
+    }
 }
