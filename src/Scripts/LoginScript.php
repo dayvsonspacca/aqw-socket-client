@@ -10,10 +10,8 @@ use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
+use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
-use AqwSocketClient\Interpreters\AreaInterpreter;
-use AqwSocketClient\Interpreters\AuthenticationInterpreter;
-use AqwSocketClient\Interpreters\PlayerInterpreter;
 use AqwSocketClient\Objects\AreaIdentifier;
 use AqwSocketClient\Objects\SocketIdentifier;
 use Override;
@@ -30,12 +28,13 @@ final class LoginScript extends AbstractScript
     ) {}
 
     #[Override]
-    public function interpreters(): array
+    public function handles(): array
     {
         return [
-            new AuthenticationInterpreter(),
-            new AreaInterpreter(),
-            new PlayerInterpreter(),
+            ConnectionEstablishedEvent::class,
+            LoginRespondedEvent::class,
+            AreaJoinedEvent::class,
+            PlayerInventoryLoadedEvent::class,
         ];
     }
 

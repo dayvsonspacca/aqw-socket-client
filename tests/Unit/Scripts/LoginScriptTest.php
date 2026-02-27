@@ -11,6 +11,7 @@ use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Events\PlayerDetectedEvent;
+use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Objects\AreaIdentifier;
 use AqwSocketClient\Objects\SocketIdentifier;
@@ -28,12 +29,6 @@ final class LoginScriptTest extends TestCase
         $token = md5(random_bytes(1));
 
         $this->script = new LoginScript($username, $token);
-    }
-
-    #[Test]
-    public function it_can_create_login_script_with_config(): void
-    {
-        $this->assertCount(3, $this->script->interpreters());
     }
 
     #[Test]
@@ -91,5 +86,16 @@ final class LoginScriptTest extends TestCase
         $this->script->handle(new AreaJoinedEvent('battleon', 1, new AreaIdentifier(1), [], []));
 
         $this->assertTrue($this->script->isDone());
+    }
+
+    #[Test]
+    public function it_have_the_expected_events(): void
+    {
+        $this->assertCount(4, $this->script->handles());
+
+        $this->assertContains(ConnectionEstablishedEvent::class, $this->script->handles());
+        $this->assertContains(LoginRespondedEvent::class, $this->script->handles());
+        $this->assertContains(AreaJoinedEvent::class, $this->script->handles());
+        $this->assertContains(PlayerInventoryLoadedEvent::class, $this->script->handles());
     }
 }

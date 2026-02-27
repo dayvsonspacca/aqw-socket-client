@@ -6,51 +6,21 @@ namespace AqwSocketClient\Events;
 
 use AqwSocketClient\Enums\JsonMessageType;
 use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
 
 final class PlayerInventoryLoadedEvent implements EventInterface
 {
     /**
-     * @param array<int, array{
-     *     name: string,
-     *     description: string,
-     *     type: string,
-     *     file_name: string|null
-     * }> $items
+     * @param JsonMessage $message
+     * @return ?PlayerInventoryLoadedEvent
      */
-    public function __construct(
-        public readonly array $items,
-    ) {}
-
-    public static function fromJsonMessage(JsonMessage $message): ?self
+    public static function from(MessageInterface $message): ?EventInterface
     {
-        if ($message->type !== JsonMessageType::InventoryLoaded) {
-            return null;
+        if ($message instanceof JsonMessage && $message->type === JsonMessageType::InventoryLoaded) {
+            return new self();
         }
 
-        /**
-         * @var array{
-         *     items: array<int, array{
-         *         sName: string,
-         *         sDesc: string,
-         *         sType: string,
-         *         sFile?: string
-         *     }>
-         * } $data
-         */
-        $data = $message->data;
-
-        $items = [];
-
-        foreach ($data['items'] as $item) {
-            $items[] = [
-                'name' => $item['sName'],
-                'description' => $item['sDesc'],
-                'type' => $item['sType'],
-                'file_name' => $item['sFile'] ?? null,
-            ];
-        }
-
-        return new self($items);
+        return null;
     }
 }

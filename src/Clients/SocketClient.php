@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AqwSocketClient\Clients;
 
 use AqwSocketClient\Interfaces\ClientInterface;
-use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Interfaces\ScriptInterface;
 use AqwSocketClient\Interfaces\SocketInterface;
@@ -83,9 +82,9 @@ final class SocketClient implements ClientInterface
         }
 
         return array_values(array_filter([
-            DelimitedMessage::fromString($buffer),
-            JsonMessage::fromString($buffer),
-            XmlMessage::fromString($buffer),
+            DelimitedMessage::from($buffer),
+            JsonMessage::from($buffer),
+            XmlMessage::from($buffer),
         ]));
     }
 
@@ -113,11 +112,13 @@ final class SocketClient implements ClientInterface
             foreach ($this->receive() as $message) {
                 $events = [];
 
-                foreach ($script->interpreters() as $interpreter) {
-                    $events = array_merge($events, $interpreter->interpret($message));
-                }
+                foreach ($script->handles() as $eventClass) {
+                    $event = $eventClass::from($message);
 
-                /** @var EventInterface[] $events */
+                    if ($event !== null) {
+                        $events[] = $event;
+                    }
+                }
 
                 foreach ($events as $event) {
                     $commands = $script->handle($event);

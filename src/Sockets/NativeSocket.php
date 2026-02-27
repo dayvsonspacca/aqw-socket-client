@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Sockets;
 
 use AqwSocketClient\Interfaces\SocketInterface;
+use Override;
 use RuntimeException;
 use Socket;
 
@@ -15,7 +16,7 @@ final class NativeSocket implements SocketInterface
 {
     private ?Socket $socket = null;
 
-    #[\Override]
+    #[Override]
     public function create(): void
     {
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -26,7 +27,7 @@ final class NativeSocket implements SocketInterface
         $this->socket = $socket;
     }
 
-    #[\Override]
+    #[Override]
     public function connect(string $hostname, int $port): void
     {
         $this->assertCreated();
@@ -41,7 +42,7 @@ final class NativeSocket implements SocketInterface
         }
     }
 
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         if ($this->socket !== null) {
@@ -50,7 +51,7 @@ final class NativeSocket implements SocketInterface
         }
     }
 
-    #[\Override]
+    #[Override]
     public function read(int $length): array
     {
         $this->assertCreated();
@@ -65,7 +66,7 @@ final class NativeSocket implements SocketInterface
         return ['bytes' => $bytes, 'chunk' => (string) $chunk];
     }
 
-    #[\Override]
+    #[Override]
     public function send(string $data): int
     {
         $this->assertCreated();

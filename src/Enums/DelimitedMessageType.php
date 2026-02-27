@@ -41,7 +41,7 @@ enum DelimitedMessageType
      * @param string $string The raw message type identifier (e.g., 'uotls', 'loginResponse').
      * @return self|false The corresponding enum case, or **false** if the string is unknown.
      */
-    public static function fromString(string $string): self|false
+    public static function from(string $string): self|false
     {
         return match ($string) {
             'loginResponse' => self::LoginResponse,
