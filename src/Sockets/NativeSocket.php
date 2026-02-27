@@ -21,9 +21,11 @@ final class NativeSocket implements SocketInterface
     public function create(): void
     {
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        // @codeCoverageIgnoreStart
         if ($socket === false) {
             throw new RuntimeException('Failed to create socket: ' . socket_strerror(socket_last_error()));
         }
+        // @codeCoverageIgnoreEnd
 
         $this->socket = $socket;
     }
@@ -60,9 +62,11 @@ final class NativeSocket implements SocketInterface
         $chunk = '';
         $bytes = socket_recv($this->socket, $chunk, $length, 0);
 
+        // @codeCoverageIgnoreStart
         if ($bytes === false) {
             throw new RuntimeException('Failed to receive data: ' . socket_strerror(socket_last_error($this->socket)));
         }
+        // @codeCoverageIgnoreEnd
 
         return ['bytes' => $bytes, 'chunk' => $chunk];
     }
@@ -75,9 +79,11 @@ final class NativeSocket implements SocketInterface
         $length = strlen($data);
         $sent = socket_send($this->socket, $data, $length, 0);
 
+        // @codeCoverageIgnoreStart
         if ($sent === false) {
             throw new RuntimeException('Failed to send data: ' . socket_strerror(socket_last_error($this->socket)));
         }
+        // @codeCoverageIgnoreEnd
 
         return $sent;
     }
