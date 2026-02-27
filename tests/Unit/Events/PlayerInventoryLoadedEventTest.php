@@ -6,7 +6,7 @@ namespace AqwSocketClient\Tests\Unit\Commands;
 
 use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Messages\JsonMessage;
-use AqwSocketClient\Objects\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Tests\Helpers\MessageGenerator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

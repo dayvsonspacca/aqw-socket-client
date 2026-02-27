@@ -8,7 +8,7 @@ use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
-use AqwSocketClient\Objects\SocketIdentifier;
+use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use Override;
 
 /**

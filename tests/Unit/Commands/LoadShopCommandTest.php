@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Tests\Unit\Commands;
 
 use AqwSocketClient\Commands\LoadShopCommand;
-use AqwSocketClient\Objects\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Packet;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Helpers;
 
-use AqwSocketClient\Objects\AreaIdentifier;
-use AqwSocketClient\Objects\SocketIdentifier;
+use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 
 /**
  * Pre-built valids AQW server messages.

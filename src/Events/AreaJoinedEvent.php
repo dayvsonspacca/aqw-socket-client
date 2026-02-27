@@ -8,7 +8,7 @@ use AqwSocketClient\Enums\JsonMessageType;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
-use AqwSocketClient\Objects\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use InvalidArgumentException;
 use Override;
 
