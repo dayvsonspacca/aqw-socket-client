@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace AqwSocketClient\Tests\Unit\Commands;
 
 use AqwSocketClient\Events\AwayFromKeyboardEvent;
+use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\DelimitedMessage;
-use AqwSocketClient\Tests\Helpers\MessageGenerator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

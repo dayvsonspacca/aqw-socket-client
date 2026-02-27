@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Tests\Fakes;
+namespace AqwSocketClient\Sockets;
 
 use AqwSocketClient\Interfaces\SocketInterface;
 use RuntimeException;

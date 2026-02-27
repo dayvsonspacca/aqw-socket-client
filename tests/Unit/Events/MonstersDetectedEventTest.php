@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace AqwSocketClient\Tests\Unit\Events;
 
 use AqwSocketClient\Events\MonstersDetectedEvent;
+use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\JsonMessage;
-use AqwSocketClient\Tests\Helpers\MessageGenerator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace AqwSocketClient\Tests\Unit\Commands;
 
 use AqwSocketClient\Events\AreaJoinedEvent;
+use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
-use AqwSocketClient\Tests\Helpers\MessageGenerator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
