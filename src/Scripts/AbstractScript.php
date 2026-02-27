@@ -6,7 +6,6 @@ namespace AqwSocketClient\Scripts;
 
 use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Interfaces\EventInterface;
-use AqwSocketClient\Interfaces\InterpreterInterface;
 use AqwSocketClient\Interfaces\ScriptInterface;
 use Override;
 
@@ -20,10 +19,6 @@ use Override;
 abstract class AbstractScript implements ScriptInterface
 {
     private bool $done = false;
-
-    /** @return InterpreterInterface[] */
-    #[Override]
-    abstract public function interpreters(): array;
 
     /** @return CommandInterface[] */
     #[Override]

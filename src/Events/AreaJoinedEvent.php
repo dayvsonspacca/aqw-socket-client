@@ -30,7 +30,7 @@ final class AreaJoinedEvent implements EventInterface
 
     /**
      * @param JsonMessage $message
-     * 
+     *
      * @throws InvalidArgumentException WHen area id in data is negative or zero.
      */
     public static function from(MessageInterface $message): ?EventInterface

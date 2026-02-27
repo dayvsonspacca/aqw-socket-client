@@ -11,9 +11,6 @@ use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
-use AqwSocketClient\Interpreters\AreaInterpreter;
-use AqwSocketClient\Interpreters\AuthenticationInterpreter;
-use AqwSocketClient\Interpreters\PlayerInterpreter;
 use AqwSocketClient\Objects\AreaIdentifier;
 use AqwSocketClient\Objects\SocketIdentifier;
 use Override;
@@ -28,16 +25,6 @@ final class LoginScript extends AbstractScript
         #[\SensitiveParameter]
         private readonly string $token,
     ) {}
-
-    #[Override]
-    public function interpreters(): array
-    {
-        return [
-            new AuthenticationInterpreter(),
-            new AreaInterpreter(),
-            new PlayerInterpreter(),
-        ];
-    }
 
     #[Override]
     public function handle(EventInterface $event): array

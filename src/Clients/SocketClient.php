@@ -112,11 +112,6 @@ final class SocketClient implements ClientInterface
         while ($this->isConnected() && !$script->isDone()) {
             foreach ($this->receive() as $message) {
                 $events = [];
-
-                foreach ($script->interpreters() as $interpreter) {
-                    $events = array_merge($events, $interpreter->interpret($message));
-                }
-
                 /** @var EventInterface[] $events */
 
                 foreach ($events as $event) {

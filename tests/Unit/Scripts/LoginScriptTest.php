@@ -31,12 +31,6 @@ final class LoginScriptTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_login_script_with_config(): void
-    {
-        $this->assertCount(3, $this->script->interpreters());
-    }
-
-    #[Test]
     public function it_responds_with_login_command_when_connection_established(): void
     {
         $commands = $this->script->handle(new ConnectionEstablishedEvent());

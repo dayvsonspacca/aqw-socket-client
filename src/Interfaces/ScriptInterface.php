@@ -14,13 +14,6 @@ namespace AqwSocketClient\Interfaces;
 interface ScriptInterface
 {
     /**
-     * The interpreters this script needs to parse incoming messages.
-     *
-     * @return InterpreterInterface[]
-     */
-    public function interpreters(): array;
-
-    /**
      * Reacts to an incoming event, returning any commands to be sent.
      *
      * @return CommandInterface[]
