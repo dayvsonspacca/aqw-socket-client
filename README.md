@@ -1,80 +1,105 @@
 # AqwSocketClient
 
-PHP client for connecting and interacting with **Adventure Quest Worlds (AQW)** servers, using ReactPHP for asynchronous event handling.
+PHP client for connecting and interacting with **Adventure Quest Worlds (AQW)** servers.
 
-Allows login, sending commands, and processing server events in a modular way.
+Allows login, sending commands, and processing server events in a modular, script-driven way.
 
-**Note:** This client is not intended to serve as a bot for the game. Its purpose is solely to explore the exchange of information with the server and to obtain data such as item names and player information.
+> **Note:** This client is not intended to serve as a bot. Its purpose is solely to explore the exchange of information with the AQW server and to retrieve data such as item names and player information.
 
-**Note:** This project would not have been possible without the following repositories, thank you!
-
-- [anthony-hyo/swf2png](https://github.com/anthony-hyo/swf2png)
-- [dwiki08/loving](https://github.com/dwiki08/loving)
-- [Froztt13/aqw-python](https://github.com/Froztt13/aqw-python)
-- [BrenoHenrike/RBot](https://github.com/BrenoHenrike/RBot)
-- [133spider/AQLite](https://github.com/133spider/AQLite)
+> **Note:** This project would not have been possible without the following repositories — thank you!
+> [anthony-hyo/swf2png](https://github.com/anthony-hyo/swf2png) · [dwiki08/loving](https://github.com/dwiki08/loving) · [Froztt13/aqw-python](https://github.com/Froztt13/aqw-python) · [BrenoHenrike/RBot](https://github.com/BrenoHenrike/RBot) · [133spider/AQLite](https://github.com/133spider/AQLite)
 
 ---
 
-## **Features**
+## How it works
 
-- Creation and sending of commands to the server.
-- Processing of server messages as events.
-- Modular system based on **Interpreters**, **Translators**, and **Listeners** for event processing and handling.
+The library is built around a simple, linear pipeline. Raw bytes come in from the socket, get parsed into typed messages, get interpreted as high-level events, and finally get handled by a **Script** — which decides what commands to send back.
 
----
+```mermaid
+flowchart LR
+    A([AQW Server]) -->|raw bytes| B[Socket]
+    B -->|string| C[Message\nXML · JSON · Delimited]
+    C -->|typed message| D[Event]
+    D -->|dispatched to| E[Script]
+    E -->|returns| F[Command]
+    F -->|packed as Packet| A
+```
 
-## ✨ Architecture
+You write a **Script** that declares which events it cares about and reacts to them by returning commands. The client drives the loop — receiving messages, resolving events, and dispatching them — until the script signals it's done.
 
-The `AqwSocketClient` architecture is based on an **Event-Oriented Pipeline**, ensuring high modularity, strict typing, and **separation of concerns**. The data flow follows the cycle: **Message $\rightarrow$ Interpreter $\rightarrow$ Event $\rightarrow$ Listener/Translator $\rightarrow$ Command**.
+```mermaid
+sequenceDiagram
+    participant Server as AQW Server
+    participant Client
+    participant Script
 
----
+    Client->>Server: connect()
+    Server-->>Client: cross-domain-policy (XML)
+    Client->>Script: handle(ConnectionEstablishedEvent)
+    Script-->>Client: [LoginCommand]
+    Client->>Server: send LoginCommand
 
-### **Core Components & Setup**
+    Server-->>Client: login response (delimited)
+    Client->>Script: handle(LoginRespondedEvent)
+    Script-->>Client: [JoinInitialAreaCommand]
+    Client->>Server: send JoinInitialAreaCommand
 
-* **`Client`**: The main class that manages the asynchronous TCP connection (via **ReactPHP**), receives raw data, and orchestrates the processing pipeline.
-* **`Configuration`**: An initialization container that stores credentials and registers all essential pipeline components (`Interpreters`, `Translators`, `Listeners`).
-* **`Server`**: A value object representing an AQW server (`hostname`, `port`, `name`). Includes **factory methods** for known servers (e.g., `Server::espada()`).
-* **`Packet`**: Encapsulates data for sending, automatically appending the mandatory **null terminator (`\u{0000}`)** required by the server protocol.
-
----
-
-### **I. Input (Raw Messages) - Deserialization**
-
-These classes implement the **`MessageInterface`** and are responsible for deserializing the raw string received from the socket into usable PHP objects, handling the server's multi-protocol nature:
-
-* **`MessageInterface`**: Defines the contract (`fromString()`) to create an object from the raw string.
-* **`XmlMessage`**: Handles the **XML format**, converting it into a navigable `DOMDocument`.
-* **`JsonMessage`**: Handles the **JSON format**, pre-processing it into internal `JsonMessageType` objects.
-* **`DelimitedMessage`**: Handles the **`%`-delimited format**, extracting the message type and payload data.
-
----
-
-### **II. Processing (Interpretation & Events)**
-
-This stage transforms the decoded raw messages into high-level, strongly-typed events:
-
-* **`InterpreterInterface`**: The contract for classes that convert a `MessageInterface` object into an array of `EventInterface` objects. It acts as the core **parser**.
-* **`EventInterface`**: The marker interface for any **event** received and **interpreted** from the server (e.g., `LoginRespondedEvent`, `PlayerDetectedEvent`).
-
----
-
-### **III. Output & Logic (Responses and Actions)**
-
-The interpreted event is dispatched to two types of components, allowing the application to react in a decoupled manner:
-
-#### **A. Application Logic (Listeners)**
-
-* **`ListenerInterface`**: Executes **application logic** in response to an event (e.g., logging a detected player, updating internal state), **without generating commands** to the server.
-
-#### **B. Server Responses (Translators)**
-
-* **`TranslatorInterface`**: Converts an `EventInterface` into a `CommandInterface` (response command) if a direct action is required. For instance, the **`LoginTranslator`** converts the `ConnectionEstablishedEvent` into the `LoginCommand`.
+    Server-->>Client: area joined (JSON)
+    Client->>Script: handle(AreaJoinedEvent)
+    Script-->>Client: [LoadPlayerInventoryCommand]
+    Note over Script: script marks itself as done
+    Client->>Server: send LoadPlayerInventoryCommand
+```
 
 ---
 
-### **IV. Output (Commands) - Serialization**
+## Pre-built Components
 
-* **`CommandInterface`**: Defines a **command** or **action** to be sent back to the server.
-* The required method `pack()` serializes the command into the necessary protocol format (XML, Delimited, etc.) and wraps it in a **`Packet`** ready for transmission.
-* Examples: `LoginCommand`, `JoinInitialAreaCommand`.
+### 📜 Scripts
+
+Scripts are the core unit of logic. Each script declares the events it listens to and reacts by returning commands. When finished, it calls `done()` to signal the client to stop.
+
+| Script | Description |
+|---|---|
+| `LoginScript` | Handles the full login flow: authenticates, joins the initial area (`battleon`), and loads the player's inventory. Marks itself as done once the area is joined. |
+
+---
+
+### ⚡ Events
+
+Events are strongly-typed objects produced from raw server messages. They represent things that happened on the server side.
+
+| Event | Trigger |
+|---|---|
+| `ConnectionEstablishedEvent` | Server sent the cross-domain policy — connection is ready. |
+| `LoginRespondedEvent` | Server replied to a login attempt. Carries `success` (bool) and a temporary `socketId`. |
+| `AreaJoinedEvent` | Player successfully joined a map. Carries `mapName`, `mapNumber`, and `areaId`. |
+| `PlayerDetectedEvent` | A player entered or changed in the current area. Carries the player's `name`. |
+| `PlayerInventoryLoadedEvent` | Server finished sending the player's inventory data. |
+| `PlayerLoggedOutEvent` | Server confirmed the player's session was terminated. |
+
+---
+
+### 📦 Commands
+
+Commands are actions sent from the client to the server. Each one knows how to serialize itself into the correct protocol format via `pack()`.
+
+| Command | Description |
+|---|---|
+| `LoginCommand` | Authenticates a player using their username and token. First command sent after connection. |
+| `LogoutCommand` | Gracefully terminates the player's session on the server. |
+| `JoinInitialAreaCommand` | Moves the player to the initial area (`battleon`) right after login. |
+| `JoinMapCommand` | Transfers the player to a specific map and room instance. |
+| `LoadPlayerInventoryCommand` | Requests the player's full inventory from the server. |
+| `LoadShopCommand` | Requests the item data for a specific shop by ID. |
+
+---
+
+## Extending
+
+All core pieces are interface-driven, making the library easy to extend:
+
+- **New event?** Implement `EventInterface` — parse any `MessageInterface` and return a typed object.
+- **New command?** Implement `CommandInterface` — serialize your data into a `Packet` via `pack()`.
+- **New script?** Extend `AbstractScript` — declare your `handles()`, react in `handle()`, call `done()` when finished.
+- **Custom socket?** Implement `SocketInterface` — useful for testing or alternative transports.
