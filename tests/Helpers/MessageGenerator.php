@@ -69,4 +69,9 @@ final class MessageGenerator
     {
         return '%xt%server%-1%Your status is now Away From Keyboard (AFK).%';
     }
+
+    public static function alreadyInArea(): string
+    {
+        return '%xt%warning%-1%Cannot join a room you are already in.%';
+    }
 }
