@@ -25,6 +25,7 @@ final class JsonMessage implements MessageInterface
     private function __construct(
         public readonly JsonMessageType $type,
         public readonly array $data,
+        public readonly string $raw,
     ) {}
 
     /**
@@ -67,6 +68,6 @@ final class JsonMessage implements MessageInterface
             return false;
         }
 
-        return new self($type, $messageData);
+        return new self($type, $messageData, $message);
     }
 }

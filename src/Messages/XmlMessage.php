@@ -19,6 +19,7 @@ final class XmlMessage implements MessageInterface
      */
     private function __construct(
         public readonly DOMDocument $dom,
+        public readonly string $raw,
     ) {}
 
     /**
@@ -45,6 +46,6 @@ final class XmlMessage implements MessageInterface
             return false;
         }
 
-        return new self($dom);
+        return new self($dom, $message);
     }
 }

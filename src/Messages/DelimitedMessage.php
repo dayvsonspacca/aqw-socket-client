@@ -25,6 +25,7 @@ final class DelimitedMessage implements MessageInterface
     private function __construct(
         public readonly DelimitedMessageType $type,
         public readonly array $data,
+        public readonly string $raw,
     ) {}
 
     /**
@@ -61,6 +62,6 @@ final class DelimitedMessage implements MessageInterface
 
         $data = array_filter($parts, static fn($key) => $key !== 0, ARRAY_FILTER_USE_KEY);
 
-        return new self($type, array_values($data));
+        return new self($type, array_values($data), $message);
     }
 }
