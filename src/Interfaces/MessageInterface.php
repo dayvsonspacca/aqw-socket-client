@@ -16,5 +16,5 @@ interface MessageInterface
      * @param string $message The raw string data received from the socket.
      * @return self|false The newly created message object, or **false** on failure or not specified how to create
      */
-    public static function fromString(string $message): self|false;
+    public static function from(string $message): self|false;
 }

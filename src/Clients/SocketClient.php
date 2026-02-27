@@ -83,9 +83,9 @@ final class SocketClient implements ClientInterface
         }
 
         return array_values(array_filter([
-            DelimitedMessage::fromString($buffer),
-            JsonMessage::fromString($buffer),
-            XmlMessage::fromString($buffer),
+            DelimitedMessage::from($buffer),
+            JsonMessage::from($buffer),
+            XmlMessage::from($buffer),
         ]));
     }
 

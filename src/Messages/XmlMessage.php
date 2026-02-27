@@ -31,7 +31,7 @@ final class XmlMessage implements MessageInterface
      * parsed DOMDocument, or **false** on failure to load the XML.
      */
     #[Override]
-    public static function fromString(string $message): MessageInterface|false
+    public static function from(string $message): MessageInterface|false
     {
         $dom = new DOMDocument();
 

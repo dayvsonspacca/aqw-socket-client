@@ -40,7 +40,7 @@ final class DelimitedMessage implements MessageInterface
      * @mago-ignore analyzer:possibly-undefined-array-index
      */
     #[Override]
-    public static function fromString(string $message): DelimitedMessage|false
+    public static function from(string $message): DelimitedMessage|false
     {
         if (!str_starts_with($message, '%') && !str_ends_with($message, '%')) {
             return false;
@@ -54,7 +54,7 @@ final class DelimitedMessage implements MessageInterface
 
         $parts = array_values($parts);
 
-        $type = DelimitedMessageType::fromString($parts[0]);
+        $type = DelimitedMessageType::from($parts[0]);
         if (!$type) {
             return false;
         }

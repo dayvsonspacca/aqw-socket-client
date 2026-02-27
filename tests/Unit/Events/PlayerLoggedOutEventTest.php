@@ -15,9 +15,7 @@ final class PlayerLoggedOutEventTest extends TestCase
     #[Test]
     public function it_create_event_on_correct_messages(): void
     {
-        $event = PlayerLoggedOutEvent::from(XmlMessage::fromString(
-            "<msg t='sys'><body action='logout' r='0'></body></msg>",
-        ));
+        $event = PlayerLoggedOutEvent::from(XmlMessage::from("<msg t='sys'><body action='logout' r='0'></body></msg>"));
 
         $this->assertInstanceOf(PlayerLoggedOutEvent::class, $event);
     }
@@ -25,7 +23,7 @@ final class PlayerLoggedOutEventTest extends TestCase
     #[Test]
     public function it_creates_null_on_invalid_messages(): void
     {
-        $event = PlayerLoggedOutEvent::from(JsonMessage::fromString(
+        $event = PlayerLoggedOutEvent::from(JsonMessage::from(
             '{"t":"xt","b":{"r":-1,"o":{"bankCount":57,"cmd":"loadInventoryBig","items":[]}}}',
         ));
 
