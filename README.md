@@ -1,4 +1,8 @@
-# AqwSocketClient
+# AQW Socket Client
+
+[![Latest Stable Version](https://img.shields.io/packagist/v/dayvsonspacca/aqw-socket-client.svg)](https://packagist.org/packages/dayvsonspacca/aqw-socket-client)
+[![Total Downloads](https://img.shields.io/packagist/dt/dayvsonspacca/aqw-socket-client.svg)](https://packagist.org/packages/dayvsonspacca/aqw-socket-client)
+[![License](https://img.shields.io/packagist/l/dayvsonspacca/aqw-socket-client.svg)](https://packagist.org/packages/dayvsonspacca/aqw-socket-client)
 
 PHP client for connecting and interacting with **Adventure Quest Worlds (AQW)** servers.
 
