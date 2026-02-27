@@ -21,6 +21,7 @@ final class MonstersDetectedEventTest extends TestCase
 
         $event = MonstersDetectedEvent::from($message);
         $this->assertInstanceOf(MonstersDetectedEvent::class, $event);
+        $this->assertCount(1, $event->monsters);
     }
 
     #[Test]

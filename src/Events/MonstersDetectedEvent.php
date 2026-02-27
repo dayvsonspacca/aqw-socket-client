@@ -38,6 +38,12 @@ final class MonstersDetectedEvent implements EventInterface
 
             $monsters = [];
             for ($i = 0; $i < count($data['monBranch']); $i++) {
+                // @codeCoverageIgnoreStart
+                if (!array_key_exists($i, $data['mondef'])) {
+                    continue;
+                }
+                // @codeCoverageIgnoreEnd
+
                 $identifier = new MonsterIdentifier((int) $data['mondef'][$i]['MonID']);
                 $name = new MonsterName($data['mondef'][$i]['strMonName']);
                 $level = new MonsterLevel((int) $data['mondef'][$i]['intLevel']);
@@ -48,7 +54,7 @@ final class MonstersDetectedEvent implements EventInterface
                     $data['mondef'][$i]['strMonFileName'],
                 );
 
-                $monster = new Monster($identifier, $name, $level, $health, $fileMetadata);
+                $monsters[] = new Monster($identifier, $name, $level, $health, $fileMetadata);
             }
 
             return new self($monsters);
