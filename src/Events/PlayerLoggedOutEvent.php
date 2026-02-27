@@ -16,12 +16,15 @@ final class PlayerLoggedOutEvent implements EventInterface
 {
     /**
      * @param XmlMessage $message
+     * @return ?PlayerLoggedOutEvent
      */
     public static function from(MessageInterface $message): ?EventInterface
     {
-        $action = $message->dom->getElementsByTagName('body')->item(0)?->getAttribute('action');
-        if ($action === 'logout') {
-            return new self();
+        if ($message instanceof XmlMessage) {
+            $action = $message->dom->getElementsByTagName('body')->item(0)?->getAttribute('action');
+            if ($action === 'logout') {
+                return new self();
+            }
         }
 
         return null;

@@ -24,16 +24,19 @@ final class PlayerDetectedEvent implements EventInterface
 
     /**
      * @param DelimitedMessage $message
+     * @return ?PlayerDetectedEvent
      */
     public static function from(MessageInterface $message): ?EventInterface
     {
-        if ($message->type === DelimitedMessageType::ExitArea) {
-            // @mago-expect analyzer:possibly-undefined-array-index
-            return new self($message->data[1]);
-        }
-        if ($message->type === DelimitedMessageType::PlayerChange) {
-            // @mago-expect analyzer:possibly-undefined-array-index
-            return new self($message->data[0]);
+        if ($message instanceof DelimitedMessage) {
+            if ($message->type === DelimitedMessageType::ExitArea) {
+                // @mago-expect analyzer:possibly-undefined-array-index
+                return new self($message->data[1]);
+            }
+            if ($message->type === DelimitedMessageType::PlayerChange) {
+                // @mago-expect analyzer:possibly-undefined-array-index
+                return new self($message->data[0]);
+            }
         }
 
         return null;

@@ -13,10 +13,11 @@ final class PlayerInventoryLoadedEvent implements EventInterface
 {
     /**
      * @param JsonMessage $message
+     * @return ?PlayerInventoryLoadedEvent
      */
     public static function from(MessageInterface $message): ?EventInterface
     {
-        if ($message->type !== JsonMessageType::InventoryLoaded) {
+        if ($message instanceof JsonMessage && $message->type === JsonMessageType::InventoryLoaded) {
             return new self();
         }
 

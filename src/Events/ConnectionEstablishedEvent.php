@@ -18,11 +18,14 @@ final class ConnectionEstablishedEvent implements EventInterface
 {
     /**
      * @param XmlMessage $message
+     * @return ?ConnectionEstablishedEvent
      */
     public static function from(MessageInterface $message): ?EventInterface
     {
-        if ($message->dom->firstChild?->nodeName === 'cross-domain-policy') {
-            return new self();
+        if ($message instanceof XmlMessage) {
+            if ($message->dom->firstChild?->nodeName === 'cross-domain-policy') {
+                return new self();
+            }
         }
 
         return null;

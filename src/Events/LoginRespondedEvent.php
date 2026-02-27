@@ -29,15 +29,16 @@ final class LoginRespondedEvent implements EventInterface
 
     /**
      * @param DelimitedMessage $message
+     * @return ?LoginRespondedEvent
      *
      * @throws InvalidArgumentException WHen socket id in data is negative or zero.
      */
     public static function from(MessageInterface $message): ?EventInterface
     {
-        if ($message->type !== DelimitedMessageType::LoginResponse) {
-            return null;
+        if ($message instanceof DelimitedMessage && $message->type === DelimitedMessageType::LoginResponse) {
+            return new self((bool) $message->data[0], new SocketIdentifier((int) $message->data[1]));
         }
 
-        return new self((bool) $message->data[0], new SocketIdentifier((int) $message->data[1]));
+        return null;
     }
 }

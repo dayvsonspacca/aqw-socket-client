@@ -30,22 +30,23 @@ final class AreaJoinedEvent implements EventInterface
 
     /**
      * @param JsonMessage $message
+     * @return ?AreaJoinedEvent
      *
      * @throws InvalidArgumentException WHen area id in data is negative or zero.
      */
     public static function from(MessageInterface $message): ?EventInterface
     {
-        if ($message->type !== JsonMessageType::JoinedArea) {
-            return null;
+        if ($message instanceof JsonMessage && $message->type === JsonMessageType::JoinedArea) {
+            /** @var array{strMapName: string, areaName: string, areaId: numeric-string} $data */
+            $data = $message->data;
+
+            return new self(
+                $data['strMapName'],
+                (int) explode('-', $data['areaName'])[1],
+                new AreaIdentifier((int) $data['areaId']),
+            );
         }
 
-        /** @var array{strMapName: string, areaName: string, areaId: numeric-string} $data */
-        $data = $message->data;
-
-        return new self(
-            $data['strMapName'],
-            (int) explode('-', $data['areaName'])[1],
-            new AreaIdentifier((int) $data['areaId']),
-        );
+        return null;
     }
 }
