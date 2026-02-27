@@ -10,6 +10,9 @@ use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use Override;
 
+/**
+ * Represents an event triggered after the client dont do anything for a while
+ */
 final class AwayFromKeyboardEvent implements EventInterface
 {
     /**
