@@ -32,7 +32,6 @@ final class LoginRespondedEvent implements EventInterface
      * @return ?LoginRespondedEvent
      *
      * @throws InvalidArgumentException When socket id in data is negative or zero.
-     * @mago-ignore analyzer:possibly-undefined-array-index
      */
     #[Override]
     public static function from(MessageInterface $message): ?EventInterface

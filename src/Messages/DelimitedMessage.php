@@ -37,8 +37,6 @@ final class DelimitedMessage implements MessageInterface
      * @param string $message The raw string data received from the socket.
      * @return DelimitedMessage|false The newly created message object, or **false**
      * if the message format is invalid or the message type cannot be determined.
-     *
-     * @mago-ignore analyzer:possibly-undefined-array-index
      */
     #[Override]
     public static function from(string $message): DelimitedMessage|false

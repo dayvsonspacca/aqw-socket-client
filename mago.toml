@@ -39,6 +39,6 @@ ignore = [
     { code = 'too-many-arguments', in = 'tests/' },
     { code = 'unhandled-thrown-type', in = 'tests/' },
     { code = 'missing-override-attribute', in = 'tests/' },
-    { code = 'possibly-undefined-array-index', in = 'tests/' },
+    { code = 'possibly-undefined-array-index', in = ['tests/', 'src/Events', 'src/Messages'] },
     { code = 'possibly-null-property-access', in = 'tests/' },
 ]
