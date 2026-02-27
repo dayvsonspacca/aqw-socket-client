@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AqwSocketClient\Clients;
 
 use AqwSocketClient\Interfaces\ClientInterface;
-use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Interfaces\ScriptInterface;
 use AqwSocketClient\Interfaces\SocketInterface;
@@ -112,7 +111,14 @@ final class SocketClient implements ClientInterface
         while ($this->isConnected() && !$script->isDone()) {
             foreach ($this->receive() as $message) {
                 $events = [];
-                /** @var EventInterface[] $events */
+
+                foreach ($script->handles() as $eventClass) {
+                    $event = $eventClass::from($message);
+
+                    if ($event !== null) {
+                        $events[] = $event;
+                    }
+                }
 
                 foreach ($events as $event) {
                     $commands = $script->handle($event);

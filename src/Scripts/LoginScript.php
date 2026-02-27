@@ -10,6 +10,7 @@ use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
+use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Objects\AreaIdentifier;
 use AqwSocketClient\Objects\SocketIdentifier;
@@ -25,6 +26,17 @@ final class LoginScript extends AbstractScript
         #[\SensitiveParameter]
         private readonly string $token,
     ) {}
+
+    #[Override]
+    public function handles(): array
+    {
+        return [
+            ConnectionEstablishedEvent::class,
+            LoginRespondedEvent::class,
+            AreaJoinedEvent::class,
+            PlayerInventoryLoadedEvent::class,
+        ];
+    }
 
     #[Override]
     public function handle(EventInterface $event): array

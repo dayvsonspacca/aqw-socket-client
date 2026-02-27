@@ -21,6 +21,11 @@ interface ScriptInterface
     public function handle(EventInterface $event): array;
 
     /**
+     * @return array<class-string<EventInterface>>
+     */
+    public function handles(): array;
+
+    /**
      * Signals whether this script has completed its work.
      *
      * Checked by the client after every {@see AqwSocketClient\Interfaces\ScriptInterface::handle()()} call.
