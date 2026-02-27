@@ -54,8 +54,8 @@ final class DelimitedMessage implements MessageInterface
 
         $parts = array_values($parts);
 
-        $type = DelimitedMessageType::from($parts[0]);
-        if (!$type) {
+        $type = DelimitedMessageType::tryFrom($parts[0]);
+        if ($type === null) {
             return false;
         }
 
