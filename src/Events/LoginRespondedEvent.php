@@ -28,7 +28,7 @@ final class LoginRespondedEvent implements EventInterface
     ) {}
 
     /**
-     * @return DelimitedMessage
+     * @param DelimitedMessage $message
      *
      * @throws InvalidArgumentException WHen socket id in data is negative or zero.
      */
