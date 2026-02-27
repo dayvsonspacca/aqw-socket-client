@@ -19,6 +19,7 @@ use AqwSocketClient\Objects\SocketIdentifier;
 use AqwSocketClient\Scripts\LoginScript;
 use AqwSocketClient\Server;
 use AqwSocketClient\Tests\Fakes\FakeSocket;
+use AqwSocketClient\Tests\Helpers\MessageGenerator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -99,7 +100,7 @@ final class SocketClientTest extends TestCase
     #[Test]
     public function it_can_receive_xml_message_from_server(): void
     {
-        $this->socket->queueResponse('<msg t="sys"><body action="onConnect" r="0" /></msg>');
+        $this->socket->queueResponse(MessageGenerator::domainPolicy());
 
         $this->client->connect();
         $messages = $this->client->receive();
@@ -111,7 +112,7 @@ final class SocketClientTest extends TestCase
     #[Test]
     public function it_can_receive_delimited_message_from_server(): void
     {
-        $this->socket->queueResponse('%xt%loginResponse%-1%0%');
+        $this->socket->queueResponse(MessageGenerator::loginReponded('Hilise', new SocketIdentifier(1)));
 
         $this->client->connect();
         $messages = $this->client->receive();
@@ -191,10 +192,10 @@ final class SocketClientTest extends TestCase
     #[Test]
     public function it_can_receive_and_send_then_receive_response(): void
     {
-        $this->socket->queueResponse('<msg t="sys"><body action="onConnect" r="0" /></msg>');
-        $this->socket->queueResponse(
-            '%xt%loginResponse%-1%0%Character data could not be retrieved. Please Login and try again.%',
-        );
+        $socketIdentifier = new SocketIdentifier(1);
+
+        $this->socket->queueResponse(MessageGenerator::domainPolicy());
+        $this->socket->queueResponse(MessageGenerator::loginReponded('Hilise', $socketIdentifier));
 
         $this->client->connect();
 
@@ -210,7 +211,7 @@ final class SocketClientTest extends TestCase
         $message = $messages[0];
 
         $this->assertInstanceOf(DelimitedMessage::class, $message);
-        $this->assertSame('Character data could not be retrieved. Please Login and try again.', $message->data[1]);
+        $this->assertSame($socketIdentifier->value, (int) $message->data[1]);
 
         $this->client->disconnect();
         $this->assertFalse($this->client->isConnected());
@@ -219,26 +220,23 @@ final class SocketClientTest extends TestCase
     #[Test]
     public function it_can_run_a_script(): void
     {
-        $script = new LoginScript('Hilise', md5('test'));
+        $username = 'Hilise';
+        $socketIdentifier = new SocketIdentifier(1);
+        $token = md5('test');
+        $areaIdentifier = new AreaIdentifier(1);
 
-        $this->socket->queueResponse(
-            "<cross-domain-policy><allow-access-from domain='*' to-ports='5588' /></cross-domain-policy>",
-        );
-        $this->socket->queueResponse(
-            '%xt%loginResponse%-1%true%1%Hilise%%2026-02-26T19:33:21%sNews=1078,sMap=news/Map-UI_r38.swf,sBook=news/spiderbook3.swf,sAssets=Assets_20251205.swf,gMenu=dynamic-gameMenu-17Jan22.swf,sVersion=R0039,QSInfo=519,iMaxBagSlots=500,iMaxBankSlots=900,iMaxHouseSlots=300,iMaxGuildMembers=800,iMaxFriends=300,iMaxLoadoutSlots=50%3.0141%',
-        );
-        $this->socket->queueResponse(
-            '{"t":"xt","b":{"r":-1,"o":{"cmd":"moveToArea","areaName":"battleon-1","uoBranch":[{"entID":1,"strUsername":"Hilise"}],"strMapFileName":"Battleon/town-Battleon-7Nov25r1.swf","intType":"2","monBranch":[],"mondef":[],"areaId":1,"strMapName":"battleon"}}}',
-        );
-        $this->socket->queueResponse(
-            '{"t":"xt","b":{"r":-1,"o":{"bankCount":57,"cmd":"loadInventoryBig","items":[]}}}',
-        );
+        $script = new LoginScript($username, $token);
+
+        $this->socket->queueResponse(MessageGenerator::domainPolicy());
+        $this->socket->queueResponse(MessageGenerator::loginReponded($username, $socketIdentifier));
+        $this->socket->queueResponse(MessageGenerator::moveToArea('battleon', $areaIdentifier));
+        $this->socket->queueResponse(MessageGenerator::loadInventory());
 
         $this->client->connect();
         $this->client->run($script);
 
         $this->assertContains(
-            new LoginCommand('Hilise', md5('test'))->pack()->unpacketify(),
+            new LoginCommand($username, $token)->pack()->unpacketify(),
             $this->socket->sentData(),
             ConnectionEstablishedEvent::class . ' not received',
         );
@@ -248,7 +246,7 @@ final class SocketClientTest extends TestCase
             LoginRespondedEvent::class . ' not received',
         );
         $this->assertContains(
-            new LoadPlayerInventoryCommand(new AreaIdentifier(1), new SocketIdentifier(1))->pack()->unpacketify(),
+            new LoadPlayerInventoryCommand($areaIdentifier, $socketIdentifier)->pack()->unpacketify(),
             $this->socket->sentData(),
             AreaJoinedEvent::class . ' not received',
         );

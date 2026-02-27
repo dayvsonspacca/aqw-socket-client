@@ -7,6 +7,7 @@ namespace AqwSocketClient\Tests\Unit\Events;
 use AqwSocketClient\Events\PlayerLoggedOutEvent;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Messages\XmlMessage;
+use AqwSocketClient\Tests\Helpers\MessageGenerator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +16,7 @@ final class PlayerLoggedOutEventTest extends TestCase
     #[Test]
     public function it_create_event_on_correct_messages(): void
     {
-        $message = XmlMessage::from("<msg t='sys'><body action='logout' r='0'></body></msg>");
+        $message = XmlMessage::from(MessageGenerator::logout());
 
         /** @var XmlMessage $message */
         $event = PlayerLoggedOutEvent::from($message);
@@ -26,9 +27,7 @@ final class PlayerLoggedOutEventTest extends TestCase
     #[Test]
     public function it_creates_null_on_invalid_messages(): void
     {
-        $message = JsonMessage::from(
-            '{"t":"xt","b":{"r":-1,"o":{"bankCount":57,"cmd":"loadInventoryBig","items":[]}}}',
-        );
+        $message = JsonMessage::from(MessageGenerator::loadInventory());
 
         /** @var JsonMessage $message */
         $event = PlayerLoggedOutEvent::from($message);

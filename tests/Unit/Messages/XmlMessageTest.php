@@ -5,25 +5,24 @@ declare(strict_types=1);
 namespace AqwSocketClient\Tests\Unit\Messages;
 
 use AqwSocketClient\Messages\XmlMessage;
+use AqwSocketClient\Tests\Helpers\MessageGenerator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class XmlMessageTest extends TestCase
 {
     #[Test]
-    public function should_create_xml_message(): void
+    public function it_create_message_when_valid_raw_string(): void
     {
-        $rawMessage = "<cross-domain-policy><allow-access-from domain='*' to-ports='5591' /></cross-domain-policy>";
-        $message = XmlMessage::from($rawMessage);
+        $message = XmlMessage::from(MessageGenerator::domainPolicy());
 
         $this->assertInstanceOf(XmlMessage::class, $message);
     }
 
     #[Test]
-    public function should_return_false_when_cant_parse_to_xml(): void
+    public function it_returns_false_when_invalid_raw_string(): void
     {
-        $rawMessage = '{"msg": "hello"}';
-        $message = XmlMessage::from($rawMessage);
+        $message = XmlMessage::from(MessageGenerator::loadInventory());
 
         $this->assertFalse($message);
     }

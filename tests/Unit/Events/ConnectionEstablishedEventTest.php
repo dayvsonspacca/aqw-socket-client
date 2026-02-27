@@ -7,6 +7,7 @@ namespace AqwSocketClient\Tests\Unit\Commands;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Messages\XmlMessage;
+use AqwSocketClient\Tests\Helpers\MessageGenerator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -15,9 +16,7 @@ final class ConnectionEstablishedEventTest extends TestCase
     #[Test]
     public function it_create_event_on_correct_messages(): void
     {
-        $message = XmlMessage::from(
-            "<cross-domain-policy><allow-access-from domain='*' to-ports='5588' /></cross-domain-policy>",
-        );
+        $message = XmlMessage::from(MessageGenerator::domainPolicy());
 
         /** @var XmlMessage $message */
         $event = ConnectionEstablishedEvent::from($message);
@@ -28,9 +27,7 @@ final class ConnectionEstablishedEventTest extends TestCase
     #[Test]
     public function it_creates_null_on_invalid_messages(): void
     {
-        $message = JsonMessage::from(
-            '{"t":"xt","b":{"r":-1,"o":{"cmd":"moveToArea","areaName":"battleon-1","uoBranch":[],"strMapFileName":"Battleon/town-Battleon-7Nov25r1.swf","intType":"2","monBranch":[],"mondef":[],"areaId":3,"strMapName":"battleon"}}}',
-        );
+        $message = JsonMessage::from(MessageGenerator::loadInventory());
 
         /** @var JsonMessage $message */
         $event = ConnectionEstablishedEvent::from($message);
