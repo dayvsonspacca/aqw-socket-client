@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Commands;
 
 use AqwSocketClient\Interfaces\CommandInterface;
-use AqwSocketClient\Objects\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Packet;
 use Override;
 

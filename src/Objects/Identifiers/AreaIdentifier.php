@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Objects;
+namespace AqwSocketClient\Objects\Identifiers;
 
 final class AreaIdentifier extends Identifier {}

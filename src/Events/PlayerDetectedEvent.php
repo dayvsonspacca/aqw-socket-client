@@ -31,11 +31,9 @@ final class PlayerDetectedEvent implements EventInterface
     {
         if ($message instanceof DelimitedMessage) {
             if ($message->type === DelimitedMessageType::ExitArea) {
-                // @mago-expect analyzer:possibly-undefined-array-index
                 return new self($message->data[1]);
             }
             if ($message->type === DelimitedMessageType::PlayerChange) {
-                // @mago-expect analyzer:possibly-undefined-array-index
                 return new self($message->data[0]);
             }
         }

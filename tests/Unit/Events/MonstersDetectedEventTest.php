@@ -2,28 +2,26 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Tests\Unit\Commands;
+namespace AqwSocketClient\Tests\Unit\Events;
 
-use AqwSocketClient\Events\AreaJoinedEvent;
+use AqwSocketClient\Events\MonstersDetectedEvent;
 use AqwSocketClient\Messages\JsonMessage;
-use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Tests\Helpers\MessageGenerator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class AreaJoinedEventTest extends TestCase
+final class MonstersDetectedEventTest extends TestCase
 {
     #[Test]
     public function it_create_event_on_correct_messages(): void
     {
-        $message = JsonMessage::from(MessageGenerator::moveToArea('battleon', new AreaIdentifier(2)));
+        $message = JsonMessage::from(MessageGenerator::monstersDetected());
 
         /** @var JsonMessage $message */
-        $event = AreaJoinedEvent::from($message);
 
-        $this->assertInstanceOf(AreaJoinedEvent::class, $event);
-        $this->assertSame($event->mapName, 'battleon');
-        $this->assertSame($event->areaId->value, 2);
+        $event = MonstersDetectedEvent::from($message);
+        $this->assertInstanceOf(MonstersDetectedEvent::class, $event);
+        $this->assertCount(1, $event->monsters);
     }
 
     #[Test]
@@ -32,7 +30,7 @@ final class AreaJoinedEventTest extends TestCase
         $message = JsonMessage::from(MessageGenerator::loadInventory());
 
         /** @var JsonMessage $message */
-        $event = AreaJoinedEvent::from($message);
+        $event = MonstersDetectedEvent::from($message);
 
         $this->assertNull($event);
     }

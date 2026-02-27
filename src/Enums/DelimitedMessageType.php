@@ -28,4 +28,9 @@ enum DelimitedMessageType: string
      * Message signaling a change in player state or the detection of a new player.
      */
     case PlayerChange = 'uotls';
+
+    /**
+     * Message related to server warnings
+     */
+    case Warning = 'warning';
 }

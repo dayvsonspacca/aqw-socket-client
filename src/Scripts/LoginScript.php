@@ -12,8 +12,8 @@ use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
-use AqwSocketClient\Objects\AreaIdentifier;
-use AqwSocketClient\Objects\SocketIdentifier;
+use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use Override;
 
 final class LoginScript extends AbstractScript

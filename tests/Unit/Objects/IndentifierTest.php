@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Unit\Objects;
 
-use AqwSocketClient\Objects\AreaIdentifier;
-use AqwSocketClient\Objects\Identifier;
-use AqwSocketClient\Objects\SocketIdentifier;
+use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\Identifier;
+use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

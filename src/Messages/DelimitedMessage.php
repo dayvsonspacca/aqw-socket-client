@@ -25,6 +25,7 @@ final class DelimitedMessage implements MessageInterface
     private function __construct(
         public readonly DelimitedMessageType $type,
         public readonly array $data,
+        public readonly string $raw,
     ) {}
 
     /**
@@ -36,8 +37,6 @@ final class DelimitedMessage implements MessageInterface
      * @param string $message The raw string data received from the socket.
      * @return DelimitedMessage|false The newly created message object, or **false**
      * if the message format is invalid or the message type cannot be determined.
-     *
-     * @mago-ignore analyzer:possibly-undefined-array-index
      */
     #[Override]
     public static function from(string $message): DelimitedMessage|false
@@ -61,6 +60,6 @@ final class DelimitedMessage implements MessageInterface
 
         $data = array_filter($parts, static fn($key) => $key !== 0, ARRAY_FILTER_USE_KEY);
 
-        return new self($type, array_values($data));
+        return new self($type, array_values($data), $message);
     }
 }

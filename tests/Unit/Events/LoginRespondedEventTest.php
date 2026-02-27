@@ -7,7 +7,7 @@ namespace AqwSocketClient\Tests\Unit\Commands;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\JsonMessage;
-use AqwSocketClient\Objects\SocketIdentifier;
+use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use AqwSocketClient\Tests\Helpers\MessageGenerator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

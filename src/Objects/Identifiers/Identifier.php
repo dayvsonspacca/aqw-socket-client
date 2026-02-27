@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Objects;
+namespace AqwSocketClient\Objects\Identifiers;
 
 use InvalidArgumentException;
 
