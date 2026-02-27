@@ -255,4 +255,16 @@ final class SocketClientTest extends TestCase
 
         $this->assertTrue($script->isDone());
     }
+
+    #[Test]
+    public function it_disconnect_on_destruct(): void
+    {
+        $this->client->connect();
+
+        $this->assertTrue($this->socket->isConnected());
+
+        unset($this->client);
+
+        $this->assertFalse($this->socket->isConnected());
+    }
 }
