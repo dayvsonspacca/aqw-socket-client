@@ -63,8 +63,8 @@ final class JsonMessage implements MessageInterface
             return false;
         }
 
-        $type = JsonMessageType::from($cmd);
-        if (!$type) {
+        $type = JsonMessageType::tryFrom($cmd);
+        if ($type === null) {
             return false;
         }
 

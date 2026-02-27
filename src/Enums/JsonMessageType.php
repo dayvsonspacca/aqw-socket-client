@@ -7,48 +7,26 @@ namespace AqwSocketClient\Enums;
 /**
  * Defines the possible message types found within the **JSON formatted messages**
  * received from the AQW server.
- *
- * This enum maps the raw string identifier for an action to a
- * strongly-typed case for easy processing.
  */
-enum JsonMessageType
+enum JsonMessageType: string
 {
     /**
      * Message related to a player equipping an item.
-     * Maps to server string: `equipItem`.
      */
-    case EquipItem;
+    case EquipItem = 'equipItem';
 
     /**
      * Message related to a player changing the appearance of a currently equipped item.
-     * Maps to server string: `wearItem`.
      */
-    case WearItem;
+    case WearItem = 'wearItem';
 
     /**
      * Message related to the player joining areas.
      */
-    case JoinedArea;
+    case JoinedArea = 'moveToArea';
 
     /**
      * Message related to the player inventory loaded.
      */
-    case InventoryLoaded;
-
-    /**
-     * Creates an enum case from the raw string identifier found within the JSON message structure.
-     *
-     * @param string $string The raw message type identifier (e.g., 'equipItem', 'wearItem').
-     * @return self|false The corresponding enum case, or **false** if the string is unknown.
-     */
-    public static function from(string $string): self|false
-    {
-        return match ($string) {
-            'equipItem' => self::EquipItem,
-            'wearItem' => self::WearItem,
-            'moveToArea' => self::JoinedArea,
-            'loadInventoryBig' => self::InventoryLoaded,
-            default => false,
-        };
-    }
+    case InventoryLoaded = 'loadInventoryBig';
 }
