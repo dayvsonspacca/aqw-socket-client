@@ -39,7 +39,7 @@ final class JsonMessage implements MessageInterface
      * @mago-ignore analyzer:mixed-assignment
      */
     #[Override]
-    public static function fromString(string $message): JsonMessage|false
+    public static function from(string $message): JsonMessage|false
     {
         $json = json_decode($message, true);
 
@@ -62,7 +62,7 @@ final class JsonMessage implements MessageInterface
             return false;
         }
 
-        $type = JsonMessageType::fromString($cmd);
+        $type = JsonMessageType::from($cmd);
         if (!$type) {
             return false;
         }

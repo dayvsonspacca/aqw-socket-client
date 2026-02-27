@@ -14,7 +14,7 @@ final class XmlMessageTest extends TestCase
     public function should_create_xml_message(): void
     {
         $rawMessage = "<cross-domain-policy><allow-access-from domain='*' to-ports='5591' /></cross-domain-policy>";
-        $message = XmlMessage::fromString($rawMessage);
+        $message = XmlMessage::from($rawMessage);
 
         $this->assertInstanceOf(XmlMessage::class, $message);
     }
@@ -23,7 +23,7 @@ final class XmlMessageTest extends TestCase
     public function should_return_false_when_cant_parse_to_xml(): void
     {
         $rawMessage = '{"msg": "hello"}';
-        $message = XmlMessage::fromString($rawMessage);
+        $message = XmlMessage::from($rawMessage);
 
         $this->assertFalse($message);
     }

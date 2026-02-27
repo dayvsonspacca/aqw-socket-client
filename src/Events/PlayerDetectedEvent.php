@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Events;
 
+use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\MessageInterface;
+use AqwSocketClient\Messages\DelimitedMessage;
+use Override;
 
 /**
  * Represents an event triggered when the client receives data indicating
@@ -18,4 +22,24 @@ final class PlayerDetectedEvent implements EventInterface
     public function __construct(
         public readonly string $name,
     ) {}
+
+    /**
+     * @return ?PlayerDetectedEvent
+     */
+    #[Override]
+    public static function from(MessageInterface $message): ?EventInterface
+    {
+        if ($message instanceof DelimitedMessage) {
+            if ($message->type === DelimitedMessageType::ExitArea) {
+                // @mago-expect analyzer:possibly-undefined-array-index
+                return new self($message->data[1]);
+            }
+            if ($message->type === DelimitedMessageType::PlayerChange) {
+                // @mago-expect analyzer:possibly-undefined-array-index
+                return new self($message->data[0]);
+            }
+        }
+
+        return null;
+    }
 }

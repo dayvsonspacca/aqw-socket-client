@@ -41,7 +41,7 @@ enum JsonMessageType
      * @param string $string The raw message type identifier (e.g., 'equipItem', 'wearItem').
      * @return self|false The corresponding enum case, or **false** if the string is unknown.
      */
-    public static function fromString(string $string): self|false
+    public static function from(string $string): self|false
     {
         return match ($string) {
             'equipItem' => self::EquipItem,

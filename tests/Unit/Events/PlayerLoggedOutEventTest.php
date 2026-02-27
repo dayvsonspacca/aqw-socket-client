@@ -5,16 +5,34 @@ declare(strict_types=1);
 namespace AqwSocketClient\Tests\Unit\Events;
 
 use AqwSocketClient\Events\PlayerLoggedOutEvent;
+use AqwSocketClient\Messages\JsonMessage;
+use AqwSocketClient\Messages\XmlMessage;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class PlayerLoggedOutEventTest extends TestCase
 {
     #[Test]
-    public function should_create_player_logged_out_event(): void
+    public function it_create_event_on_correct_messages(): void
     {
-        $event = new PlayerLoggedOutEvent();
+        $message = XmlMessage::from("<msg t='sys'><body action='logout' r='0'></body></msg>");
+
+        /** @var XmlMessage $message */
+        $event = PlayerLoggedOutEvent::from($message);
 
         $this->assertInstanceOf(PlayerLoggedOutEvent::class, $event);
+    }
+
+    #[Test]
+    public function it_creates_null_on_invalid_messages(): void
+    {
+        $message = JsonMessage::from(
+            '{"t":"xt","b":{"r":-1,"o":{"bankCount":57,"cmd":"loadInventoryBig","items":[]}}}',
+        );
+
+        /** @var JsonMessage $message */
+        $event = PlayerLoggedOutEvent::from($message);
+
+        $this->assertNull($event);
     }
 }

@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Events;
 
+use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\MessageInterface;
+use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Objects\SocketIdentifier;
+use Override;
 
 /**
  * Represents the **response** received from the server after a client
@@ -23,4 +27,20 @@ final class LoginRespondedEvent implements EventInterface
         public readonly bool $success,
         public readonly SocketIdentifier $socketId,
     ) {}
+
+    /**
+     * @return ?LoginRespondedEvent
+     *
+     * @throws InvalidArgumentException When socket id in data is negative or zero.
+     * @mago-ignore analyzer:possibly-undefined-array-index
+     */
+    #[Override]
+    public static function from(MessageInterface $message): ?EventInterface
+    {
+        if ($message instanceof DelimitedMessage && $message->type === DelimitedMessageType::LoginResponse) {
+            return new self((bool) $message->data[0], new SocketIdentifier((int) $message->data[1]));
+        }
+
+        return null;
+    }
 }

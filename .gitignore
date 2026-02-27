@@ -2,3 +2,4 @@ vendor
 .phpunit.result.cache
 composer.lock
 public
+command.php

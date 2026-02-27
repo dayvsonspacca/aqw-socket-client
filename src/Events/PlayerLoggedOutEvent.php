@@ -5,9 +5,29 @@ declare(strict_types=1);
 namespace AqwSocketClient\Events;
 
 use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\MessageInterface;
+use AqwSocketClient\Messages\XmlMessage;
+use Override;
 
 /**
  * Represents an event triggered after the server confirmed that the player's
  * session was successfully terminated.
  */
-final class PlayerLoggedOutEvent implements EventInterface {}
+final class PlayerLoggedOutEvent implements EventInterface
+{
+    /**
+     * @return ?PlayerLoggedOutEvent
+     */
+    #[Override]
+    public static function from(MessageInterface $message): ?EventInterface
+    {
+        if ($message instanceof XmlMessage) {
+            $action = $message->dom->getElementsByTagName('body')->item(0)?->getAttribute('action');
+            if ($action === 'logout') {
+                return new self();
+            }
+        }
+
+        return null;
+    }
+}

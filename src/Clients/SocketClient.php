@@ -4,34 +4,29 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Clients;
 
-use AqwSocketClient\Interfaces\ClientInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
+use AqwSocketClient\Interfaces\SocketInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Messages\XmlMessage;
 use AqwSocketClient\Packet;
 use AqwSocketClient\Server;
+use AqwSocketClient\Sockets\NativeSocket;
 use Override;
 use RuntimeException;
-use Socket;
 
 /**
  * @mago-ignore analyzer:unhandled-thrown-type
  */
-final class SocketClient implements ClientInterface
+final class SocketClient extends AbstractClient
 {
-    private Socket $socket;
     private bool $connected = false;
 
     public function __construct(
         public readonly Server $server,
+        private readonly SocketInterface $socket = new NativeSocket(),
     ) {
-        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        if ($socket === false) {
-            throw new RuntimeException('Failed to create socket: ' . socket_strerror(socket_last_error()));
-        }
-
-        $this->socket = $socket;
+        $this->socket->create();
     }
 
     #[Override]
@@ -41,13 +36,7 @@ final class SocketClient implements ClientInterface
             throw new RuntimeException('Already connected.');
         }
 
-        // @mago-expect lint:no-error-control-operator
-        if (!@socket_connect($this->socket, $this->server->hostname, $this->server->port)) {
-            $error = socket_strerror(socket_last_error($this->socket));
-            socket_close($this->socket);
-
-            throw new RuntimeException('Failed to connect: ' . $error);
-        }
+        $this->socket->connect($this->server->hostname, $this->server->port);
 
         $this->connected = true;
     }
@@ -59,7 +48,7 @@ final class SocketClient implements ClientInterface
             throw new RuntimeException('Not connected.');
         }
 
-        socket_close($this->socket);
+        $this->socket->close();
 
         $this->connected = false;
     }
@@ -76,17 +65,11 @@ final class SocketClient implements ClientInterface
         $buffer = '';
 
         while (true) {
-            $chunk = '';
-            $bytes = socket_recv($this->socket, $chunk, 1, 0);
-
-            if ($bytes === false) {
-                throw new RuntimeException(
-                    'Failed to receive data: ' . socket_strerror(socket_last_error($this->socket)),
-                );
-            }
+            ['bytes' => $bytes, 'chunk' => $chunk] = $this->socket->read(1);
 
             if ($bytes === 0) {
                 $this->disconnect();
+                break;
             }
 
             if ($chunk === "\0") {
@@ -97,9 +80,9 @@ final class SocketClient implements ClientInterface
         }
 
         return array_values(array_filter([
-            DelimitedMessage::fromString($buffer),
-            JsonMessage::fromString($buffer),
-            XmlMessage::fromString($buffer),
+            DelimitedMessage::from($buffer),
+            JsonMessage::from($buffer),
+            XmlMessage::from($buffer),
         ]));
     }
 
@@ -111,16 +94,8 @@ final class SocketClient implements ClientInterface
     {
         $this->ensureConnected();
 
-        $length = strlen($packet->unpacketify());
-        $sent = socket_send($this->socket, $packet->unpacketify(), $length, 0);
-
-        if ($sent === false) {
-            throw new RuntimeException('Failed to send data: ' . socket_strerror(socket_last_error($this->socket)));
-        }
-
-        if ($sent < $length) {
-            throw new RuntimeException("Incomplete send: sent {$sent} of {$length} bytes.");
-        }
+        $data = $packet->unpacketify();
+        $this->socket->send($data);
     }
 
     #[Override]
@@ -139,7 +114,7 @@ final class SocketClient implements ClientInterface
     public function __destruct()
     {
         if ($this->isConnected()) {
-            socket_close($this->socket);
+            $this->socket->close();
         }
     }
 }
