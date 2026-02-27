@@ -37,6 +37,7 @@ register-super-globals = true
 ignore = [
     "unhandled-thrown-type",
     { code = 'too-many-arguments', in = 'tests/' },
+    { code = 'unused-statement', in = 'tests' },
     { code = 'unhandled-thrown-type', in = 'tests/' },
     { code = 'missing-override-attribute', in = 'tests/' },
     { code = 'possibly-undefined-array-index', in = ['tests/', 'src/Events', 'src/Messages'] },
