@@ -12,7 +12,6 @@ use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Events\PlayerDetectedEvent;
 use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
-use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Objects\AreaIdentifier;
 use AqwSocketClient\Objects\SocketIdentifier;
 use AqwSocketClient\Scripts\LoginScript;
@@ -36,7 +35,6 @@ final class LoginScriptTest extends TestCase
     {
         $commands = $this->script->handle(new ConnectionEstablishedEvent());
 
-        /** @var CommandInterface $command */
         $command = $commands[0];
 
         $this->assertInstanceOf(LoginCommand::class, $command);
@@ -47,7 +45,6 @@ final class LoginScriptTest extends TestCase
     {
         $commands = $this->script->handle(new LoginRespondedEvent(true, new SocketIdentifier(2)));
 
-        /** @var CommandInterface $command */
         $command = $commands[0];
 
         $this->assertInstanceOf(JoinInitialAreaCommand::class, $command);
@@ -73,7 +70,6 @@ final class LoginScriptTest extends TestCase
         $this->script->handle(new LoginRespondedEvent(true, new SocketIdentifier(2)));
         $commands = $this->script->handle(new AreaJoinedEvent('battleon', 1, new AreaIdentifier(1), [], []));
 
-        /** @var CommandInterface $command */
         $command = $commands[0];
 
         $this->assertInstanceOf(LoadPlayerInventoryCommand::class, $command);

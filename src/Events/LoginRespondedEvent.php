@@ -9,6 +9,7 @@ use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Objects\SocketIdentifier;
+use Override;
 
 /**
  * Represents the **response** received from the server after a client
@@ -28,11 +29,12 @@ final class LoginRespondedEvent implements EventInterface
     ) {}
 
     /**
-     * @param DelimitedMessage $message
      * @return ?LoginRespondedEvent
      *
-     * @throws InvalidArgumentException WHen socket id in data is negative or zero.
+     * @throws InvalidArgumentException When socket id in data is negative or zero.
+     * @mago-ignore analyzer:possibly-undefined-array-index
      */
+    #[Override]
     public static function from(MessageInterface $message): ?EventInterface
     {
         if ($message instanceof DelimitedMessage && $message->type === DelimitedMessageType::LoginResponse) {

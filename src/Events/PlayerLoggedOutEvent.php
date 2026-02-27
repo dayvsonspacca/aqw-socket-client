@@ -7,6 +7,7 @@ namespace AqwSocketClient\Events;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\XmlMessage;
+use Override;
 
 /**
  * Represents an event triggered after the server confirmed that the player's
@@ -15,9 +16,9 @@ use AqwSocketClient\Messages\XmlMessage;
 final class PlayerLoggedOutEvent implements EventInterface
 {
     /**
-     * @param XmlMessage $message
      * @return ?PlayerLoggedOutEvent
      */
+    #[Override]
     public static function from(MessageInterface $message): ?EventInterface
     {
         if ($message instanceof XmlMessage) {

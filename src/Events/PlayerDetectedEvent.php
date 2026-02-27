@@ -8,6 +8,7 @@ use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
+use Override;
 
 /**
  * Represents an event triggered when the client receives data indicating
@@ -23,9 +24,9 @@ final class PlayerDetectedEvent implements EventInterface
     ) {}
 
     /**
-     * @param DelimitedMessage $message
      * @return ?PlayerDetectedEvent
      */
+    #[Override]
     public static function from(MessageInterface $message): ?EventInterface
     {
         if ($message instanceof DelimitedMessage) {

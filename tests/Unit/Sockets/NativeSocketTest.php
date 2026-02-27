@@ -19,6 +19,9 @@ final class NativeSocketTest extends TestCase
         $this->socket = new NativeSocket();
     }
 
+    /**
+     * @return array{Socket, int}
+     */
     private function createServer(): array
     {
         $server = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -29,6 +32,7 @@ final class NativeSocketTest extends TestCase
         socket_listen($server, 1);
 
         $port = 0;
+        $addr = null;
         socket_getsockname($server, $addr, $port);
 
         return [$server, $port];

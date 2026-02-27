@@ -11,6 +11,7 @@ use Socket;
 
 /**
  * Concrete socket implementation using PHP's native socket_* functions.
+ * @mago-ignore analyzer:possibly-null-argument
  */
 final class NativeSocket implements SocketInterface
 {
@@ -63,7 +64,7 @@ final class NativeSocket implements SocketInterface
             throw new RuntimeException('Failed to receive data: ' . socket_strerror(socket_last_error($this->socket)));
         }
 
-        return ['bytes' => $bytes, 'chunk' => (string) $chunk];
+        return ['bytes' => $bytes, 'chunk' => $chunk];
     }
 
     #[Override]

@@ -10,6 +10,7 @@ use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Objects\AreaIdentifier;
 use InvalidArgumentException;
+use Override;
 
 /**
  * Represents an event triggered after the client successfully joined a specific
@@ -29,11 +30,11 @@ final class AreaJoinedEvent implements EventInterface
     ) {}
 
     /**
-     * @param JsonMessage $message
      * @return ?AreaJoinedEvent
      *
      * @throws InvalidArgumentException WHen area id in data is negative or zero.
      */
+    #[Override]
     public static function from(MessageInterface $message): ?EventInterface
     {
         if ($message instanceof JsonMessage && $message->type === JsonMessageType::JoinedArea) {

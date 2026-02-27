@@ -29,13 +29,17 @@ abstract class AbstractClient implements ClientInterface
         }
     }
 
+    /**
+     * @return EventInterface[]
+     */
     private function resolveEvents(ScriptInterface $script, MessageInterface $message): array
     {
         $events = [];
 
         foreach ($script->handles() as $eventClass) {
+            // @mago-expect analyzer:possibly-static-access-on-interface
             $event = $eventClass::from($message);
-
+            /** @var null|EventInterface */
             if ($event !== null) {
                 $events[] = $event;
             }

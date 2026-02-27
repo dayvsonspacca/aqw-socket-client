@@ -9,13 +9,6 @@ use RuntimeException;
 
 /**
  * Fake in-memory socket for unit tests.
- *
- * Usage:
- *   $socket = new FakeSocket();
- *   $socket->queueResponse('<msg t="sys">...</msg>');
- *   $socket->failOnConnect();
- *   $socket->failOnRecv();
- *   $socket->failOnSend();
  */
 final class FakeSocket implements SocketInterface
 {
@@ -64,6 +57,9 @@ final class FakeSocket implements SocketInterface
         return $this->connected;
     }
 
+    /**
+     * @return array<string>
+     */
     public function sentData(): array
     {
         return $this->sentData;

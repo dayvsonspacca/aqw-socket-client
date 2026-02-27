@@ -7,6 +7,7 @@ namespace AqwSocketClient\Events;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\XmlMessage;
+use Override;
 
 /**
  * Represents an event indicating that a connection to the AQW server has been established.
@@ -17,9 +18,9 @@ use AqwSocketClient\Messages\XmlMessage;
 final class ConnectionEstablishedEvent implements EventInterface
 {
     /**
-     * @param XmlMessage $message
      * @return ?ConnectionEstablishedEvent
      */
+    #[Override]
     public static function from(MessageInterface $message): ?EventInterface
     {
         if ($message instanceof XmlMessage) {
