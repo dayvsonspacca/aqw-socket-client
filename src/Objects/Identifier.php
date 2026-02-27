@@ -18,7 +18,7 @@ abstract class Identifier
     }
 
     /**
-     * @throws InvalidArgumentException When value negative or zero.
+     * @throws InvalidArgumentException
      */
     private function validate(): void
     {
