@@ -19,6 +19,7 @@ final class LevelTest extends TestCase
 
         $this->assertInstanceOf(Level::class, $level);
         $this->assertSame($level->value, 50);
+        $this->assertSame((string) $level, '50');
     }
 
     #[Test]

@@ -18,6 +18,7 @@ final class HealthTest extends TestCase
 
         $this->assertInstanceOf(Health::class, $identifier);
         $this->assertSame($identifier->value, 200);
+        $this->assertSame((string) $identifier, '200');
     }
 
     #[Test]
