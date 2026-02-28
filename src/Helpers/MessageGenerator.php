@@ -9,6 +9,7 @@ use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 
 /**
  * Pre-built valids AQW server messages.
+ * @mago-ignore lint:too-many-methods
  */
 final class MessageGenerator
 {
@@ -78,5 +79,15 @@ final class MessageGenerator
     public static function monstersDetected(): string
     {
         return '{"t":"xt","b":{"r":-1,"o":{"cmd":"moveToArea","areaName":"lair-5999","uoBranch":[],"strMapFileName":"Lair/town-Lair-29Dec24.swf","mondef":[{"sRace":"Dragonkin","MonID":"14","intLevel":25,"strLinkage":"Dragon1","strMonName":"Red Dragon","strMonFileName":"Dragon1.swf","strBehave":"walk"}],"intType":"1","monBranch":[{"intHPMax":30000,"iLvl":25,"MonMapID":14,"MonID":"14","intMP":100,"wDPS":13,"intState":1,"intMPMax":100,"bRed":"0","intHP":30000}],"sExtra":"","monmap":[],"areaId":311032,"strMapName":"lair"}}}';
+    }
+
+    public static function monstersDetectedOutOfOrder(): string
+    {
+        return '{"t":"xt","b":{"r":-1,"o":{"cmd":"moveToArea","areaName":"lair-5999","uoBranch":[],"strMapFileName":"Lair/town-Lair-29Dec24.swf","mondef":[{"sRace":"Dragonkin","MonID":"14","intLevel":25,"strLinkage":"Dragon1","strMonName":"Red Dragon","strMonFileName":"Dragon1.swf","strBehave":"walk"},{"sRace":"Undead","MonID":"7","intLevel":10,"strLinkage":"Zombie1","strMonName":"Zombie","strMonFileName":"Zombie1.swf","strBehave":"walk"}],"intType":"1","monBranch":[{"intHPMax":5000,"iLvl":10,"MonMapID":7,"MonID":"7","intMP":50,"wDPS":5,"intState":1,"intMPMax":50,"bRed":"0","intHP":5000},{"intHPMax":30000,"iLvl":25,"MonMapID":14,"MonID":"14","intMP":100,"wDPS":13,"intState":1,"intMPMax":100,"bRed":"0","intHP":30000}],"sExtra":"","monmap":[],"areaId":311032,"strMapName":"lair"}}}';
+    }
+
+    public static function monstersDetectedWithOrphanMondef(): string
+    {
+        return '{"t":"xt","b":{"r":-1,"o":{"cmd":"moveToArea","areaName":"lair-5999","uoBranch":[],"strMapFileName":"Lair/town-Lair-29Dec24.swf","mondef":[{"sRace":"Dragonkin","MonID":"14","intLevel":25,"strLinkage":"Dragon1","strMonName":"Red Dragon","strMonFileName":"Dragon1.swf","strBehave":"walk"},{"sRace":"Undead","MonID":"7","intLevel":10,"strLinkage":"Zombie1","strMonName":"Zombie","strMonFileName":"Zombie1.swf","strBehave":"walk"}],"intType":"1","monBranch":[{"intHPMax":30000,"iLvl":25,"MonMapID":14,"MonID":"14","intMP":100,"wDPS":13,"intState":1,"intMPMax":100,"bRed":"0","intHP":30000}],"sExtra":"","monmap":[],"areaId":311032,"strMapName":"lair"}}}';
     }
 }

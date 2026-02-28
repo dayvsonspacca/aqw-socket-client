@@ -27,7 +27,7 @@ final class MonstersDetectedEvent implements EventInterface
 
     /**
      * @return ?MonstersDetectedEvent
-     * @mago-ignore analyzer:mixed-argument,mixed-array-access
+     * @mago-ignore analyzer:mixed-argument,mixed-array-access,mixed-assignment,less-specific-nested-argument-type
      */
     #[Override]
     public static function from(MessageInterface $message): ?EventInterface
@@ -36,23 +36,24 @@ final class MonstersDetectedEvent implements EventInterface
             /** @var array{mondef: array, monBranch: array} */
             $data = $message->data;
 
+            $monBranchById = array_column($data['monBranch'], null, 'MonID');
+
             $monsters = [];
-            for ($i = 0; $i < count($data['monBranch']); $i++) {
-                // @codeCoverageIgnoreStart
-                if (!array_key_exists($i, $data['mondef'])) {
+            foreach ($data['mondef'] as $monDef) {
+                $monId = (int) $monDef['MonID'];
+
+                if (!array_key_exists($monId, $monBranchById)) {
                     continue;
                 }
-                // @codeCoverageIgnoreEnd
 
-                $identifier = new MonsterIdentifier((int) $data['mondef'][$i]['MonID']);
-                $name = new MonsterName($data['mondef'][$i]['strMonName']);
-                $level = new MonsterLevel((int) $data['mondef'][$i]['intLevel']);
-                $health = new Health((int) $data['monBranch'][$i]['intHPMax']);
+                $monBranch = $monBranchById[$monId];
 
-                $fileMetadata = new GameFileMetadata(
-                    $data['mondef'][$i]['strLinkage'],
-                    $data['mondef'][$i]['strMonFileName'],
-                );
+                $identifier = new MonsterIdentifier($monId);
+                $name = new MonsterName($monDef['strMonName']);
+                $level = new MonsterLevel((int) $monDef['intLevel']);
+                $health = new Health((int) $monBranch['intHPMax']);
+
+                $fileMetadata = new GameFileMetadata($monDef['strLinkage'], $monDef['strMonFileName']);
 
                 $monsters[] = new Monster($identifier, $name, $level, $health, $fileMetadata);
             }

@@ -34,4 +34,46 @@ final class MonstersDetectedEventTest extends TestCase
 
         $this->assertNull($event);
     }
+
+    #[Test]
+    public function it_correctly_maps_monster_health_when_branch_order_differs_from_mondef(): void
+    {
+        $message = JsonMessage::from(MessageGenerator::monstersDetectedOutOfOrder());
+
+        /** @var JsonMessage $message */
+        $event = MonstersDetectedEvent::from($message);
+
+        $this->assertInstanceOf(MonstersDetectedEvent::class, $event);
+        $this->assertCount(2, $event->monsters);
+
+        $redDragon = null;
+        $zombie = null;
+        foreach ($event->monsters as $monster) {
+            if ($monster->identifier->value === 14) {
+                $redDragon = $monster;
+            }
+            if ($monster->identifier->value === 7) {
+                $zombie = $monster;
+            }
+        }
+
+        $this->assertNotNull($redDragon);
+        $this->assertNotNull($zombie);
+
+        $this->assertSame(30_000, $redDragon->health->value);
+        $this->assertSame(5000, $zombie->health->value);
+    }
+
+    #[Test]
+    public function it_ignores_monster_in_mondef_without_corresponding_branch(): void
+    {
+        $message = JsonMessage::from(MessageGenerator::monstersDetectedWithOrphanMondef());
+
+        /** @var JsonMessage $message */
+        $event = MonstersDetectedEvent::from($message);
+
+        $this->assertInstanceOf(MonstersDetectedEvent::class, $event);
+
+        $this->assertCount(1, $event->monsters);
+    }
 }
