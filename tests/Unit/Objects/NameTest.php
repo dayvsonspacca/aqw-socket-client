@@ -18,6 +18,7 @@ final class NameTest extends TestCase
 
         $this->assertInstanceOf(Name::class, $name);
         $this->assertSame($name->value, 'Red dragon');
+        $this->assertSame((string) $name, 'Red dragon');
     }
 
     #[Test]
