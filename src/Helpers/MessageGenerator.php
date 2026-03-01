@@ -102,4 +102,9 @@ final class MessageGenerator
     {
         return '{"t":"xt","b":{"r":-1,"o":{"cmd":"moveToArea","areaName":"lair-5999","uoBranch":[],"strMapFileName":"Lair/town-Lair-29Dec24.swf","intType":"1","monBranch":[{"intHPMax":30000,"iLvl":25,"MonMapID":14,"MonID":"14","intMP":100,"wDPS":13,"intState":1,"intMPMax":100,"bRed":"0","intHP":30000}],"sExtra":"","monmap":[],"areaId":311032,"strMapName":"lair"}}}';
     }
+
+    public static function areaNotAvaliabel(): string
+    {
+        return '%xt%warning%-1%"cetoleonwar" is not available.%';
+    }
 }
