@@ -107,4 +107,9 @@ final class MessageGenerator
     {
         return '%xt%warning%-1%"cetoleonwar" is not available.%';
     }
+
+    public static function areaLocked(): string
+    {
+        return '%xt%warning%-1%"caroling" map is locked until event begins. Get \'Portal to Frostval Event\' house item from /BaseCamp to unlock.%';
+    }
 }
