@@ -90,4 +90,9 @@ final class MessageGenerator
     {
         return '{"t":"xt","b":{"r":-1,"o":{"cmd":"moveToArea","areaName":"lair-5999","uoBranch":[],"strMapFileName":"Lair/town-Lair-29Dec24.swf","mondef":[{"sRace":"Dragonkin","MonID":"14","intLevel":25,"strLinkage":"Dragon1","strMonName":"Red Dragon","strMonFileName":"Dragon1.swf","strBehave":"walk"},{"sRace":"Undead","MonID":"7","intLevel":10,"strLinkage":"Zombie1","strMonName":"Zombie","strMonFileName":"Zombie1.swf","strBehave":"walk"}],"intType":"1","monBranch":[{"intHPMax":30000,"iLvl":25,"MonMapID":14,"MonID":"14","intMP":100,"wDPS":13,"intState":1,"intMPMax":100,"bRed":"0","intHP":30000}],"sExtra":"","monmap":[],"areaId":311032,"strMapName":"lair"}}}';
     }
+
+    public static function areaMemberOnly(): string
+    {
+        return '%xt%warning%-1%"ancienttrigoras" is an Membership-Only Map.%';
+    }
 }
