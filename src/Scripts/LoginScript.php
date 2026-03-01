@@ -14,6 +14,7 @@ use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
+use AqwSocketClient\Objects\Names\PlayerName;
 use Override;
 
 final class LoginScript extends AbstractScript
@@ -22,7 +23,7 @@ final class LoginScript extends AbstractScript
     private ?AreaIdentifier $areaId = null;
 
     public function __construct(
-        private readonly string $username,
+        private readonly PlayerName $playerName,
         #[\SensitiveParameter]
         private readonly string $token,
     ) {}
@@ -42,7 +43,7 @@ final class LoginScript extends AbstractScript
     public function handle(EventInterface $event): array
     {
         if ($event instanceof ConnectionEstablishedEvent) {
-            return [new LoginCommand($this->username, $this->token)];
+            return [new LoginCommand($this->playerName, $this->token)];
         }
 
         if ($event instanceof LoginRespondedEvent && $event->success) {

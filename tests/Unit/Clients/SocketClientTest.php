@@ -17,6 +17,7 @@ use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\XmlMessage;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
+use AqwSocketClient\Objects\Names\PlayerName;
 use AqwSocketClient\Scripts\LoginScript;
 use AqwSocketClient\Server;
 use AqwSocketClient\Sockets\FakeSocket;
@@ -159,7 +160,7 @@ final class SocketClientTest extends TestCase
     {
         $this->client->connect();
 
-        $packet = new LoginCommand('PlayerOne', md5('test'))->pack();
+        $packet = new LoginCommand(new PlayerName('Hilise'), md5('test'))->pack();
         $this->client->send($packet);
 
         $this->assertNotEmpty($this->socket->sentData());
@@ -175,7 +176,7 @@ final class SocketClientTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageMatches('/^Failed to send data:/');
 
-        $packet = new LoginCommand('PlayerOne', md5('test'))->pack();
+        $packet = new LoginCommand(new PlayerName('Hilise'), md5('test'))->pack();
         $this->client->send($packet);
     }
 
@@ -185,7 +186,7 @@ final class SocketClientTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Not connected.');
 
-        $packet = new LoginCommand('PlayerOne', md5('test'))->pack();
+        $packet = new LoginCommand(new PlayerName('Hilise'), md5('test'))->pack();
         $this->client->send($packet);
     }
 
@@ -202,7 +203,7 @@ final class SocketClientTest extends TestCase
         $handshake = $this->client->receive();
         $this->assertInstanceOf(XmlMessage::class, $handshake[0]);
 
-        $loginPacket = new LoginCommand('PlayerOne', md5(random_bytes(4)))->pack();
+        $loginPacket = new LoginCommand(new PlayerName('Hilise'), md5(random_bytes(4)))->pack();
         $this->client->send($loginPacket);
 
         $messages = $this->client->receive();
@@ -220,15 +221,15 @@ final class SocketClientTest extends TestCase
     #[Test]
     public function it_can_run_a_script(): void
     {
-        $username = 'Hilise';
+        $playerName = new PlayerName('Hilise');
         $socketIdentifier = new SocketIdentifier(1);
         $token = md5('test');
         $areaIdentifier = new AreaIdentifier(1);
 
-        $script = new LoginScript($username, $token);
+        $script = new LoginScript($playerName, $token);
 
         $this->socket->queueResponse(MessageGenerator::domainPolicy());
-        $this->socket->queueResponse(MessageGenerator::loginReponded($username, $socketIdentifier));
+        $this->socket->queueResponse(MessageGenerator::loginReponded($playerName->value, $socketIdentifier));
         $this->socket->queueResponse(MessageGenerator::moveToArea('battleon', $areaIdentifier));
         $this->socket->queueResponse(MessageGenerator::loadInventory());
 
@@ -236,7 +237,7 @@ final class SocketClientTest extends TestCase
         $this->client->run($script);
 
         $this->assertContains(
-            new LoginCommand($username, $token)->pack()->unpacketify(),
+            new LoginCommand($playerName, $token)->pack()->unpacketify(),
             $this->socket->sentData(),
             ConnectionEstablishedEvent::class . ' not received',
         );

@@ -14,6 +14,7 @@ use AqwSocketClient\Events\PlayerDetectedEvent;
 use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
+use AqwSocketClient\Objects\Names\PlayerName;
 use AqwSocketClient\Scripts\LoginScript;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -24,10 +25,10 @@ final class LoginScriptTest extends TestCase
 
     protected function setUp(): void
     {
-        $username = 'Hilise';
+        $playerName = new PlayerName('Hilise');
         $token = md5(random_bytes(1));
 
-        $this->script = new LoginScript($username, $token);
+        $this->script = new LoginScript($playerName, $token);
     }
 
     #[Test]
