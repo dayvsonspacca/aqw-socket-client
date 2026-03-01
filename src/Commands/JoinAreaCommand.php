@@ -16,7 +16,7 @@ use Override;
  *
  * @see AqwSocketClient\Interfaces\CommandInterface
  */
-final class JoinMapCommand implements CommandInterface
+final class JoinAreaCommand implements CommandInterface
 {
     /**
      * @param string $username The username of the player attempting to join the map.

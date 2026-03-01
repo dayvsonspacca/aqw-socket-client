@@ -93,7 +93,7 @@ Commands are actions sent from the client to the server. Each one knows how to s
 | `LoginCommand` | Authenticates a player using their username and token. First command sent after connection. |
 | `LogoutCommand` | Gracefully terminates the player's session on the server. |
 | `JoinInitialAreaCommand` | Moves the player to the initial area (`battleon`) right after login. |
-| `JoinMapCommand` | Transfers the player to a specific map and room instance. |
+| `JoinAreaCommand` | Transfers the player to a specific map and room instance. |
 | `LoadPlayerInventoryCommand` | Requests the player's full inventory from the server. |
 | `LoadShopCommand` | Requests the item data for a specific shop by ID. |
 
