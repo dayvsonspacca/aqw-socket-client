@@ -68,7 +68,6 @@ final class SocketClient extends AbstractClient
             ['bytes' => $bytes, 'chunk' => $chunk] = $this->socket->read(1);
 
             if ($bytes === 0) {
-                $this->disconnect();
                 break;
             }
 
