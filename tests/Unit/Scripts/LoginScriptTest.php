@@ -11,7 +11,6 @@ use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Events\PlayerDetectedEvent;
-use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Objects\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
@@ -21,6 +20,7 @@ use AqwSocketClient\Objects\Names\PlayerName;
 use AqwSocketClient\Scripts\LoginScript;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 final class LoginScriptTest extends TestCase
 {
@@ -97,11 +97,18 @@ final class LoginScriptTest extends TestCase
     #[Test]
     public function it_have_the_expected_events(): void
     {
-        $this->assertCount(4, $this->script->handles());
+        $this->assertCount(3, $this->script->handles());
 
         $this->assertContains(ConnectionEstablishedEvent::class, $this->script->handles());
         $this->assertContains(LoginRespondedEvent::class, $this->script->handles());
         $this->assertContains(AreaJoinedEvent::class, $this->script->handles());
-        $this->assertContains(PlayerInventoryLoadedEvent::class, $this->script->handles());
+    }
+
+    #[Test]
+    public function it_fail_when_login_responded_not_success(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->script->handle(new LoginRespondedEvent(false, null));
     }
 }

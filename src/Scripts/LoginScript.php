@@ -10,12 +10,12 @@ use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
-use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use AqwSocketClient\Objects\Names\PlayerName;
 use Override;
+use RuntimeException;
 
 final class LoginScript extends AbstractScript
 {
@@ -35,7 +35,6 @@ final class LoginScript extends AbstractScript
             ConnectionEstablishedEvent::class,
             LoginRespondedEvent::class,
             AreaJoinedEvent::class,
-            PlayerInventoryLoadedEvent::class,
         ];
     }
 
@@ -46,9 +45,13 @@ final class LoginScript extends AbstractScript
             return [new LoginCommand($this->playerName, $this->token)];
         }
 
-        if ($event instanceof LoginRespondedEvent && $event->success) {
-            $this->socketId = $event->socketId;
-            return [new JoinInitialAreaCommand()];
+        if ($event instanceof LoginRespondedEvent) {
+            if ($event->success) {
+                $this->socketId = $event->socketId;
+                return [new JoinInitialAreaCommand()];
+            }
+
+            throw new RuntimeException('Failed to log-in');
         }
 
         if ($event instanceof AreaJoinedEvent && $event->area->name->value === 'battleon') {
