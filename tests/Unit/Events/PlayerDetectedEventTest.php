@@ -21,7 +21,7 @@ final class PlayerDetectedEventTest extends TestCase
 
         /** @var DelimitedMessage $message */
         $event = PlayerDetectedEvent::from($message);
-        $this->assertSame('made2903', $event->name);
+        $this->assertSame('made2903', $event->name->value);
         $this->assertInstanceOf(PlayerDetectedEvent::class, $event);
 
         $message = DelimitedMessage::from(MessageGenerator::exitArea(new PlayerName('Hilise')));
@@ -30,7 +30,7 @@ final class PlayerDetectedEventTest extends TestCase
         $event = PlayerDetectedEvent::from($message);
 
         $this->assertInstanceOf(PlayerDetectedEvent::class, $event);
-        $this->assertSame('Hilise', $event->name);
+        $this->assertSame('Hilise', $event->name->value);
     }
 
     #[Test]

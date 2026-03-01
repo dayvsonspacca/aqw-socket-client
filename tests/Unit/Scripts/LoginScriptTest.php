@@ -57,7 +57,7 @@ final class LoginScriptTest extends TestCase
     #[Test]
     public function it_dont_do_anything_to_unrelated_event(): void
     {
-        $commands = $this->script->handle(new PlayerDetectedEvent('Hilise'));
+        $commands = $this->script->handle(new PlayerDetectedEvent(new PlayerName('Hilise')));
         $this->assertEmpty($commands);
     }
 

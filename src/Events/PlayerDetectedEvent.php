@@ -8,6 +8,7 @@ use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
+use AqwSocketClient\Objects\Names\PlayerName;
 use Override;
 
 /**
@@ -16,11 +17,8 @@ use Override;
  */
 final class PlayerDetectedEvent implements EventInterface
 {
-    /**
-     * @param string $name The **username** of the player that was detected.
-     */
     public function __construct(
-        public readonly string $name,
+        public readonly PlayerName $name,
     ) {}
 
     /**
@@ -31,10 +29,10 @@ final class PlayerDetectedEvent implements EventInterface
     {
         if ($message instanceof DelimitedMessage) {
             if ($message->type === DelimitedMessageType::ExitArea) {
-                return new self($message->data[1]);
+                return new self(new PlayerName($message->data[1]));
             }
             if ($message->type === DelimitedMessageType::PlayerChange) {
-                return new self($message->data[0]);
+                return new self(new PlayerName($message->data[0]));
             }
         }
 
