@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 final class GameFileMetadataTest extends TestCase
 {
     #[Test]
-    public function it_can_create_game_file_metadata(): void
+    public function it_can_create(): void
     {
         $identifier = new GameFileMetadata('Dragon1', 'Dragon1.swf');
 

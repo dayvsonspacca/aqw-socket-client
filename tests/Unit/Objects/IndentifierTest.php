@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 final class IndentifierTest extends TestCase
 {
     #[Test]
-    public function it_can_create_identifier(): void
+    public function it_can_create(): void
     {
         $identifier = new SocketIdentifier(200);
 
@@ -24,7 +24,7 @@ final class IndentifierTest extends TestCase
     }
 
     #[Test]
-    public function should_throw_exeception_when_value_equal_zero(): void
+    public function should_throw_exception_when_value_equal_zero(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -32,7 +32,7 @@ final class IndentifierTest extends TestCase
     }
 
     #[Test]
-    public function should_throw_exeception_when_value_negative(): void
+    public function should_throw_exception_when_value_negative(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
