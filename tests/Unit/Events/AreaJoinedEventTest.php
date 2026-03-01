@@ -8,6 +8,7 @@ use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
+use AqwSocketClient\Objects\Names\AreaName;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +17,7 @@ final class AreaJoinedEventTest extends TestCase
     #[Test]
     public function it_create_event_on_correct_messages(): void
     {
-        $message = JsonMessage::from(MessageGenerator::moveToArea('battleon', new AreaIdentifier(2)));
+        $message = JsonMessage::from(MessageGenerator::moveToArea(new AreaName('battleon'), new AreaIdentifier(2)));
 
         /** @var JsonMessage $message */
         $event = AreaJoinedEvent::from($message);

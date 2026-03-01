@@ -7,6 +7,7 @@ namespace AqwSocketClient\Tests\Unit\Commands;
 use AqwSocketClient\Events\AwayFromKeyboardEvent;
 use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\DelimitedMessage;
+use AqwSocketClient\Objects\Names\PlayerName;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +27,7 @@ final class AwayFromKeyboardTest extends TestCase
     #[Test]
     public function it_creates_null_on_invalid_messages(): void
     {
-        $message = DelimitedMessage::from(MessageGenerator::exitArea('Hilise'));
+        $message = DelimitedMessage::from(MessageGenerator::exitArea(new PlayerName('Hilise')));
 
         /** @var DelimitedMessage $message */
         $event = AwayFromKeyboardEvent::from($message);

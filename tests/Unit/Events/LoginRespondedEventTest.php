@@ -9,6 +9,7 @@ use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
+use AqwSocketClient\Objects\Names\PlayerName;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -17,7 +18,10 @@ final class LoginRespondedEventTest extends TestCase
     #[Test]
     public function it_create_event_on_correct_messages(): void
     {
-        $message = DelimitedMessage::from(MessageGenerator::loginReponded('Hilise', new SocketIdentifier(1080)));
+        $message = DelimitedMessage::from(MessageGenerator::loginReponded(
+            new PlayerName('Hilise'),
+            new SocketIdentifier(1080),
+        ));
 
         /** @var DelimitedMessage $message */
         $event = LoginRespondedEvent::from($message);

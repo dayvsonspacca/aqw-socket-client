@@ -17,6 +17,7 @@ use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\XmlMessage;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
+use AqwSocketClient\Objects\Names\AreaName;
 use AqwSocketClient\Objects\Names\PlayerName;
 use AqwSocketClient\Scripts\LoginScript;
 use AqwSocketClient\Server;
@@ -113,7 +114,10 @@ final class SocketClientTest extends TestCase
     #[Test]
     public function it_can_receive_delimited_message_from_server(): void
     {
-        $this->socket->queueResponse(MessageGenerator::loginReponded('Hilise', new SocketIdentifier(1)));
+        $this->socket->queueResponse(MessageGenerator::loginReponded(
+            new PlayerName('Hilise'),
+            new SocketIdentifier(1),
+        ));
 
         $this->client->connect();
         $messages = $this->client->receive();
@@ -196,7 +200,7 @@ final class SocketClientTest extends TestCase
         $socketIdentifier = new SocketIdentifier(1);
 
         $this->socket->queueResponse(MessageGenerator::domainPolicy());
-        $this->socket->queueResponse(MessageGenerator::loginReponded('Hilise', $socketIdentifier));
+        $this->socket->queueResponse(MessageGenerator::loginReponded(new PlayerName('Hilise'), $socketIdentifier));
 
         $this->client->connect();
 
@@ -229,8 +233,8 @@ final class SocketClientTest extends TestCase
         $script = new LoginScript($playerName, $token);
 
         $this->socket->queueResponse(MessageGenerator::domainPolicy());
-        $this->socket->queueResponse(MessageGenerator::loginReponded($playerName->value, $socketIdentifier));
-        $this->socket->queueResponse(MessageGenerator::moveToArea('battleon', $areaIdentifier));
+        $this->socket->queueResponse(MessageGenerator::loginReponded($playerName, $socketIdentifier));
+        $this->socket->queueResponse(MessageGenerator::moveToArea(new AreaName('battleon'), $areaIdentifier));
         $this->socket->queueResponse(MessageGenerator::loadInventory());
 
         $this->client->connect();
