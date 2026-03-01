@@ -55,9 +55,23 @@ final class NativeSocket implements SocketInterface
     }
 
     #[Override]
-    public function read(int $length): array
+    public function read(int $length, int $timeout = 5): array
     {
         $this->assertCreated();
+
+        $read = [$this->socket];
+        $write = null;
+        $except = null;
+
+        $ready = socket_select($read, $write, $except, $timeout);
+
+        if ($ready === false) {
+            throw new RuntimeException('socket_select failed: ' . socket_strerror(socket_last_error($this->socket)));
+        }
+
+        if ($ready === 0) {
+            throw new RuntimeException('Read timed out after ' . $timeout . 's.');
+        }
 
         $chunk = '';
         $bytes = socket_recv($this->socket, $chunk, $length, 0);
