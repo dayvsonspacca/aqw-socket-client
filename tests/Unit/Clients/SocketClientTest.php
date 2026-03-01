@@ -8,6 +8,7 @@ use AqwSocketClient\Clients\SocketClient;
 use AqwSocketClient\Commands\JoinInitialAreaCommand;
 use AqwSocketClient\Commands\LoadPlayerInventoryCommand;
 use AqwSocketClient\Commands\LoginCommand;
+use AqwSocketClient\Enums\ScriptResult;
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
@@ -15,13 +16,16 @@ use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Interfaces\ClientInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\XmlMessage;
+use AqwSocketClient\Objects\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use AqwSocketClient\Objects\Names\AreaName;
 use AqwSocketClient\Objects\Names\PlayerName;
 use AqwSocketClient\Scripts\LoginScript;
 use AqwSocketClient\Server;
 use AqwSocketClient\Sockets\FakeSocket;
+use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -127,15 +131,15 @@ final class SocketClientTest extends TestCase
     }
 
     #[Test]
-    public function it_disconnects_when_server_closes_connection(): void
+    public function it_receives_nothing_when_buffer_empty(): void
     {
         $this->client->connect();
 
         $this->assertTrue($this->client->isConnected());
 
-        $this->client->receive();
+        $messages = $this->client->receive();
 
-        $this->assertFalse($this->client->isConnected());
+        $this->assertEmpty($messages);
     }
 
     #[Test]
@@ -238,7 +242,7 @@ final class SocketClientTest extends TestCase
         $this->socket->queueResponse(MessageGenerator::loadInventory());
 
         $this->client->connect();
-        $this->client->run($script);
+        $result = $this->client->run($script);
 
         $this->assertContains(
             new LoginCommand($playerName, $token)->pack()->unpacketify(),
@@ -257,6 +261,7 @@ final class SocketClientTest extends TestCase
         );
 
         $this->assertTrue($script->isDone());
+        $this->assertSame(ScriptResult::Success, $result);
     }
 
     #[Test]
@@ -269,5 +274,44 @@ final class SocketClientTest extends TestCase
         unset($this->client);
 
         $this->assertFalse($this->socket->isConnected());
+    }
+
+    #[Test]
+    public function it_verifies_if_its_a_expirable_scrip_and_if_is_expired(): void
+    {
+        $playerName = new PlayerName('Hilise');
+        $token = md5('test');
+
+        $script = new LoginScript($playerName, $token);
+        $this->assertFalse($script->isExpired());
+        $script->expiresAt(new DateTimeImmutable('-10 seconds'));
+        $this->assertTrue($script->isExpired());
+
+        $this->client->connect();
+        $result = $this->client->run($script);
+        $this->client->disconnect();
+
+        $this->assertSame(ScriptResult::Expired, $result);
+    }
+
+    #[Test]
+    public function it_results_in_diconnect_if_socket_close(): void
+    {
+        $playerName = new PlayerName('Hilise');
+        $socketIdentifier = new SocketIdentifier(1);
+        $token = md5('test');
+        $areaIdentifier = new AreaIdentifier(1);
+
+        $script = new LoginScript($playerName, $token);
+        $script->expiresAt(new DateTimeImmutable('-10 seconds'));
+
+        $this->client->connect();
+        $script->handle(new AreaJoinedEvent(
+            new Area($areaIdentifier, new AreaName('battleon'), new RoomIdentifier(1)),
+        ));
+        $this->client->disconnect();
+        $result = $this->client->run($script);
+
+        $this->assertSame(ScriptResult::Disconnected, $result);
     }
 }

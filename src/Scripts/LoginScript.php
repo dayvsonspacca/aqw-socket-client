@@ -11,14 +11,18 @@ use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\ExpirableScriptInterface;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use AqwSocketClient\Objects\Names\PlayerName;
+use AqwSocketClient\Scripts\Traits\HasExpiration;
 use Override;
 use RuntimeException;
 
-final class LoginScript extends AbstractScript
+final class LoginScript extends AbstractScript implements ExpirableScriptInterface
 {
+    use HasExpiration;
+
     private ?SocketIdentifier $socketId = null;
     private ?AreaIdentifier $areaId = null;
 

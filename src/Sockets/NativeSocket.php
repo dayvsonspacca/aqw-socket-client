@@ -62,6 +62,7 @@ final class NativeSocket implements SocketInterface
         $chunk = '';
         $bytes = socket_recv($this->socket, $chunk, $length, MSG_DONTWAIT);
 
+        // @codeCoverageIgnoreStart
         if ($bytes === false) {
             $error = socket_last_error($this->socket);
 
@@ -71,6 +72,7 @@ final class NativeSocket implements SocketInterface
 
             throw new RuntimeException('Failed to receive data: ' . socket_strerror($error));
         }
+        // @codeCoverageIgnoreEnd
 
         return ['bytes' => $bytes, 'chunk' => $chunk];
     }

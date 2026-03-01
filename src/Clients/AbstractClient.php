@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Clients;
 
+use AqwSocketClient\Enums\ScriptResult;
 use AqwSocketClient\Interfaces\ClientInterface;
 use AqwSocketClient\Interfaces\EventInterface;
+use AqwSocketClient\Interfaces\ExpirableScriptInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Interfaces\ScriptInterface;
 use Override;
@@ -13,13 +15,23 @@ use Override;
 abstract class AbstractClient implements ClientInterface
 {
     #[Override]
-    public function run(ScriptInterface $script): void
+    public function run(ScriptInterface $script): ScriptResult
     {
         while ($this->isConnected() && !$script->isDone()) {
+            if ($script instanceof ExpirableScriptInterface && $script->isExpired()) {
+                return ScriptResult::Expired;
+            }
+
             foreach ($this->receive() as $message) {
                 $this->processMessage($script, $message);
             }
         }
+
+        if (!$this->isConnected()) {
+            return ScriptResult::Disconnected;
+        }
+
+        return ScriptResult::Success;
     }
 
     private function processMessage(ScriptInterface $script, MessageInterface $message): void
