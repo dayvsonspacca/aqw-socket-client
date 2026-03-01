@@ -17,14 +17,17 @@ final class AreaJoinedEventTest extends TestCase
     #[Test]
     public function it_create_event_on_correct_messages(): void
     {
-        $message = JsonMessage::from(MessageGenerator::moveToArea(new AreaName('battleon'), new AreaIdentifier(2)));
+        $areaName = new AreaName('battleon');
+        $areaIdentifier = new AreaIdentifier(2);
+
+        $message = JsonMessage::from(MessageGenerator::moveToArea($areaName, $areaIdentifier));
 
         /** @var JsonMessage $message */
         $event = AreaJoinedEvent::from($message);
 
         $this->assertInstanceOf(AreaJoinedEvent::class, $event);
-        $this->assertSame($event->mapName, 'battleon');
-        $this->assertSame($event->areaId->value, 2);
+        $this->assertEquals($areaName, $event->area->name);
+        $this->assertEquals($areaIdentifier, $event->area->identifier);
     }
 
     #[Test]

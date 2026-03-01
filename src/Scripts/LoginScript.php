@@ -51,8 +51,8 @@ final class LoginScript extends AbstractScript
             return [new JoinInitialAreaCommand()];
         }
 
-        if ($event instanceof AreaJoinedEvent && $event->mapName === 'battleon') {
-            $this->areaId = $event->areaId;
+        if ($event instanceof AreaJoinedEvent && $event->area->name->value === 'battleon') {
+            $this->areaId = $event->area->identifier;
 
             if ($this->socketId !== null) {
                 $this->done();

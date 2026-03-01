@@ -12,8 +12,11 @@ use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Events\PlayerDetectedEvent;
 use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
+use AqwSocketClient\Objects\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
+use AqwSocketClient\Objects\Names\AreaName;
 use AqwSocketClient\Objects\Names\PlayerName;
 use AqwSocketClient\Scripts\LoginScript;
 use PHPUnit\Framework\Attributes\Test;
@@ -61,7 +64,9 @@ final class LoginScriptTest extends TestCase
     #[Test]
     public function it_dont_load_player_inventory_when_joins_battleon_but_socket_is_null(): void
     {
-        $commands = $this->script->handle(new AreaJoinedEvent('battleon', 1, new AreaIdentifier(1), [], []));
+        $commands = $this->script->handle(new AreaJoinedEvent(
+            new Area(new AreaIdentifier(1), new AreaName('battleon'), new RoomIdentifier(1)),
+        ));
         $this->assertEmpty($commands);
     }
 
@@ -69,7 +74,9 @@ final class LoginScriptTest extends TestCase
     public function it_dont_load_player_inventory_when_joins_battleon(): void
     {
         $this->script->handle(new LoginRespondedEvent(true, new SocketIdentifier(2)));
-        $commands = $this->script->handle(new AreaJoinedEvent('battleon', 1, new AreaIdentifier(1), [], []));
+        $commands = $this->script->handle(new AreaJoinedEvent(
+            new Area(new AreaIdentifier(1), new AreaName('battleon'), new RoomIdentifier(1)),
+        ));
 
         $command = $commands[0];
 
@@ -80,7 +87,9 @@ final class LoginScriptTest extends TestCase
     public function it_marks_script_as_done_when_ends(): void
     {
         $this->script->handle(new LoginRespondedEvent(true, new SocketIdentifier(2)));
-        $this->script->handle(new AreaJoinedEvent('battleon', 1, new AreaIdentifier(1), [], []));
+        $this->script->handle(new AreaJoinedEvent(
+            new Area(new AreaIdentifier(1), new AreaName('battleon'), new RoomIdentifier(1)),
+        ));
 
         $this->assertTrue($this->script->isDone());
     }

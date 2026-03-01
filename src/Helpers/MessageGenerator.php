@@ -21,7 +21,7 @@ final class MessageGenerator
             '{"t":"xt","b":{"r":-1,"o":{"cmd":"moveToArea","areaName":"'
             . (string) $areaName
             . '-1","uoBranch":[],"strMapFileName":"Battleon/town-Battleon-7Nov25r1.swf","intType":"2","monBranch":[],"mondef":[],"areaId":'
-            . (string) $areaIdentifier->value
+            . (string) $areaIdentifier
             . ',"strMapName":"'
             . (string) $areaName
             . '"}}}'
