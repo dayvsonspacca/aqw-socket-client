@@ -36,6 +36,7 @@ abstract class ExpirableScript extends AbstractScript implements ExpirableScript
     public function isExpired(): bool
     {
         if ($this->expiresAt === null) {
+            $this->expiresAt(new DateTimeImmutable('+1 minute'));
             return false;
         }
 
