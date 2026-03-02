@@ -13,16 +13,16 @@ use Override;
 /**
  * Represents an event triggered after the client try to join a area
  */
-final class AreaMemberOnlyEvent implements EventInterface
+final class AreaLockedEvent implements EventInterface
 {
     /**
-     * @return ?AreaMemberOnlyEvent
+     * @return ?AreaLockedEvent
      */
     #[Override]
     public static function from(MessageInterface $message): ?EventInterface
     {
         if ($message instanceof DelimitedMessage && $message->type === DelimitedMessageType::Warning) {
-            if (mb_strpos($message->data[0], 'is an Membership-Only Map.') !== false) {
+            if (mb_strpos($message->data[0], 'map is locked') !== false) {
                 return new self();
             }
         }

@@ -7,13 +7,17 @@ namespace AqwSocketClient\Tests\Unit\Scripts;
 use AqwSocketClient\Commands\JoinInitialAreaCommand;
 use AqwSocketClient\Commands\LoadPlayerInventoryCommand;
 use AqwSocketClient\Commands\LoginCommand;
+use AqwSocketClient\Enums\ScriptResult;
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Events\PlayerDetectedEvent;
-use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
+use AqwSocketClient\Objects\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
+use AqwSocketClient\Objects\Names\AreaName;
+use AqwSocketClient\Objects\Names\PlayerName;
 use AqwSocketClient\Scripts\LoginScript;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -24,10 +28,10 @@ final class LoginScriptTest extends TestCase
 
     protected function setUp(): void
     {
-        $username = 'Hilise';
+        $playerName = new PlayerName('Hilise');
         $token = md5(random_bytes(1));
 
-        $this->script = new LoginScript($username, $token);
+        $this->script = new LoginScript($playerName, $token);
     }
 
     #[Test]
@@ -53,14 +57,16 @@ final class LoginScriptTest extends TestCase
     #[Test]
     public function it_dont_do_anything_to_unrelated_event(): void
     {
-        $commands = $this->script->handle(new PlayerDetectedEvent('Hilise'));
+        $commands = $this->script->handle(new PlayerDetectedEvent(new PlayerName('Hilise')));
         $this->assertEmpty($commands);
     }
 
     #[Test]
     public function it_dont_load_player_inventory_when_joins_battleon_but_socket_is_null(): void
     {
-        $commands = $this->script->handle(new AreaJoinedEvent('battleon', 1, new AreaIdentifier(1), [], []));
+        $commands = $this->script->handle(new AreaJoinedEvent(
+            new Area(new AreaIdentifier(1), new AreaName('battleon'), new RoomIdentifier(1)),
+        ));
         $this->assertEmpty($commands);
     }
 
@@ -68,7 +74,9 @@ final class LoginScriptTest extends TestCase
     public function it_dont_load_player_inventory_when_joins_battleon(): void
     {
         $this->script->handle(new LoginRespondedEvent(true, new SocketIdentifier(2)));
-        $commands = $this->script->handle(new AreaJoinedEvent('battleon', 1, new AreaIdentifier(1), [], []));
+        $commands = $this->script->handle(new AreaJoinedEvent(
+            new Area(new AreaIdentifier(1), new AreaName('battleon'), new RoomIdentifier(1)),
+        ));
 
         $command = $commands[0];
 
@@ -76,22 +84,38 @@ final class LoginScriptTest extends TestCase
     }
 
     #[Test]
-    public function it_marks_script_as_done_when_ends(): void
+    public function it_marks_script_as_done_and_success_when_ends(): void
     {
         $this->script->handle(new LoginRespondedEvent(true, new SocketIdentifier(2)));
-        $this->script->handle(new AreaJoinedEvent('battleon', 1, new AreaIdentifier(1), [], []));
+        $this->script->handle(new AreaJoinedEvent(
+            new Area(new AreaIdentifier(1), new AreaName('battleon'), new RoomIdentifier(1)),
+        ));
 
         $this->assertTrue($this->script->isDone());
+        $this->assertSame($this->script->result(), ScriptResult::Success);
     }
 
     #[Test]
     public function it_have_the_expected_events(): void
     {
-        $this->assertCount(4, $this->script->handles());
+        $this->assertCount(3, $this->script->handles());
 
         $this->assertContains(ConnectionEstablishedEvent::class, $this->script->handles());
         $this->assertContains(LoginRespondedEvent::class, $this->script->handles());
         $this->assertContains(AreaJoinedEvent::class, $this->script->handles());
-        $this->assertContains(PlayerInventoryLoadedEvent::class, $this->script->handles());
+    }
+
+    #[Test]
+    public function it_fail_when_login_responded_not_success(): void
+    {
+        $this->script->handle(new LoginRespondedEvent(false, null));
+
+        $this->assertSame($this->script->result(), ScriptResult::Failed);
+    }
+
+    #[Test]
+    public function it_defaults_to_failed_if_result_called(): void
+    {
+        $this->assertSame($this->script->result(), ScriptResult::Failed);
     }
 }

@@ -8,7 +8,10 @@ use AqwSocketClient\Enums\JsonMessageType;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
+use AqwSocketClient\Objects\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
+use AqwSocketClient\Objects\Names\AreaName;
 use InvalidArgumentException;
 use Override;
 
@@ -18,21 +21,14 @@ use Override;
  */
 final class AreaJoinedEvent implements EventInterface
 {
-    /**
-     * @param string $mapName The name of the map or area that was joined (e.g., 'battleon').
-     * @param int $mapNumber The specific map instance number that was assigned (e.g., 1, 2, 3...).
-     * @param AreaIdentifier $areaId The server ID of the map.
-     */
     public function __construct(
-        public readonly string $mapName,
-        public readonly int $mapNumber,
-        public readonly AreaIdentifier $areaId,
+        public readonly Area $area,
     ) {}
 
     /**
      * @return ?AreaJoinedEvent
      *
-     * @throws InvalidArgumentException WHen area id in data is negative or zero.
+     * @throws InvalidArgumentException When fail in creates {@see AqwSocketClient\Objects\Area} attributes.
      */
     #[Override]
     public static function from(MessageInterface $message): ?EventInterface
@@ -41,11 +37,14 @@ final class AreaJoinedEvent implements EventInterface
             /** @var array{strMapName: string, areaName: string, areaId: numeric-string} $data */
             $data = $message->data;
 
-            return new self(
-                $data['strMapName'],
-                (int) explode('-', $data['areaName'])[1],
-                new AreaIdentifier((int) $data['areaId']),
-            );
+            $name = new AreaName($data['strMapName']);
+            $identifier = new AreaIdentifier((int) $data['areaId']);
+            $roomParts = explode('-', $data['areaName']);
+            $room = array_key_exists(1, $roomParts) ? new RoomIdentifier((int) $roomParts[1]) : new RoomIdentifier(0);
+
+            $area = new Area($identifier, $name, $room);
+
+            return new self($area);
         }
 
         return null;

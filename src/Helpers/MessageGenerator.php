@@ -6,6 +6,8 @@ namespace AqwSocketClient\Helpers;
 
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
+use AqwSocketClient\Objects\Names\AreaName;
+use AqwSocketClient\Objects\Names\PlayerName;
 
 /**
  * Pre-built valids AQW server messages.
@@ -13,15 +15,15 @@ use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
  */
 final class MessageGenerator
 {
-    public static function moveToArea(string $mapName, AreaIdentifier $areaIdentifier): string
+    public static function moveToArea(AreaName $areaName, AreaIdentifier $areaIdentifier): string
     {
         return (
             '{"t":"xt","b":{"r":-1,"o":{"cmd":"moveToArea","areaName":"'
-            . $mapName
+            . (string) $areaName
             . '-1","uoBranch":[],"strMapFileName":"Battleon/town-Battleon-7Nov25r1.swf","intType":"2","monBranch":[],"mondef":[],"areaId":'
-            . $areaIdentifier->value
+            . (string) $areaIdentifier
             . ',"strMapName":"'
-            . $mapName
+            . (string) $areaName
             . '"}}}'
         );
     }
@@ -31,27 +33,27 @@ final class MessageGenerator
         return "<cross-domain-policy><allow-access-from domain='*' to-ports='5588' /></cross-domain-policy>";
     }
 
-    public static function loginReponded(string $username, SocketIdentifier $socketIdentifier): string
+    public static function loginReponded(PlayerName $playerName, SocketIdentifier $socketIdentifier): string
     {
         return (
             '%xt%loginResponse%-1%true%'
-            . $socketIdentifier->value
+            . (string) $socketIdentifier
             . '%'
-            . $username
+            . (string) $playerName
             . '%%2026-02-26T19:33:21%sNews=1078,sMap=news/Map-UI_r38.swf,sBook=news/spiderbook3.swf,sAssets=Assets_20251205.swf,gMenu=dynamic-gameMenu-17Jan22.swf,sVersion=R0039,QSInfo=519,iMaxBagSlots=500,iMaxBankSlots=900,iMaxHouseSlots=300,iMaxGuildMembers=800,iMaxFriends=300,iMaxLoadoutSlots=50%3.0141%'
         );
     }
 
-    public static function exitArea(string $username): string
+    public static function exitArea(PlayerName $playerName): string
     {
-        return '%xt%exitArea%-1%1128%' . $username . '%';
+        return '%xt%exitArea%-1%1128%' . (string) $playerName . '%';
     }
 
-    public static function moveTowards(string $username): string
+    public static function moveTowards(PlayerName $playerName): string
     {
         return (
             '%xt%uotls%-1%'
-            . $username
+            . (string) $playerName
             . '%mvts:-1,px:500,py:375,strPad:Spawn,bResting:false,mvtd:0,tx:0,ty:0,strFrame:Enter%'
         );
     }
@@ -94,5 +96,20 @@ final class MessageGenerator
     public static function areaMemberOnly(): string
     {
         return '%xt%warning%-1%"ancienttrigoras" is an Membership-Only Map.%';
+    }
+
+    public static function monstersDetectedWithouMonDef(): string
+    {
+        return '{"t":"xt","b":{"r":-1,"o":{"cmd":"moveToArea","areaName":"lair-5999","uoBranch":[],"strMapFileName":"Lair/town-Lair-29Dec24.swf","intType":"1","monBranch":[{"intHPMax":30000,"iLvl":25,"MonMapID":14,"MonID":"14","intMP":100,"wDPS":13,"intState":1,"intMPMax":100,"bRed":"0","intHP":30000}],"sExtra":"","monmap":[],"areaId":311032,"strMapName":"lair"}}}';
+    }
+
+    public static function areaNotAvaliabel(): string
+    {
+        return '%xt%warning%-1%"cetoleonwar" is not available.%';
+    }
+
+    public static function areaLocked(): string
+    {
+        return '%xt%warning%-1%"caroling" map is locked until event begins. Get \'Portal to Frostval Event\' house item from /BaseCamp to unlock.%';
     }
 }

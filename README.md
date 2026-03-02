@@ -76,11 +76,16 @@ Events are strongly-typed objects produced from raw server messages. They repres
 | Event | Trigger |
 |---|---|
 | `ConnectionEstablishedEvent` | Server sent the cross-domain policy — connection is ready. |
-| `LoginRespondedEvent` | Server replied to a login attempt. Carries `success` (bool) and a temporary `socketId`. |
-| `AreaJoinedEvent` | Player successfully joined a map. Carries `mapName`, `mapNumber`, and `areaId`. |
-| `PlayerDetectedEvent` | A player entered or changed in the current area. Carries the player's `name`. |
-| `PlayerInventoryLoadedEvent` | Server finished sending the player's inventory data. |
+| `LoginRespondedEvent` | Server replied to a login attempt. |
+| `AreaJoinedEvent` | Player successfully joined a map. |
+| `PlayerDetectedEvent` | A player entered or changed state in the current area. |
+| `PlayerInventoryLoadedEvent` | Server finished sending the player's inventory. |
 | `PlayerLoggedOutEvent` | Server confirmed the player's session was terminated. |
+| `AlreadyInAreaEvent` | Player is already in the target area. |
+| `AreaLockedEvent` | Target area is locked and cannot be joined. |
+| `AreaMemberOnlyEvent` | Target area is restricted to members only. |
+| `AwayFromKeyboardEvent` | Player status changed to AFK. |
+| `AreaNotAvailableEvent` | Target area is currently unavailable. |
 
 ---
 
@@ -93,9 +98,8 @@ Commands are actions sent from the client to the server. Each one knows how to s
 | `LoginCommand` | Authenticates a player using their username and token. First command sent after connection. |
 | `LogoutCommand` | Gracefully terminates the player's session on the server. |
 | `JoinInitialAreaCommand` | Moves the player to the initial area (`battleon`) right after login. |
-| `JoinMapCommand` | Transfers the player to a specific map and room instance. |
+| `JoinAreaCommand` | Transfers the player to a specific map and room instance. |
 | `LoadPlayerInventoryCommand` | Requests the player's full inventory from the server. |
-| `LoadShopCommand` | Requests the item data for a specific shop by ID. |
 
 ---
 

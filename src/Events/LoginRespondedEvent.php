@@ -19,13 +19,9 @@ use Override;
  */
 final class LoginRespondedEvent implements EventInterface
 {
-    /**
-     * @param bool $success Indicates whether the login attempt was successful (**true**) or failed (**false**).
-     * @param SocketIdentifier $socketId The **socket ID** for the current connection. This is a **temporary** identifier assigned by the server, distinct from the permanent user account ID. It changes with every new connection.
-     */
     public function __construct(
         public readonly bool $success,
-        public readonly SocketIdentifier $socketId,
+        public readonly ?SocketIdentifier $socketId = null,
     ) {}
 
     /**
@@ -37,7 +33,10 @@ final class LoginRespondedEvent implements EventInterface
     public static function from(MessageInterface $message): ?EventInterface
     {
         if ($message instanceof DelimitedMessage && $message->type === DelimitedMessageType::LoginResponse) {
-            return new self((bool) $message->data[0], new SocketIdentifier((int) $message->data[1]));
+            $success = (bool) $message->data[0];
+            $socketId = $success ? new SocketIdentifier((int) $message->data[1]) : null;
+
+            return new self($success, $socketId);
         }
 
         return null;

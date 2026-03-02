@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 final class NameTest extends TestCase
 {
     #[Test]
-    public function it_can_create_name(): void
+    public function it_can_create(): void
     {
         $name = new class('Red dragon') extends Name {};
 
@@ -22,7 +22,7 @@ final class NameTest extends TestCase
     }
 
     #[Test]
-    public function should_throw_exeception_when_name_empty(): void
+    public function should_throw_exception_when_name_empty(): void
     {
         $this->expectException(InvalidArgumentException::class);
 

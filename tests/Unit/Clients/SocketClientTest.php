@@ -8,6 +8,7 @@ use AqwSocketClient\Clients\SocketClient;
 use AqwSocketClient\Commands\JoinInitialAreaCommand;
 use AqwSocketClient\Commands\LoadPlayerInventoryCommand;
 use AqwSocketClient\Commands\LoginCommand;
+use AqwSocketClient\Enums\ScriptResult;
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
@@ -15,11 +16,16 @@ use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Interfaces\ClientInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\XmlMessage;
+use AqwSocketClient\Objects\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
+use AqwSocketClient\Objects\Names\AreaName;
+use AqwSocketClient\Objects\Names\PlayerName;
 use AqwSocketClient\Scripts\LoginScript;
 use AqwSocketClient\Server;
 use AqwSocketClient\Sockets\FakeSocket;
+use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -112,7 +118,10 @@ final class SocketClientTest extends TestCase
     #[Test]
     public function it_can_receive_delimited_message_from_server(): void
     {
-        $this->socket->queueResponse(MessageGenerator::loginReponded('Hilise', new SocketIdentifier(1)));
+        $this->socket->queueResponse(MessageGenerator::loginReponded(
+            new PlayerName('Hilise'),
+            new SocketIdentifier(1),
+        ));
 
         $this->client->connect();
         $messages = $this->client->receive();
@@ -122,15 +131,15 @@ final class SocketClientTest extends TestCase
     }
 
     #[Test]
-    public function it_disconnects_when_server_closes_connection(): void
+    public function it_receives_nothing_when_buffer_empty(): void
     {
         $this->client->connect();
 
         $this->assertTrue($this->client->isConnected());
 
-        $this->client->receive();
+        $messages = $this->client->receive();
 
-        $this->assertFalse($this->client->isConnected());
+        $this->assertEmpty($messages);
     }
 
     #[Test]
@@ -159,7 +168,7 @@ final class SocketClientTest extends TestCase
     {
         $this->client->connect();
 
-        $packet = new LoginCommand('PlayerOne', md5('test'))->pack();
+        $packet = new LoginCommand(new PlayerName('Hilise'), md5('test'))->pack();
         $this->client->send($packet);
 
         $this->assertNotEmpty($this->socket->sentData());
@@ -175,7 +184,7 @@ final class SocketClientTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageMatches('/^Failed to send data:/');
 
-        $packet = new LoginCommand('PlayerOne', md5('test'))->pack();
+        $packet = new LoginCommand(new PlayerName('Hilise'), md5('test'))->pack();
         $this->client->send($packet);
     }
 
@@ -185,7 +194,7 @@ final class SocketClientTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Not connected.');
 
-        $packet = new LoginCommand('PlayerOne', md5('test'))->pack();
+        $packet = new LoginCommand(new PlayerName('Hilise'), md5('test'))->pack();
         $this->client->send($packet);
     }
 
@@ -195,14 +204,14 @@ final class SocketClientTest extends TestCase
         $socketIdentifier = new SocketIdentifier(1);
 
         $this->socket->queueResponse(MessageGenerator::domainPolicy());
-        $this->socket->queueResponse(MessageGenerator::loginReponded('Hilise', $socketIdentifier));
+        $this->socket->queueResponse(MessageGenerator::loginReponded(new PlayerName('Hilise'), $socketIdentifier));
 
         $this->client->connect();
 
         $handshake = $this->client->receive();
         $this->assertInstanceOf(XmlMessage::class, $handshake[0]);
 
-        $loginPacket = new LoginCommand('PlayerOne', md5(random_bytes(4)))->pack();
+        $loginPacket = new LoginCommand(new PlayerName('Hilise'), md5(random_bytes(4)))->pack();
         $this->client->send($loginPacket);
 
         $messages = $this->client->receive();
@@ -220,23 +229,23 @@ final class SocketClientTest extends TestCase
     #[Test]
     public function it_can_run_a_script(): void
     {
-        $username = 'Hilise';
+        $playerName = new PlayerName('Hilise');
         $socketIdentifier = new SocketIdentifier(1);
         $token = md5('test');
         $areaIdentifier = new AreaIdentifier(1);
 
-        $script = new LoginScript($username, $token);
+        $script = new LoginScript($playerName, $token);
 
         $this->socket->queueResponse(MessageGenerator::domainPolicy());
-        $this->socket->queueResponse(MessageGenerator::loginReponded($username, $socketIdentifier));
-        $this->socket->queueResponse(MessageGenerator::moveToArea('battleon', $areaIdentifier));
+        $this->socket->queueResponse(MessageGenerator::loginReponded($playerName, $socketIdentifier));
+        $this->socket->queueResponse(MessageGenerator::moveToArea(new AreaName('battleon'), $areaIdentifier));
         $this->socket->queueResponse(MessageGenerator::loadInventory());
 
         $this->client->connect();
         $this->client->run($script);
 
         $this->assertContains(
-            new LoginCommand($username, $token)->pack()->unpacketify(),
+            new LoginCommand($playerName, $token)->pack()->unpacketify(),
             $this->socket->sentData(),
             ConnectionEstablishedEvent::class . ' not received',
         );
@@ -252,6 +261,7 @@ final class SocketClientTest extends TestCase
         );
 
         $this->assertTrue($script->isDone());
+        $this->assertSame(ScriptResult::Success, $script->result());
     }
 
     #[Test]
@@ -264,5 +274,43 @@ final class SocketClientTest extends TestCase
         unset($this->client);
 
         $this->assertFalse($this->socket->isConnected());
+    }
+
+    #[Test]
+    public function it_verifies_if_its_a_expirable_scrip_and_if_is_expired(): void
+    {
+        $playerName = new PlayerName('Hilise');
+        $token = md5('test');
+
+        $script = new LoginScript($playerName, $token);
+        $this->assertFalse($script->isExpired());
+        $script->expiresAt(new DateTimeImmutable('-10 seconds'));
+        $this->assertTrue($script->isExpired());
+
+        $this->client->connect();
+        $this->client->run($script);
+        $this->client->disconnect();
+
+        $this->assertSame(ScriptResult::Expired, $script->result());
+    }
+
+    #[Test]
+    public function it_results_in_diconnect_if_socket_close(): void
+    {
+        $playerName = new PlayerName('Hilise');
+        $token = md5('test');
+        $areaIdentifier = new AreaIdentifier(1);
+
+        $script = new LoginScript($playerName, $token);
+        $script->expiresAt(new DateTimeImmutable('-10 seconds'));
+
+        $this->client->connect();
+        $script->handle(new AreaJoinedEvent(
+            new Area($areaIdentifier, new AreaName('battleon'), new RoomIdentifier(1)),
+        ));
+        $this->client->disconnect();
+        $this->client->run($script);
+
+        $this->assertSame(ScriptResult::Disconnected, $script->result());
     }
 }

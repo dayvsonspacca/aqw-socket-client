@@ -4,33 +4,32 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Unit\Commands;
 
-use AqwSocketClient\Events\AwayFromKeyboardEvent;
+use AqwSocketClient\Events\AreaNotAvaliableEvent;
 use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\DelimitedMessage;
-use AqwSocketClient\Objects\Names\PlayerName;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class AwayFromKeyboardTest extends TestCase
+final class AreaNotAvaliableEventTest extends TestCase
 {
     #[Test]
     public function it_create_event_on_correct_messages(): void
     {
-        $message = DelimitedMessage::from(MessageGenerator::afk());
+        $message = DelimitedMessage::from(MessageGenerator::areaNotAvaliabel());
 
         /** @var DelimitedMessage $message */
-        $event = AwayFromKeyboardEvent::from($message);
+        $event = AreaNotAvaliableEvent::from($message);
 
-        $this->assertInstanceOf(AwayFromKeyboardEvent::class, $event);
+        $this->assertInstanceOf(AreaNotAvaliableEvent::class, $event);
     }
 
     #[Test]
     public function it_creates_null_on_invalid_messages(): void
     {
-        $message = DelimitedMessage::from(MessageGenerator::exitArea(new PlayerName('Hilise')));
+        $message = DelimitedMessage::from(MessageGenerator::afk());
 
         /** @var DelimitedMessage $message */
-        $event = AwayFromKeyboardEvent::from($message);
+        $event = AreaNotAvaliableEvent::from($message);
 
         $this->assertNull($event);
     }

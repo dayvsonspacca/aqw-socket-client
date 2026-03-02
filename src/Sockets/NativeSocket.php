@@ -60,11 +60,17 @@ final class NativeSocket implements SocketInterface
         $this->assertCreated();
 
         $chunk = '';
-        $bytes = socket_recv($this->socket, $chunk, $length, 0);
+        $bytes = socket_recv($this->socket, $chunk, $length, MSG_DONTWAIT);
 
         // @codeCoverageIgnoreStart
         if ($bytes === false) {
-            throw new RuntimeException('Failed to receive data: ' . socket_strerror(socket_last_error($this->socket)));
+            $error = socket_last_error($this->socket);
+
+            if (in_array($error, [SOCKET_EAGAIN, SOCKET_EWOULDBLOCK], true)) {
+                return ['bytes' => 0, 'chunk' => ''];
+            }
+
+            throw new RuntimeException('Failed to receive data: ' . socket_strerror($error));
         }
         // @codeCoverageIgnoreEnd
 

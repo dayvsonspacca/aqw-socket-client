@@ -8,6 +8,7 @@ use AqwSocketClient\Events\PlayerDetectedEvent;
 use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\JsonMessage;
+use AqwSocketClient\Objects\Names\PlayerName;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -16,20 +17,20 @@ final class PlayerDetectedEventTest extends TestCase
     #[Test]
     public function it_create_event_on_correct_messages(): void
     {
-        $message = DelimitedMessage::from(MessageGenerator::moveTowards('made2903'));
+        $message = DelimitedMessage::from(MessageGenerator::moveTowards(new PlayerName('made2903')));
 
         /** @var DelimitedMessage $message */
         $event = PlayerDetectedEvent::from($message);
-        $this->assertSame('made2903', $event->name);
+        $this->assertSame('made2903', $event->name->value);
         $this->assertInstanceOf(PlayerDetectedEvent::class, $event);
 
-        $message = DelimitedMessage::from(MessageGenerator::exitArea('Hilise'));
+        $message = DelimitedMessage::from(MessageGenerator::exitArea(new PlayerName('Hilise')));
 
         /** @var DelimitedMessage $message */
         $event = PlayerDetectedEvent::from($message);
 
         $this->assertInstanceOf(PlayerDetectedEvent::class, $event);
-        $this->assertSame('Hilise', $event->name);
+        $this->assertSame('Hilise', $event->name->value);
     }
 
     #[Test]

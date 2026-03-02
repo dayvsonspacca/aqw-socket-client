@@ -10,19 +10,19 @@ use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
-use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
+use AqwSocketClient\Objects\Names\PlayerName;
 use Override;
 
-final class LoginScript extends AbstractScript
+final class LoginScript extends ExpirableScript
 {
     private ?SocketIdentifier $socketId = null;
     private ?AreaIdentifier $areaId = null;
 
     public function __construct(
-        private readonly string $username,
+        private readonly PlayerName $playerName,
         #[\SensitiveParameter]
         private readonly string $token,
     ) {}
@@ -34,7 +34,6 @@ final class LoginScript extends AbstractScript
             ConnectionEstablishedEvent::class,
             LoginRespondedEvent::class,
             AreaJoinedEvent::class,
-            PlayerInventoryLoadedEvent::class,
         ];
     }
 
@@ -42,19 +41,23 @@ final class LoginScript extends AbstractScript
     public function handle(EventInterface $event): array
     {
         if ($event instanceof ConnectionEstablishedEvent) {
-            return [new LoginCommand($this->username, $this->token)];
+            return [new LoginCommand($this->playerName, $this->token)];
         }
 
-        if ($event instanceof LoginRespondedEvent && $event->success) {
-            $this->socketId = $event->socketId;
-            return [new JoinInitialAreaCommand()];
+        if ($event instanceof LoginRespondedEvent) {
+            if ($event->success) {
+                $this->socketId = $event->socketId;
+                return [new JoinInitialAreaCommand()];
+            }
+
+            $this->failed();
         }
 
-        if ($event instanceof AreaJoinedEvent && $event->mapName === 'battleon') {
-            $this->areaId = $event->areaId;
+        if ($event instanceof AreaJoinedEvent && $event->area->name->value === 'battleon') {
+            $this->areaId = $event->area->identifier;
 
             if ($this->socketId !== null) {
-                $this->done();
+                $this->success();
                 return [new LoadPlayerInventoryCommand($this->areaId, $this->socketId)];
             }
         }

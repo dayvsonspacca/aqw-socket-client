@@ -22,6 +22,11 @@
         "quality:fix": [
             "@lint:fix",
             "@fmt"
+        ],
+        "dev": [
+            "@quality:fix",
+            "@quality",
+            "@test:coverage"
         ]
     },
     "autoload": {

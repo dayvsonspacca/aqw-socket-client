@@ -33,8 +33,12 @@ final class MonstersDetectedEvent implements EventInterface
     public static function from(MessageInterface $message): ?EventInterface
     {
         if ($message instanceof JsonMessage && $message->type === JsonMessageType::JoinedArea) {
-            /** @var array{mondef: array, monBranch: array} */
             $data = $message->data;
+
+            if (!array_key_exists('mondef', $data) || !array_key_exists('monBranch', $data)) {
+                return null;
+            }
+            /** @var array{mondef: array, monBranch: array} $data */
 
             $monBranchById = array_column($data['monBranch'], null, 'MonID');
 

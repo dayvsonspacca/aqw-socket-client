@@ -7,6 +7,7 @@ namespace AqwSocketClient\Tests\Unit\Messages;
 use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\DelimitedMessage;
+use AqwSocketClient\Objects\Names\PlayerName;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +16,7 @@ final class DelimitedMessageTest extends TestCase
     #[Test]
     public function it_create_message_when_valid_raw_string(): void
     {
-        $message = DelimitedMessage::from(MessageGenerator::exitArea('Hilise'));
+        $message = DelimitedMessage::from(MessageGenerator::exitArea(new PlayerName('Hilise')));
 
         $this->assertInstanceOf(DelimitedMessage::class, $message);
         $this->assertSame($message->type, DelimitedMessageType::ExitArea);

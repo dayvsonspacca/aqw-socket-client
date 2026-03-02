@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Commands;
 
 use AqwSocketClient\Interfaces\CommandInterface;
+use AqwSocketClient\Objects\Names\PlayerName;
 use AqwSocketClient\Packet;
 use Override;
 use SensitiveParameter;
@@ -17,12 +18,8 @@ use SensitiveParameter;
  */
 final class LoginCommand implements CommandInterface
 {
-    /**
-     * @param string $username The player's username.
-     * @param string $token The authentication token for the player.
-     */
     public function __construct(
-        public readonly string $username,
+        public readonly PlayerName $playerName,
         #[SensitiveParameter]
         public readonly string $token,
     ) {}
@@ -34,7 +31,7 @@ final class LoginCommand implements CommandInterface
             "<msg t='sys'>"
             . "<body action='login' r='0'>"
             . "<login z='zone_master'>"
-            . "<nick><![CDATA[SPIDER#0001~{$this->username}~3.01]]></nick>"
+            . "<nick><![CDATA[SPIDER#0001~{$this->playerName}~3.01]]></nick>"
             . "<pword><![CDATA[{$this->token}]]></pword>"
             . '</login></body></msg>',
         );

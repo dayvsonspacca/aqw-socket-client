@@ -18,10 +18,6 @@ use Override;
  */
 final class LoadPlayerInventoryCommand implements CommandInterface
 {
-    /**
-     * @param AreaIdentifier $areaId The ID of the current screen or area the player is in.
-     * @param SocketIdentifier $socketId The temporary socket ID for the current client connection.
-     */
     public function __construct(
         public readonly AreaIdentifier $areaId,
         public readonly SocketIdentifier $socketId,
