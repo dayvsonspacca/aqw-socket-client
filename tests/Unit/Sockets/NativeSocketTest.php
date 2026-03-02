@@ -45,6 +45,13 @@ final class NativeSocketTest extends TestCase
         return $peer;
     }
 
+    private function sendAndWait(Socket $peer, string $data): void
+    {
+        socket_send($peer, $data, strlen($data), 0);
+
+        usleep(10_000);
+    }
+
     #[Test]
     public function it_throws_when_read_before_create(): void
     {
@@ -143,7 +150,7 @@ final class NativeSocketTest extends TestCase
         $peer = $this->acceptClient($server);
 
         $message = 'world';
-        socket_send($peer, $message, strlen($message), 0);
+        $this->sendAndWait($peer, $message);
 
         $result = $this->socket->read(1024);
 
@@ -151,6 +158,27 @@ final class NativeSocketTest extends TestCase
         $this->assertArrayHasKey('chunk', $result);
         $this->assertSame(strlen($message), $result['bytes']);
         $this->assertSame($message, $result['chunk']);
+
+        $this->socket->close();
+        socket_close($peer);
+        socket_close($server);
+    }
+
+    #[Test]
+    public function it_returns_zero_bytes_when_no_data_available_within_timeout(): void
+    {
+        [$server, $port] = $this->createServer();
+
+        $this->socket->create();
+        $this->socket->connect('127.0.0.1', $port);
+
+        $peer = $this->acceptClient($server);
+
+        // Nothing is sent — read should exhaust retries and return 0 bytes.
+        $result = $this->socket->read(1024);
+
+        $this->assertSame(0, $result['bytes']);
+        $this->assertSame('', $result['chunk']);
 
         $this->socket->close();
         socket_close($peer);
@@ -175,7 +203,7 @@ final class NativeSocketTest extends TestCase
         $this->assertSame($outgoing, $buf);
 
         $reply = 'pong';
-        socket_send($peer, $reply, strlen($reply), 0);
+        $this->sendAndWait($peer, $reply);
 
         $result = $this->socket->read(1024);
         $this->assertSame($reply, $result['chunk']);

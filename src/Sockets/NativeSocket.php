@@ -58,23 +58,30 @@ final class NativeSocket implements SocketInterface
     public function read(int $length): array
     {
         $this->assertCreated();
-
         $chunk = '';
-        $bytes = socket_recv($this->socket, $chunk, $length, MSG_DONTWAIT);
+        $attempts = 0;
 
-        // @codeCoverageIgnoreStart
-        if ($bytes === false) {
-            $error = socket_last_error($this->socket);
+        while ($attempts < 100) {
+            $bytes = socket_recv($this->socket, $chunk, $length, MSG_DONTWAIT);
 
-            if (in_array($error, [SOCKET_EAGAIN, SOCKET_EWOULDBLOCK], true)) {
-                return ['bytes' => 0, 'chunk' => ''];
+            if ($bytes === false) {
+                $error = socket_last_error($this->socket);
+                if (in_array($error, [SOCKET_EAGAIN, SOCKET_EWOULDBLOCK], true)) {
+                    usleep(5000);
+                    $attempts++;
+                    continue;
+                }
+
+                // @codeCoverageIgnoreStart
+                throw new RuntimeException('Failed to receive data: ' . socket_strerror($error));
+
+                // @codeCoverageIgnoreEnd
             }
 
-            throw new RuntimeException('Failed to receive data: ' . socket_strerror($error));
+            return ['bytes' => $bytes, 'chunk' => $chunk];
         }
-        // @codeCoverageIgnoreEnd
 
-        return ['bytes' => $bytes, 'chunk' => $chunk];
+        return ['bytes' => 0, 'chunk' => ''];
     }
 
     #[Override]
