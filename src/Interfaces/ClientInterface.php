@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Interfaces;
 
-use AqwSocketClient\Enums\ScriptResult;
 use AqwSocketClient\Packet;
 
 /**
@@ -27,5 +26,5 @@ interface ClientInterface
 
     public function send(Packet $packet): void;
 
-    public function run(ScriptInterface $script): ScriptResult;
+    public function run(ScriptInterface $script);
 }

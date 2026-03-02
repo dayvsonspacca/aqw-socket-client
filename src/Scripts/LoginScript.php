@@ -11,18 +11,13 @@ use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Interfaces\EventInterface;
-use AqwSocketClient\Interfaces\ExpirableScriptInterface;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use AqwSocketClient\Objects\Names\PlayerName;
-use AqwSocketClient\Scripts\Traits\HasExpiration;
 use Override;
-use RuntimeException;
 
-final class LoginScript extends AbstractScript implements ExpirableScriptInterface
+final class LoginScript extends ExpirableScript
 {
-    use HasExpiration;
-
     private ?SocketIdentifier $socketId = null;
     private ?AreaIdentifier $areaId = null;
 
@@ -55,14 +50,14 @@ final class LoginScript extends AbstractScript implements ExpirableScriptInterfa
                 return [new JoinInitialAreaCommand()];
             }
 
-            throw new RuntimeException('Failed to log-in');
+            $this->failed();
         }
 
         if ($event instanceof AreaJoinedEvent && $event->area->name->value === 'battleon') {
             $this->areaId = $event->area->identifier;
 
             if ($this->socketId !== null) {
-                $this->done();
+                $this->success();
                 return [new LoadPlayerInventoryCommand($this->areaId, $this->socketId)];
             }
         }

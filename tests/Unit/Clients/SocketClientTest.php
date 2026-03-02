@@ -242,7 +242,7 @@ final class SocketClientTest extends TestCase
         $this->socket->queueResponse(MessageGenerator::loadInventory());
 
         $this->client->connect();
-        $result = $this->client->run($script);
+        $this->client->run($script);
 
         $this->assertContains(
             new LoginCommand($playerName, $token)->pack()->unpacketify(),
@@ -261,7 +261,7 @@ final class SocketClientTest extends TestCase
         );
 
         $this->assertTrue($script->isDone());
-        $this->assertSame(ScriptResult::Success, $result);
+        $this->assertSame(ScriptResult::Success, $script->result());
     }
 
     #[Test]
@@ -288,17 +288,16 @@ final class SocketClientTest extends TestCase
         $this->assertTrue($script->isExpired());
 
         $this->client->connect();
-        $result = $this->client->run($script);
+        $this->client->run($script);
         $this->client->disconnect();
 
-        $this->assertSame(ScriptResult::Expired, $result);
+        $this->assertSame(ScriptResult::Expired, $script->result());
     }
 
     #[Test]
     public function it_results_in_diconnect_if_socket_close(): void
     {
         $playerName = new PlayerName('Hilise');
-        $socketIdentifier = new SocketIdentifier(1);
         $token = md5('test');
         $areaIdentifier = new AreaIdentifier(1);
 
@@ -310,8 +309,8 @@ final class SocketClientTest extends TestCase
             new Area($areaIdentifier, new AreaName('battleon'), new RoomIdentifier(1)),
         ));
         $this->client->disconnect();
-        $result = $this->client->run($script);
+        $this->client->run($script);
 
-        $this->assertSame(ScriptResult::Disconnected, $result);
+        $this->assertSame(ScriptResult::Disconnected, $script->result());
     }
 }

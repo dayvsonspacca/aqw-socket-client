@@ -7,6 +7,7 @@ namespace AqwSocketClient\Tests\Unit\Scripts;
 use AqwSocketClient\Commands\JoinInitialAreaCommand;
 use AqwSocketClient\Commands\LoadPlayerInventoryCommand;
 use AqwSocketClient\Commands\LoginCommand;
+use AqwSocketClient\Enums\ScriptResult;
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
@@ -20,7 +21,6 @@ use AqwSocketClient\Objects\Names\PlayerName;
 use AqwSocketClient\Scripts\LoginScript;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 final class LoginScriptTest extends TestCase
 {
@@ -84,7 +84,7 @@ final class LoginScriptTest extends TestCase
     }
 
     #[Test]
-    public function it_marks_script_as_done_when_ends(): void
+    public function it_marks_script_as_done_and_success_when_ends(): void
     {
         $this->script->handle(new LoginRespondedEvent(true, new SocketIdentifier(2)));
         $this->script->handle(new AreaJoinedEvent(
@@ -92,6 +92,7 @@ final class LoginScriptTest extends TestCase
         ));
 
         $this->assertTrue($this->script->isDone());
+        $this->assertSame($this->script->result(), ScriptResult::Success);
     }
 
     #[Test]
@@ -107,8 +108,14 @@ final class LoginScriptTest extends TestCase
     #[Test]
     public function it_fail_when_login_responded_not_success(): void
     {
-        $this->expectException(RuntimeException::class);
-
         $this->script->handle(new LoginRespondedEvent(false, null));
+
+        $this->assertSame($this->script->result(), ScriptResult::Failed);
+    }
+
+    #[Test]
+    public function it_defaults_to_failed_if_result_called(): void
+    {
+        $this->assertSame($this->script->result(), ScriptResult::Failed);
     }
 }

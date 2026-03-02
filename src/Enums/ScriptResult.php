@@ -9,4 +9,5 @@ enum ScriptResult
     case Success;
     case Expired;
     case Disconnected;
+    case Failed;
 }
