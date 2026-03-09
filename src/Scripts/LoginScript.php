@@ -18,8 +18,8 @@ use Override;
 
 final class LoginScript extends ExpirableScript
 {
-    private ?SocketIdentifier $socketId = null;
-    private ?AreaIdentifier $areaId = null;
+    public ?SocketIdentifier $socketId = null;
+    public ?AreaIdentifier $areaId = null;
 
     public function __construct(
         private readonly PlayerName $playerName,
