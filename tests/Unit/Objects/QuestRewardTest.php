@@ -14,21 +14,28 @@ final class QuestRewardTest extends TestCase
     #[Test]
     public function it_can_create(): void
     {
-        $reward = new QuestReward(new ItemIdentifier(1), 50, 1, false);
+        $reward = new QuestReward(new ItemIdentifier(1), 2.5, 1);
 
         $this->assertInstanceOf(QuestReward::class, $reward);
         $this->assertSame($reward->itemIdentifier->value, 1);
-        $this->assertSame($reward->rate, 50);
+        $this->assertSame($reward->rate, 2.5);
         $this->assertSame($reward->quantity, 1);
-        $this->assertFalse($reward->guaranteed);
     }
 
     #[Test]
-    public function should_throw_exception_when_rate_below_1(): void
+    public function it_can_create_with_rate_100(): void
+    {
+        $reward = new QuestReward(new ItemIdentifier(1), 100.0, 1);
+
+        $this->assertSame($reward->rate, 100.0);
+    }
+
+    #[Test]
+    public function should_throw_exception_when_rate_zero(): void
     {
         $this->expectException(\Psl\Exception\InvariantViolationException::class);
 
-        new QuestReward(new ItemIdentifier(1), 0, 1, false);
+        new QuestReward(new ItemIdentifier(1), 0.0, 1);
     }
 
     #[Test]
@@ -36,7 +43,7 @@ final class QuestRewardTest extends TestCase
     {
         $this->expectException(\Psl\Exception\InvariantViolationException::class);
 
-        new QuestReward(new ItemIdentifier(1), 101, 1, false);
+        new QuestReward(new ItemIdentifier(1), 100.1, 1);
     }
 
     #[Test]
@@ -44,6 +51,6 @@ final class QuestRewardTest extends TestCase
     {
         $this->expectException(\Psl\Type\Exception\AssertException::class);
 
-        new QuestReward(new ItemIdentifier(1), 50, 0, false);
+        new QuestReward(new ItemIdentifier(1), 50.0, 0);
     }
 }
