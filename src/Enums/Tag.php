@@ -13,4 +13,5 @@ enum Tag
     case Placeable;      // bHouse
     case StaffOnly;      // bStaff
     case GuildQuest;     // bGuild
+    case OneTime;        // bOnce
 }
