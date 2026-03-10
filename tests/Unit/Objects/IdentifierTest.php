@@ -7,11 +7,10 @@ namespace AqwSocketClient\Tests\Unit\Objects;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\Identifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class IndentifierTest extends TestCase
+final class IdentifierTest extends TestCase
 {
     #[Test]
     public function it_can_create(): void
@@ -26,7 +25,7 @@ final class IndentifierTest extends TestCase
     #[Test]
     public function should_throw_exception_when_value_equal_zero(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\Psl\Type\Exception\AssertException::class);
 
         new SocketIdentifier(0);
     }
@@ -34,7 +33,7 @@ final class IndentifierTest extends TestCase
     #[Test]
     public function should_throw_exception_when_value_negative(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\Psl\Type\Exception\AssertException::class);
 
         new AreaIdentifier(-23);
     }

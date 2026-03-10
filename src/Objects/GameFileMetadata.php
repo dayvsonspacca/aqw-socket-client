@@ -4,29 +4,18 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Objects;
 
-use InvalidArgumentException;
+use Psl;
+use Psl\Str;
+use Psl\Type;
 
-final class GameFileMetadata
+final readonly class GameFileMetadata
 {
     public function __construct(
         public readonly string $link,
         public readonly string $file,
     ) {
-        $this->validate();
-    }
-
-    private function validate(): void
-    {
-        if ($this->link === '') {
-            throw new InvalidArgumentException('The file linkage cant be empty');
-        }
-
-        if ($this->file === '') {
-            throw new InvalidArgumentException('The game file name cant be empty');
-        }
-
-        if (!str_ends_with($this->file, '.swf')) {
-            throw new InvalidArgumentException('The game file need do be a .swf file.');
-        }
+        Type\non_empty_string()->assert($this->link);
+        Type\non_empty_string()->assert($this->file);
+        Psl\invariant(Str\ends_with($this->file, '.swf'), 'The game file must be a .swf file, got "%s".', $this->file);
     }
 }

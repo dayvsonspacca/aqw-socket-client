@@ -4,4 +4,4 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Objects\Names;
 
-final readonly class AreaName extends Name {}
+final readonly class ItemName extends Name {}

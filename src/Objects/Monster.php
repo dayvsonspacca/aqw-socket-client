@@ -8,7 +8,7 @@ use AqwSocketClient\Objects\Identifiers\MonsterIdentifier;
 use AqwSocketClient\Objects\Levels\MonsterLevel;
 use AqwSocketClient\Objects\Names\MonsterName;
 
-final class Monster
+final readonly class Monster
 {
     public function __construct(
         public readonly MonsterIdentifier $identifier,
