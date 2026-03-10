@@ -8,7 +8,7 @@ use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Names\AreaName;
 
-final class Area
+final readonly class Area
 {
     public function __construct(
         public readonly AreaIdentifier $identifier,

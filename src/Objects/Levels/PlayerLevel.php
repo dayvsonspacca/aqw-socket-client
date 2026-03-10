@@ -6,12 +6,12 @@ namespace AqwSocketClient\Objects\Levels;
 
 use Psl;
 
-final readonly class MonsterLevel extends Level
+final readonly class PlayerLevel extends Level
 {
     public function __construct(int $value)
     {
         parent::__construct($value);
 
-        Psl\invariant($this->value <= 255, 'Monster level cannot be greater than 255, got %d.', $this->value);
+        Psl\invariant($this->value <= 100, 'Player level cannot be greater than 100, got %d.', $this->value);
     }
 }
