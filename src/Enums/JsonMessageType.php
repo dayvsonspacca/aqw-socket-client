@@ -29,4 +29,9 @@ enum JsonMessageType: string
      * Message related to the player inventory loaded.
      */
     case InventoryLoaded = 'loadInventoryBig';
+
+    /**
+     * Message related to quests information
+     */
+    case QuestsLoaded = 'getQuests';
 }

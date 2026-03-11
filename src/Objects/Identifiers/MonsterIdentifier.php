@@ -4,4 +4,4 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Objects\Identifiers;
 
-final class MonsterIdentifier extends Identifier {}
+final readonly class MonsterIdentifier extends Identifier {}

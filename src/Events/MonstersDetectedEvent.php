@@ -9,10 +9,10 @@ use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Objects\GameFileMetadata;
-use AqwSocketClient\Objects\Health;
 use AqwSocketClient\Objects\Identifiers\MonsterIdentifier;
 use AqwSocketClient\Objects\Levels\MonsterLevel;
-use AqwSocketClient\Objects\Monster;
+use AqwSocketClient\Objects\Monster\Health;
+use AqwSocketClient\Objects\Monster\Monster;
 use AqwSocketClient\Objects\Names\MonsterName;
 use Override;
 

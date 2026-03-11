@@ -4,18 +4,14 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Objects\Levels;
 
-use InvalidArgumentException;
-use Override;
+use Psl;
 
-final class MonsterLevel extends Level
+final readonly class MonsterLevel extends Level
 {
-    #[Override]
-    protected function validate(): void
+    public function __construct(int $value)
     {
-        parent::validate();
+        parent::__construct($value);
 
-        if ($this->value > 255) {
-            throw new InvalidArgumentException('Monster level cannot be greater than 255.');
-        }
+        Psl\invariant($this->value <= 255, 'Monster level cannot be greater than 255, got %d.', $this->value);
     }
 }

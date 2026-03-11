@@ -4,4 +4,4 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Objects\Names;
 
-final class PlayerName extends Name {}
+final readonly class PlayerName extends Name {}

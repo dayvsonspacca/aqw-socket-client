@@ -50,5 +50,8 @@
         "phpunit/phpunit": "^12.3",
         "carthage-software/mago": "^1.12.0"
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "require": {
+        "azjezz/psl": "^5.3"
+    }
 }

@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+namespace AqwSocketClient\Objects\Levels;
+
+use Psl;
+
+final readonly class PlayerLevel extends Level
+{
+    public function __construct(int $value)
+    {
+        parent::__construct($value);
+
+        Psl\invariant($this->value <= 100, 'Player level cannot be greater than 100, got %d.', $this->value);
+    }
+}

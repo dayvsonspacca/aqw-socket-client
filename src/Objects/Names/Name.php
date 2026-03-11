@@ -4,23 +4,16 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Objects\Names;
 
-use InvalidArgumentException;
 use Override;
+use Psl\Type;
 use Stringable;
 
-abstract class Name implements Stringable
+abstract readonly class Name implements Stringable
 {
     public function __construct(
         public readonly string $value,
     ) {
-        $this->validate();
-    }
-
-    protected function validate(): void
-    {
-        if ($this->value === '') {
-            throw new InvalidArgumentException('A name cant be empty');
-        }
+        Type\non_empty_string()->assert($this->value);
     }
 
     #[Override]

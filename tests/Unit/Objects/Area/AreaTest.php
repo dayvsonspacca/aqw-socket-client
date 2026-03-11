@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Unit\Objects;
 
-use AqwSocketClient\Objects\Area;
+use AqwSocketClient\Objects\Area\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Names\AreaName;

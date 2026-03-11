@@ -12,7 +12,7 @@ use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Events\PlayerDetectedEvent;
-use AqwSocketClient\Objects\Area;
+use AqwSocketClient\Objects\Area\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;

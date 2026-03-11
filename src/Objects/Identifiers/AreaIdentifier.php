@@ -4,4 +4,4 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Objects\Identifiers;
 
-final class AreaIdentifier extends Identifier {}
+final readonly class AreaIdentifier extends Identifier {}
