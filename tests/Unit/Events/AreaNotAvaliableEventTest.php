@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Tests\Unit\Commands;
+namespace AqwSocketClient\Tests\Unit\Events;
 
 use AqwSocketClient\Events\AreaNotAvaliableEvent;
 use AqwSocketClient\Helpers\MessageGenerator;
@@ -15,7 +15,7 @@ final class AreaNotAvaliableEventTest extends TestCase
     #[Test]
     public function it_create_event_on_correct_messages(): void
     {
-        $message = DelimitedMessage::from(MessageGenerator::areaNotAvaliabel());
+        $message = DelimitedMessage::from(MessageGenerator::areaNotAvailable());
 
         /** @var DelimitedMessage $message */
         $event = AreaNotAvaliableEvent::from($message);

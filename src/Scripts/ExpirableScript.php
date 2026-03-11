@@ -23,7 +23,7 @@ abstract class ExpirableScript extends AbstractScript implements ExpirableScript
     public function expired(): void
     {
         $this->done();
-        $this->result = ScriptResult::Expired;
+        $this->setResult(ScriptResult::Expired);
     }
 
     #[Override]

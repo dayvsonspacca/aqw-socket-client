@@ -7,6 +7,8 @@ namespace AqwSocketClient\Messages;
 use AqwSocketClient\Enums\DelimitedMessageType;
 use AqwSocketClient\Interfaces\MessageInterface;
 use Override;
+use Psl\Str;
+use Psl\Vec;
 
 /**
  * Represents a server message that is formatted using a **delimiter**
@@ -41,25 +43,18 @@ final class DelimitedMessage implements MessageInterface
     #[Override]
     public static function from(string $message): DelimitedMessage|false
     {
-        if (!str_starts_with($message, '%') && !str_ends_with($message, '%')) {
+        if (!Str\starts_with($message, '%') && !Str\ends_with($message, '%')) {
             return false;
         }
 
-        $parts = explode('%', $message);
-        $parts = array_filter($parts, static fn($part) => !(mb_strlen($part) === 0));
-
-        unset($parts[1]);
-        unset($parts[3]);
-
-        $parts = array_values($parts);
+        $parts = Vec\filter(Str\split($message, '%'), static fn(string $part): bool => $part !== '');
+        $parts = Vec\filter_with_key($parts, static fn(int $k, string $_): bool => $k !== 0 && $k !== 2);
 
         $type = DelimitedMessageType::tryFrom($parts[0]);
         if ($type === null) {
             return false;
         }
 
-        $data = array_filter($parts, static fn($key) => $key !== 0, ARRAY_FILTER_USE_KEY);
-
-        return new self($type, array_values($data), $message);
+        return new self($type, Vec\slice($parts, 1), $message);
     }
 }

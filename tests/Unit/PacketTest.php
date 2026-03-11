@@ -8,7 +8,7 @@ use AqwSocketClient\Packet;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-class PacketTest extends TestCase
+final class PacketTest extends TestCase
 {
     #[Test]
     public function packetify_adds_null_terminator(): void

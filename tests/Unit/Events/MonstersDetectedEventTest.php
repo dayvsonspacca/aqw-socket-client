@@ -80,7 +80,7 @@ final class MonstersDetectedEventTest extends TestCase
     #[Test]
     public function it_returns_null_when_mondef_or_monbranch_not_defined(): void
     {
-        $message = JsonMessage::from(MessageGenerator::monstersDetectedWithouMonDef());
+        $message = JsonMessage::from(MessageGenerator::monstersDetectedWithoutMonDef());
 
         /** @var JsonMessage $message */
         $event = MonstersDetectedEvent::from($message);

@@ -18,7 +18,7 @@ use Override;
 abstract class AbstractScript implements ScriptInterface
 {
     private bool $done = false;
-    protected ?ScriptResult $result = null;
+    private ?ScriptResult $result = null;
 
     #[Override]
     public function isDone(): bool
@@ -48,6 +48,11 @@ abstract class AbstractScript implements ScriptInterface
     protected function done(): void
     {
         $this->done = true;
+    }
+
+    protected function setResult(ScriptResult $result): void
+    {
+        $this->result = $result;
     }
 
     #[Override]

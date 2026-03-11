@@ -30,9 +30,7 @@ use AqwSocketClient\Objects\Quest\ReputationRequirement;
 use AqwSocketClient\Objects\Quest\ReputationReward;
 use Override;
 
-/**
- * @mago-ignore lint:cyclomatic-complexity
- */
+/** @mago-ignore lint:cyclomatic-complexity */
 final class QuestLoadedEvent implements EventInterface
 {
     public function __construct(

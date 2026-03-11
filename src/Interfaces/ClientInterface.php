@@ -26,5 +26,5 @@ interface ClientInterface
 
     public function send(Packet $packet): void;
 
-    public function run(ScriptInterface $script);
+    public function run(ScriptInterface $script): void;
 }

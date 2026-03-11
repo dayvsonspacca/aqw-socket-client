@@ -6,6 +6,7 @@ namespace AqwSocketClient\Sockets;
 
 use AqwSocketClient\Interfaces\SocketInterface;
 use Override;
+use Psl\Str\Byte;
 use RuntimeException;
 use Socket;
 
@@ -89,7 +90,7 @@ final class NativeSocket implements SocketInterface
     {
         $this->assertCreated();
 
-        $length = strlen($data);
+        $length = Byte\length($data);
         $sent = socket_send($this->socket, $data, $length, 0);
 
         // @codeCoverageIgnoreStart

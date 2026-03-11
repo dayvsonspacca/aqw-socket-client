@@ -295,7 +295,7 @@ final class SocketClientTest extends TestCase
     }
 
     #[Test]
-    public function it_results_in_diconnect_if_socket_close(): void
+    public function it_results_in_disconnect_if_socket_closes(): void
     {
         $playerName = new PlayerName('Hilise');
         $token = md5('test');

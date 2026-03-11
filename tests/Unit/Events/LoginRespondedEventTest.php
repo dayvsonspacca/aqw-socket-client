@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AqwSocketClient\Tests\Unit\Commands;
+namespace AqwSocketClient\Tests\Unit\Events;
 
 use AqwSocketClient\Events\LoginRespondedEvent;
 use AqwSocketClient\Helpers\MessageGenerator;

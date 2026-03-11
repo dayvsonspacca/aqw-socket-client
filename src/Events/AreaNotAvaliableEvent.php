@@ -9,6 +9,7 @@ use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use Override;
+use Psl\Str;
 
 /**
  * Represents an event triggered after the client try to join a area
@@ -22,7 +23,7 @@ final class AreaNotAvaliableEvent implements EventInterface
     public static function from(MessageInterface $message): ?EventInterface
     {
         if ($message instanceof DelimitedMessage && $message->type === DelimitedMessageType::Warning) {
-            if (mb_strpos($message->data[0], 'is not available.') !== false) {
+            if (Str\contains($message->data[0], 'is not available.')) {
                 return new self();
             }
         }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Sockets;
 
 use AqwSocketClient\Interfaces\SocketInterface;
+use Psl\Str\Byte;
 use RuntimeException;
 
 /**
@@ -103,7 +104,7 @@ final class FakeSocket implements SocketInterface
         $chunk = substr($this->buffer, 0, $length);
         $this->buffer = substr($this->buffer, $length);
 
-        return ['bytes' => strlen($chunk), 'chunk' => $chunk];
+        return ['bytes' => Byte\length($chunk), 'chunk' => $chunk];
     }
 
     #[\Override]
@@ -115,6 +116,6 @@ final class FakeSocket implements SocketInterface
 
         $this->sentData[] = $data;
 
-        return strlen($data);
+        return Byte\length($data);
     }
 }

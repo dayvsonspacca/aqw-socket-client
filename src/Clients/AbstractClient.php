@@ -14,7 +14,7 @@ use Override;
 abstract class AbstractClient implements ClientInterface
 {
     #[Override]
-    public function run(ScriptInterface $script)
+    public function run(ScriptInterface $script): void
     {
         while ($this->isConnected() && !$script->isDone()) {
             if ($script instanceof ExpirableScriptInterface && $script->isExpired()) {

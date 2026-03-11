@@ -15,6 +15,8 @@ use AqwSocketClient\Objects\Monster\Health;
 use AqwSocketClient\Objects\Monster\Monster;
 use AqwSocketClient\Objects\Names\MonsterName;
 use Override;
+use Psl\Dict;
+use Psl\Iter;
 
 final class MonstersDetectedEvent implements EventInterface
 {
@@ -35,18 +37,18 @@ final class MonstersDetectedEvent implements EventInterface
         if ($message instanceof JsonMessage && $message->type === JsonMessageType::JoinedArea) {
             $data = $message->data;
 
-            if (!array_key_exists('mondef', $data) || !array_key_exists('monBranch', $data)) {
+            if (!Iter\contains_key($data, 'mondef') || !Iter\contains_key($data, 'monBranch')) {
                 return null;
             }
             /** @var array{mondef: array, monBranch: array} $data */
 
-            $monBranchById = array_column($data['monBranch'], null, 'MonID');
+            $monBranchById = Dict\reindex($data['monBranch'], static fn($m) => $m['MonID']);
 
             $monsters = [];
             foreach ($data['mondef'] as $monDef) {
                 $monId = (int) $monDef['MonID'];
 
-                if (!array_key_exists($monId, $monBranchById)) {
+                if (!Iter\contains_key($monBranchById, $monId)) {
                     continue;
                 }
 
@@ -60,6 +62,10 @@ final class MonstersDetectedEvent implements EventInterface
                 $fileMetadata = new GameFileMetadata($monDef['strLinkage'], $monDef['strMonFileName']);
 
                 $monsters[] = new Monster($identifier, $name, $level, $health, $fileMetadata);
+            }
+
+            if ($monsters === []) {
+                return null;
             }
 
             return new self($monsters);

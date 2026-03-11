@@ -8,7 +8,7 @@ use AqwSocketClient\Server;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-class ServerTest extends TestCase
+final class ServerTest extends TestCase
 {
     #[Test]
     public function all_returns_array_of_all_servers(): void

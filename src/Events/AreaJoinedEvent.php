@@ -12,8 +12,8 @@ use AqwSocketClient\Objects\Area\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Names\AreaName;
-use InvalidArgumentException;
 use Override;
+use Psl\Str;
 
 /**
  * Represents an event triggered after the client successfully joined a specific
@@ -27,8 +27,6 @@ final class AreaJoinedEvent implements EventInterface
 
     /**
      * @return ?AreaJoinedEvent
-     *
-     * @throws InvalidArgumentException When fail in creates {@see AqwSocketClient\Objects\Area} attributes.
      */
     #[Override]
     public static function from(MessageInterface $message): ?EventInterface
@@ -39,8 +37,9 @@ final class AreaJoinedEvent implements EventInterface
 
             $name = new AreaName($data['strMapName']);
             $identifier = new AreaIdentifier((int) $data['areaId']);
-            $roomParts = explode('-', $data['areaName']);
-            $room = array_key_exists(1, $roomParts) ? new RoomIdentifier((int) $roomParts[1]) : new RoomIdentifier(0);
+            $roomParts = Str\split($data['areaName'], '-');
+            $roomPart = $roomParts[1] ?? null;
+            $room = $roomPart !== null ? new RoomIdentifier((int) $roomPart) : null;
 
             $area = new Area($identifier, $name, $room);
 

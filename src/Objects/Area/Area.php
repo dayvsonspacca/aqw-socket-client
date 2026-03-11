@@ -13,6 +13,6 @@ final readonly class Area
     public function __construct(
         public readonly AreaIdentifier $identifier,
         public readonly AreaName $name,
-        public readonly RoomIdentifier $room,
+        public readonly ?RoomIdentifier $room,
     ) {}
 }
