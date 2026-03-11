@@ -112,4 +112,9 @@ final class MessageGenerator
     {
         return '%xt%warning%-1%"caroling" map is locked until event begins. Get \'Portal to Frostval Event\' house item from /BaseCamp to unlock.%';
     }
+
+    public static function questLoaded(): string
+    {
+        return '{"t":"xt","b":{"r":-1,"o":{"cmd":"getQuests","quests":{"868":{"QuestID":868,"sName":"Nulgath (Rare)","sDesc":"Bring me some Mana Energy from the Mana Golem.","sEndText":"AND I\'ve raised your chance of winning!","iExp":300,"iGold":13000,"iRep":300,"FactionID":4,"sFaction":"Evil","iLvl":0,"iReqRep":0,"iReqCP":0,"bOnce":0,"bUpg":0,"bStaff":0,"bGuild":0,"turnin":[{"ItemID":15385,"QuestID":868,"iQty":5}],"reward":[{"iRate":10,"ItemID":4861,"QuestID":868,"iType":1,"iQty":1}],"reqd":[]}}}}}';
+    }
 }
