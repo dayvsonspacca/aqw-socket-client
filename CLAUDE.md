@@ -23,6 +23,11 @@ composer quality               # lint + analyze + fmt:check + test
 composer quality:fix           # lint:fix + fmt (auto-fix everything)
 ```
 
+## Rules
+
+- After writing or modifying code, always run `composer quality` (lint + analyze + fmt:check + test) instead of just `composer test`. If lint or analyze fails, fix the issues before proceeding.
+- If formatting fails, run `composer quality:fix` to auto-fix, then re-run `composer quality` to confirm.
+
 ## Architecture
 
 The pipeline is: **Socket → Message → Event → Script → Command → Packet → Socket**
