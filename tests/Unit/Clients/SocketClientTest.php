@@ -16,7 +16,7 @@ use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Interfaces\ClientInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\XmlMessage;
-use AqwSocketClient\Objects\Area;
+use AqwSocketClient\Objects\Area\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;

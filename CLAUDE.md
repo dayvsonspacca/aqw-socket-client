@@ -65,9 +65,12 @@ Value objects are `final readonly class`, immutable, validated inline in the con
 - `Type\positive_int()->assert($v)` — throws `AssertException`
 - `Psl\invariant($cond, $msg, ...$args)` — throws `InvariantViolationException`
 
-Base hierarchies: `Identifier` (positive int), `Name` (non-empty string), `Level` (positive int with optional cap) — all in their respective subdirectories. Leaf classes extend these with no added logic.
-
-The `QuestRewardInterface` hierarchy: `ExperienceReward`, `GoldReward`, `ReputationReward`, `ItemReward` — all implement it for use as `list<QuestRewardInterface>` in `Quest`.
+Organized by domain:
+- `Identifiers/` — positive-int IDs (`Identifier` base). `Names/` — non-empty string names (`Name` base). `Levels/` — positive-int levels with optional cap (`Level` base). Leaf classes extend these with no added logic.
+- `Quest/` — `Quest`, `QuestDescription`, `QuestTurnInItem`, rewards (`QuestRewardInterface`: `ExperienceReward`, `GoldReward`, `ReputationReward`, `ItemReward`), requirements (`QuestRequirementInterface`: `LevelRequirement`, `ReputationRequirement`, `ClassPointsRequirement`, `ItemRequirement`, `QuestRequirement`).
+- `Monster/` — `Monster`, `Health`.
+- `Area/` — `Area`.
+- Root — shared objects: `Faction`, `GameFileMetadata`.
 
 ### Test helpers
 

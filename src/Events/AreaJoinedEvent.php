@@ -8,7 +8,7 @@ use AqwSocketClient\Enums\JsonMessageType;
 use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
-use AqwSocketClient\Objects\Area;
+use AqwSocketClient\Objects\Area\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Names\AreaName;
