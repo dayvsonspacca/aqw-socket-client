@@ -17,6 +17,10 @@ use PHPUnit\Framework\TestCase;
 
 final class QuestTest extends TestCase
 {
+    /**
+     * @param array<string, mixed> $overrides
+     * @mago-ignore analyzer:mixed-argument
+     */
     private function makeQuest(array $overrides = []): Quest
     {
         return new Quest(

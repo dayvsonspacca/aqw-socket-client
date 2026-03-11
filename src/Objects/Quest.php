@@ -7,8 +7,8 @@ namespace AqwSocketClient\Objects;
 use AqwSocketClient\Enums\Tag;
 use AqwSocketClient\Objects\Identifiers\QuestIdentifier;
 use AqwSocketClient\Objects\Names\QuestName;
-use Psl\Type;
 
+/** @mago-ignore lint:excessive-parameter-list */
 final readonly class Quest
 {
     /**
@@ -25,10 +25,5 @@ final readonly class Quest
         public readonly array $rewards,
         public readonly array $turnInItems,
         public readonly array $tags,
-    ) {
-        Type\vec(Type\instance_of(QuestRequirementInterface::class))->assert($this->requirements);
-        Type\vec(Type\instance_of(QuestRewardInterface::class))->assert($this->rewards);
-        Type\vec(Type\instance_of(QuestTurnInItem::class))->assert($this->turnInItems);
-        Type\vec(Type\instance_of(Tag::class))->assert($this->tags);
-    }
+    ) {}
 }

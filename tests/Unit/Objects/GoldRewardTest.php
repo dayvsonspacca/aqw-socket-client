@@ -14,11 +14,11 @@ final class GoldRewardTest extends TestCase
     #[Test]
     public function it_can_create(): void
     {
-        $reward = new GoldReward(13000);
+        $reward = new GoldReward(13_000);
 
         $this->assertInstanceOf(GoldReward::class, $reward);
         $this->assertInstanceOf(QuestRewardInterface::class, $reward);
-        $this->assertSame(13000, $reward->amount);
+        $this->assertSame(13_000, $reward->amount);
     }
 
     #[Test]

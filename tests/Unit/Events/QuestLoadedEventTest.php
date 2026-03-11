@@ -44,7 +44,7 @@ final class QuestLoadedEventTest extends TestCase
         $this->assertInstanceOf(ExperienceReward::class, $rewards[0]);
         $this->assertSame(300, $rewards[0]->amount);
         $this->assertInstanceOf(GoldReward::class, $rewards[1]);
-        $this->assertSame(13000, $rewards[1]->amount);
+        $this->assertSame(13_000, $rewards[1]->amount);
         $this->assertInstanceOf(ReputationReward::class, $rewards[2]);
         $this->assertSame(300, $rewards[2]->amount);
         $this->assertSame(4, $rewards[2]->faction->identifier->value);
@@ -63,7 +63,7 @@ final class QuestLoadedEventTest extends TestCase
 
         $this->assertInstanceOf(QuestLoadedEvent::class, $event);
         $this->assertCount(1, $event->quest->turnInItems);
-        $this->assertSame(15385, $event->quest->turnInItems[0]->itemIdentifier->value);
+        $this->assertSame(15_385, $event->quest->turnInItems[0]->itemIdentifier->value);
         $this->assertSame(5, $event->quest->turnInItems[0]->quantity);
     }
 

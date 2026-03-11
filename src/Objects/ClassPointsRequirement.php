@@ -11,6 +11,10 @@ final readonly class ClassPointsRequirement implements QuestRequirementInterface
     public function __construct(
         public readonly int $classPoints,
     ) {
-        Psl\invariant($this->classPoints >= 0, 'Required class points must be non-negative, got %d.', $this->classPoints);
+        Psl\invariant(
+            $this->classPoints >= 0,
+            'Required class points must be non-negative, got %d.',
+            $this->classPoints,
+        );
     }
 }
