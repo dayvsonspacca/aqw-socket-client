@@ -117,4 +117,14 @@ final class MessageGenerator
     {
         return '{"t":"xt","b":{"r":-1,"o":{"cmd":"getQuests","quests":{"868":{"QuestID":868,"sName":"Nulgath (Rare)","sDesc":"Bring me some Mana Energy from the Mana Golem.","sEndText":"AND I\'ve raised your chance of winning!","iExp":300,"iGold":13000,"iRep":300,"FactionID":4,"sFaction":"Evil","iLvl":0,"iReqRep":0,"iReqCP":0,"bOnce":0,"bUpg":0,"bStaff":0,"bGuild":0,"turnin":[{"ItemID":15385,"QuestID":868,"iQty":5}],"reward":[{"iRate":10,"ItemID":4861,"QuestID":868,"iType":1,"iQty":1}],"reqd":[]}}}}}';
     }
+
+    public static function questLoadedWithTagsAndRequirements(): string
+    {
+        return '{"t":"xt","b":{"r":-1,"o":{"cmd":"getQuests","quests":{"7165":{"QuestID":7165,"sName":"Member Quest","sDesc":"A quest for members only.","sEndText":"Well done!","iExp":500,"iGold":1000,"iRep":0,"FactionID":1,"sFaction":"Good","iLvl":30,"iReqRep":50000,"iReqCP":100,"bOnce":1,"bUpg":1,"bStaff":0,"bGuild":0,"turnin":[],"reward":[],"reqd":[]}}}}}';
+    }
+
+    public static function questLoadedWithStaffAndGuildTags(): string
+    {
+        return '{"t":"xt","b":{"r":-1,"o":{"cmd":"getQuests","quests":{"9999":{"QuestID":9999,"sName":"Staff Guild Quest","sDesc":"A staff guild quest.","sEndText":"Done!","iExp":0,"iGold":0,"iRep":0,"FactionID":1,"sFaction":"Good","iLvl":0,"iReqRep":0,"iReqCP":0,"bOnce":0,"bUpg":0,"bStaff":1,"bGuild":1,"turnin":[],"reward":[],"reqd":[]}}}}}';
+    }
 }

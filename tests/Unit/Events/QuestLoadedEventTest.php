@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Unit\Events;
 
+use AqwSocketClient\Enums\Tag;
 use AqwSocketClient\Events\QuestLoadedEvent;
 use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\JsonMessage;
+use AqwSocketClient\Objects\ClassPointsRequirement;
 use AqwSocketClient\Objects\ExperienceReward;
 use AqwSocketClient\Objects\GoldReward;
 use AqwSocketClient\Objects\ItemReward;
+use AqwSocketClient\Objects\LevelRequirement;
+use AqwSocketClient\Objects\ReputationRequirement;
 use AqwSocketClient\Objects\ReputationReward;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -68,7 +72,7 @@ final class QuestLoadedEventTest extends TestCase
     }
 
     #[Test]
-    public function it_maps_requirements_correctly(): void
+    public function it_maps_empty_requirements_when_all_zero(): void
     {
         $message = JsonMessage::from(MessageGenerator::questLoaded());
 
@@ -77,6 +81,71 @@ final class QuestLoadedEventTest extends TestCase
 
         $this->assertInstanceOf(QuestLoadedEvent::class, $event);
         $this->assertEmpty($event->quest->requirements);
+    }
+
+    #[Test]
+    public function it_maps_requirements_correctly(): void
+    {
+        $message = JsonMessage::from(MessageGenerator::questLoadedWithTagsAndRequirements());
+
+        /** @var JsonMessage $message */
+        $event = QuestLoadedEvent::from($message);
+
+        $this->assertInstanceOf(QuestLoadedEvent::class, $event);
+
+        $requirements = $event->quest->requirements;
+        $this->assertCount(3, $requirements);
+        $this->assertInstanceOf(LevelRequirement::class, $requirements[0]);
+        $this->assertSame(30, $requirements[0]->level->value);
+        $this->assertInstanceOf(ReputationRequirement::class, $requirements[1]);
+        $this->assertSame(50_000, $requirements[1]->reputation);
+        $this->assertSame(1, $requirements[1]->faction->identifier->value);
+        $this->assertInstanceOf(ClassPointsRequirement::class, $requirements[2]);
+        $this->assertSame(100, $requirements[2]->classPoints);
+    }
+
+    #[Test]
+    public function it_maps_tags_correctly(): void
+    {
+        $message = JsonMessage::from(MessageGenerator::questLoadedWithTagsAndRequirements());
+
+        /** @var JsonMessage $message */
+        $event = QuestLoadedEvent::from($message);
+
+        $this->assertInstanceOf(QuestLoadedEvent::class, $event);
+
+        $tags = $event->quest->tags;
+        $this->assertCount(2, $tags);
+        $this->assertSame(Tag::OneTime, $tags[0]);
+        $this->assertSame(Tag::MemberOnly, $tags[1]);
+    }
+
+    #[Test]
+    public function it_maps_staff_and_guild_tags_correctly(): void
+    {
+        $message = JsonMessage::from(MessageGenerator::questLoadedWithStaffAndGuildTags());
+
+        /** @var JsonMessage $message */
+        $event = QuestLoadedEvent::from($message);
+
+        $this->assertInstanceOf(QuestLoadedEvent::class, $event);
+
+        $tags = $event->quest->tags;
+        $this->assertCount(2, $tags);
+        $this->assertSame(Tag::StaffOnly, $tags[0]);
+        $this->assertSame(Tag::GuildQuest, $tags[1]);
+    }
+
+    #[Test]
+    public function it_maps_empty_tags_when_all_false(): void
+    {
+        $message = JsonMessage::from(MessageGenerator::questLoaded());
+
+        /** @var JsonMessage $message */
+        $event = QuestLoadedEvent::from($message);
+
+        $this->assertInstanceOf(QuestLoadedEvent::class, $event);
+        $this->assertEmpty($event->quest->tags);
     }
 
     #[Test]
