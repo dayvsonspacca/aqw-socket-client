@@ -76,9 +76,7 @@ final class QuestLoadedEventTest extends TestCase
         $event = QuestLoadedEvent::from($message);
 
         $this->assertInstanceOf(QuestLoadedEvent::class, $event);
-        $this->assertSame(0, $event->quest->requirements->level);
-        $this->assertSame(0, $event->quest->requirements->reputation);
-        $this->assertSame(0, $event->quest->requirements->classPoints);
+        $this->assertEmpty($event->quest->requirements);
     }
 
     #[Test]

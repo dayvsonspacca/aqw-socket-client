@@ -19,9 +19,12 @@ use AqwSocketClient\Objects\ItemReward;
 use AqwSocketClient\Objects\Names\FactionName;
 use AqwSocketClient\Objects\Names\QuestName;
 use AqwSocketClient\Objects\Quest;
+use AqwSocketClient\Objects\ClassPointsRequirement;
+use AqwSocketClient\Objects\LevelRequirement;
+use AqwSocketClient\Objects\Levels\PlayerLevel;
 use AqwSocketClient\Objects\QuestDescription;
-use AqwSocketClient\Objects\QuestRequirements;
 use AqwSocketClient\Objects\QuestTurnInItem;
+use AqwSocketClient\Objects\ReputationRequirement;
 use AqwSocketClient\Objects\ReputationReward;
 use Override;
 
@@ -82,16 +85,16 @@ final class QuestLoadedEvent implements EventInterface
         if ($q['bStaff'] ?? false) $tags[] = Tag::StaffOnly;
         if ($q['bGuild'] ?? false) $tags[] = Tag::GuildQuest;
 
+        $requirements = [];
+        if (($q['iLvl']    ?? 0) > 0) $requirements[] = new LevelRequirement(new PlayerLevel((int) $q['iLvl']));
+        if (($q['iReqRep'] ?? 0) > 0) $requirements[] = new ReputationRequirement((int) $q['iReqRep'], $faction);
+        if (($q['iReqCP']  ?? 0) > 0) $requirements[] = new ClassPointsRequirement((int) $q['iReqCP']);
+
         return new self(new Quest(
             new QuestIdentifier((int) $questId),
             new QuestName($q['sName']),
             new QuestDescription($q['sDesc'], $q['sEndText']),
-            new QuestRequirements(
-                (int) ($q['iLvl']    ?? 0),
-                (int) ($q['iReqRep'] ?? 0),
-                (int) ($q['iReqCP']  ?? 0),
-                [],
-            ),
+            $requirements,
             $rewards,
             $turnInItems,
             $tags,

@@ -7,25 +7,16 @@ namespace AqwSocketClient\Tests\Unit\Objects;
 use AqwSocketClient\Enums\Tag;
 use AqwSocketClient\Objects\ExperienceReward;
 use AqwSocketClient\Objects\Identifiers\QuestIdentifier;
+use AqwSocketClient\Objects\LevelRequirement;
+use AqwSocketClient\Objects\Levels\PlayerLevel;
 use AqwSocketClient\Objects\Names\QuestName;
 use AqwSocketClient\Objects\Quest;
 use AqwSocketClient\Objects\QuestDescription;
-use AqwSocketClient\Objects\QuestRequirements;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class QuestTest extends TestCase
 {
-    private function makeRequirements(array $overrides = []): QuestRequirements
-    {
-        return new QuestRequirements(
-            $overrides['level'] ?? 0,
-            $overrides['reputation'] ?? 0,
-            $overrides['classPoints'] ?? 0,
-            $overrides['items'] ?? [],
-        );
-    }
-
     private function makeQuest(array $overrides = []): Quest
     {
         return new Quest(
@@ -35,7 +26,7 @@ final class QuestTest extends TestCase
                 'Bring me some Mana Energy from the Mana Golem.',
                 'AND I\'ve raised your chance of winning!',
             ),
-            $overrides['requirements'] ?? $this->makeRequirements(),
+            $overrides['requirements'] ?? [],
             $overrides['rewards'] ?? [],
             $overrides['turnInItems'] ?? [],
             $overrides['tags'] ?? [],
@@ -50,10 +41,21 @@ final class QuestTest extends TestCase
         $this->assertInstanceOf(Quest::class, $quest);
         $this->assertSame(868, $quest->identifier->value);
         $this->assertSame('Nulgath (Rare)', $quest->name->value);
-        $this->assertSame(0, $quest->requirements->level);
+        $this->assertEmpty($quest->requirements);
         $this->assertEmpty($quest->rewards);
         $this->assertEmpty($quest->turnInItems);
         $this->assertEmpty($quest->tags);
+    }
+
+    #[Test]
+    public function it_can_create_with_requirements(): void
+    {
+        $quest = $this->makeQuest([
+            'requirements' => [new LevelRequirement(new PlayerLevel(10))],
+        ]);
+
+        $this->assertCount(1, $quest->requirements);
+        $this->assertInstanceOf(LevelRequirement::class, $quest->requirements[0]);
     }
 
     #[Test]
