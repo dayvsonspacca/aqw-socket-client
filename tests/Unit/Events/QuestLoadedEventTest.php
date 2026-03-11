@@ -8,7 +8,7 @@ use AqwSocketClient\Enums\Tag;
 use AqwSocketClient\Events\QuestLoadedEvent;
 use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Messages\JsonMessage;
-use AqwSocketClient\Objects\Quest\ClassPointsRequirement;
+use AqwSocketClient\Objects\Quest\ClassRankRequirement;
 use AqwSocketClient\Objects\Quest\ExperienceReward;
 use AqwSocketClient\Objects\Quest\GoldReward;
 use AqwSocketClient\Objects\Quest\ItemReward;
@@ -98,10 +98,11 @@ final class QuestLoadedEventTest extends TestCase
         $this->assertInstanceOf(LevelRequirement::class, $requirements[0]);
         $this->assertSame(30, $requirements[0]->level->value);
         $this->assertInstanceOf(ReputationRequirement::class, $requirements[1]);
-        $this->assertSame(50_000, $requirements[1]->reputation);
-        $this->assertSame(1, $requirements[1]->faction->identifier->value);
-        $this->assertInstanceOf(ClassPointsRequirement::class, $requirements[2]);
-        $this->assertSame(100, $requirements[2]->classPoints);
+        $this->assertSame(1, $requirements[1]->factionIdentifier->value);
+        $this->assertSame(5, $requirements[1]->rank->value);
+        $this->assertInstanceOf(ClassRankRequirement::class, $requirements[2]);
+        $this->assertSame(42, $requirements[2]->classIdentifier->value);
+        $this->assertSame(10, $requirements[2]->rank->value);
     }
 
     #[Test]

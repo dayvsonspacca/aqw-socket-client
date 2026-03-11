@@ -10,13 +10,15 @@ use AqwSocketClient\Interfaces\EventInterface;
 use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Messages\JsonMessage;
 use AqwSocketClient\Objects\Faction;
+use AqwSocketClient\Objects\Identifiers\ClassIdentifier;
 use AqwSocketClient\Objects\Identifiers\FactionIdentifier;
 use AqwSocketClient\Objects\Identifiers\ItemIdentifier;
 use AqwSocketClient\Objects\Identifiers\QuestIdentifier;
 use AqwSocketClient\Objects\Levels\PlayerLevel;
+use AqwSocketClient\Objects\Levels\Rank;
 use AqwSocketClient\Objects\Names\FactionName;
 use AqwSocketClient\Objects\Names\QuestName;
-use AqwSocketClient\Objects\Quest\ClassPointsRequirement;
+use AqwSocketClient\Objects\Quest\ClassRankRequirement;
 use AqwSocketClient\Objects\Quest\ExperienceReward;
 use AqwSocketClient\Objects\Quest\GoldReward;
 use AqwSocketClient\Objects\Quest\ItemReward;
@@ -98,10 +100,16 @@ final class QuestLoadedEvent implements EventInterface
             $requirements[] = new LevelRequirement(new PlayerLevel((int) $q['iLvl']));
         }
         if (($q['iReqRep'] ?? 0) > 0) {
-            $requirements[] = new ReputationRequirement((int) $q['iReqRep'], $faction);
+            $requirements[] = new ReputationRequirement(
+                new FactionIdentifier((int) $q['FactionID']),
+                new Rank((int) $q['iReqRep']),
+            );
         }
         if (($q['iReqCP'] ?? 0) > 0) {
-            $requirements[] = new ClassPointsRequirement((int) $q['iReqCP']);
+            $requirements[] = new ClassRankRequirement(
+                new ClassIdentifier((int) $q['iClass']),
+                new Rank((int) $q['iReqCP']),
+            );
         }
 
         return new self(

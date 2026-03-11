@@ -67,7 +67,7 @@ Value objects are `final readonly class`, immutable, validated inline in the con
 
 Organized by domain:
 - `Identifiers/` — positive-int IDs (`Identifier` base). `Names/` — non-empty string names (`Name` base). `Levels/` — positive-int levels with optional cap (`Level` base). Leaf classes extend these with no added logic.
-- `Quest/` — `Quest`, `QuestDescription`, `QuestTurnInItem`, rewards (`QuestRewardInterface`: `ExperienceReward`, `GoldReward`, `ReputationReward`, `ItemReward`), requirements (`QuestRequirementInterface`: `LevelRequirement`, `ReputationRequirement`, `ClassPointsRequirement`, `ItemRequirement`, `QuestRequirement`).
+- `Quest/` — `Quest`, `QuestDescription`, `QuestTurnInItem`, rewards (`QuestRewardInterface`: `ExperienceReward`, `GoldReward`, `ReputationReward`, `ItemReward`), requirements (`QuestRequirementInterface`: `LevelRequirement`, `ReputationRequirement`, `ClassRankRequirement`, `ItemRequirement`, `QuestRequirement`).
 - `Monster/` — `Monster`, `Health`.
 - `Area/` — `Area`.
 - Root — shared objects: `Faction`, `GameFileMetadata`.
