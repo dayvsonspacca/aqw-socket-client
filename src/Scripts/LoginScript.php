@@ -4,64 +4,32 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Scripts;
 
-use AqwSocketClient\Commands\JoinInitialAreaCommand;
-use AqwSocketClient\Commands\LoadPlayerInventoryCommand;
-use AqwSocketClient\Commands\LoginCommand;
-use AqwSocketClient\Events\AreaJoinedEvent;
-use AqwSocketClient\Events\ConnectionEstablishedEvent;
-use AqwSocketClient\Events\LoginRespondedEvent;
-use AqwSocketClient\Interfaces\EventInterface;
-use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
-use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use AqwSocketClient\Objects\Names\PlayerName;
-use Override;
 
-final class LoginScript extends ExpirableScript
+/**
+ * Orchestrates the full login sequence:
+ *   1. Establish connection and authenticate.
+ *   2. Join the battleon area.
+ *   3. Load the player inventory.
+ *
+ * Equivalent to:
+ *   new SequenceScript([
+ *       new ConnectAndLoginScript($playerName, $token),
+ *       new JoinBattleonScript(),
+ *       new LoadInventoryScript(),
+ *   ])
+ */
+final class LoginScript extends SequenceScript
 {
-    public ?SocketIdentifier $socketId = null;
-    public ?AreaIdentifier $areaId = null;
-
     public function __construct(
-        private readonly PlayerName $playerName,
+        PlayerName $playerName,
         #[\SensitiveParameter]
-        private readonly string $token,
-    ) {}
-
-    #[Override]
-    public function handles(): array
-    {
-        return [
-            ConnectionEstablishedEvent::class,
-            LoginRespondedEvent::class,
-            AreaJoinedEvent::class,
-        ];
-    }
-
-    #[Override]
-    public function handle(EventInterface $event): array
-    {
-        if ($event instanceof ConnectionEstablishedEvent) {
-            return [new LoginCommand($this->playerName, $this->token)];
-        }
-
-        if ($event instanceof LoginRespondedEvent) {
-            if ($event->success) {
-                $this->socketId = $event->socketId;
-                return [new JoinInitialAreaCommand()];
-            }
-
-            $this->failed();
-        }
-
-        if ($event instanceof AreaJoinedEvent && $event->area->name->value === 'battleon') {
-            $this->areaId = $event->area->identifier;
-
-            if ($this->socketId !== null) {
-                $this->success();
-                return [new LoadPlayerInventoryCommand($this->areaId, $this->socketId)];
-            }
-        }
-
-        return [];
+        string $token,
+    ) {
+        parent::__construct([
+            new ConnectAndLoginScript($playerName, $token),
+            new JoinBattleonScript(),
+            new LoadInventoryScript(),
+        ]);
     }
 }

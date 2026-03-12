@@ -17,7 +17,7 @@ use Override;
  * Advances to the next script when the current one completes with Success.
  * Fails immediately if any child fails, disconnects, or expires.
  */
-final class SequenceScript extends AbstractScript
+class SequenceScript extends AbstractScript
 {
     private int $current = 0;
 
