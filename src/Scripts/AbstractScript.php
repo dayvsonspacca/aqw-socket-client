@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Scripts;
 
 use AqwSocketClient\Enums\ScriptResult;
+use AqwSocketClient\Interfaces\CommandInterface;
 use AqwSocketClient\Interfaces\ScriptInterface;
 use Override;
 
@@ -19,6 +20,12 @@ abstract class AbstractScript implements ScriptInterface
 {
     private bool $done = false;
     private ?ScriptResult $result = null;
+
+    #[Override]
+    public function start(ClientContext $context): ?CommandInterface
+    {
+        return null;
+    }
 
     #[Override]
     public function isDone(): bool

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AqwSocketClient\Interfaces;
 
 use AqwSocketClient\Enums\ScriptResult;
+use AqwSocketClient\Scripts\ClientContext;
 
 /**
  * Represents a single unit of logic to be executed against a {@see AqwSocketClient\Interfaces\ClientInterface}.
@@ -16,16 +17,27 @@ use AqwSocketClient\Enums\ScriptResult;
 interface ScriptInterface
 {
     /**
+     * Called once by the client before the event loop begins.
+     *
+     * Returns the first command to send, or null if no immediate action is needed.
+     * Default implementation in AbstractScript returns null.
+     *
+     * @param ClientContext $context Shared session state.
+     */
+    public function start(ClientContext $context): ?CommandInterface;
+
+    /**
      * Handles an incoming event.
      *
-     * Implementations may inspect the event and return zero or more
-     * commands to be sent back to the server.
+     * Returns at most one command to send. The client queues it and sends it
+     * on the next available tick.
      *
      * @param EventInterface $event The incoming event.
+     * @param ClientContext  $context Shared session state.
      *
-     * @return CommandInterface[] Commands to be dispatched.
+     * @return ?CommandInterface A command to dispatch, or null.
      */
-    public function handle(EventInterface $event): array;
+    public function handle(EventInterface $event, ClientContext $context): ?CommandInterface;
 
     /**
      * Returns the list of event types this script is interested in.
@@ -37,7 +49,7 @@ interface ScriptInterface
     /**
      * Signals whether this script has completed its work.
      *
-     * Checked by the client after every {@see AqwSocketClient\Interfaces\ScriptInterface::handle()()} call.
+     * Checked by the client after every {@see AqwSocketClient\Interfaces\ScriptInterface::handle()} call.
      * When true, the client stops driving this script and moves on.
      */
     public function isDone(): bool;
@@ -51,25 +63,16 @@ interface ScriptInterface
 
     /**
      * Marks the script as failed.
-     *
-     * Sets the result to {@see AqwSocketClient\Enums\ScriptResult::Failed}
-     * and completes execution.
      */
     public function failed(): void;
 
     /**
      * Marks the script as disconnected.
-     *
-     * Sets the result to {@see AqwSocketClient\Enums\ScriptResult::Disconnected}
-     * and completes execution.
      */
     public function disconnected(): void;
 
     /**
      * Marks the script as successfully completed.
-     *
-     * Sets the result to {@see AqwSocketClient\Enums\ScriptResult::Success}
-     * and completes execution.
      */
     public function success(): void;
 }

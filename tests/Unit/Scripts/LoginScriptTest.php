@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Tests\Unit\Scripts;
 
-use AqwSocketClient\Commands\JoinInitialAreaCommand;
-use AqwSocketClient\Commands\LoadPlayerInventoryCommand;
-use AqwSocketClient\Commands\LoginCommand;
 use AqwSocketClient\Enums\ScriptResult;
 use AqwSocketClient\Events\AreaJoinedEvent;
 use AqwSocketClient\Events\ConnectionEstablishedEvent;
 use AqwSocketClient\Events\LoginRespondedEvent;
-use AqwSocketClient\Events\PlayerDetectedEvent;
+use AqwSocketClient\Events\PlayerInventoryLoadedEvent;
 use AqwSocketClient\Objects\Area\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
 use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use AqwSocketClient\Objects\Names\AreaName;
 use AqwSocketClient\Objects\Names\PlayerName;
+use AqwSocketClient\Scripts\ClientContext;
 use AqwSocketClient\Scripts\LoginScript;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -25,97 +23,70 @@ use PHPUnit\Framework\TestCase;
 final class LoginScriptTest extends TestCase
 {
     private LoginScript $script;
+    private ClientContext $ctx;
 
     protected function setUp(): void
     {
-        $playerName = new PlayerName('Hilise');
-        $token = md5(random_bytes(1));
+        $this->ctx = new ClientContext();
+        $this->script = new LoginScript(new PlayerName('Hilise'), 'token');
+    }
 
-        $this->script = new LoginScript($playerName, $token);
+    private function runFullSequence(): void
+    {
+        $socketId = new SocketIdentifier(1);
+        $areaId = new AreaIdentifier(1);
+
+        $this->script->handle(new ConnectionEstablishedEvent(), $this->ctx);
+        $this->script->handle(new LoginRespondedEvent(true, $socketId), $this->ctx);
+        $this->script->handle(
+            new AreaJoinedEvent(new Area($areaId, new AreaName('battleon'), new RoomIdentifier(1))),
+            $this->ctx,
+        );
+        $this->script->handle(new PlayerInventoryLoadedEvent(), $this->ctx);
     }
 
     #[Test]
-    public function it_responds_with_login_command_when_connection_established(): void
+    public function it_succeeds_after_full_login_sequence(): void
     {
-        $commands = $this->script->handle(new ConnectionEstablishedEvent());
-
-        $command = $commands[0];
-
-        $this->assertInstanceOf(LoginCommand::class, $command);
-    }
-
-    #[Test]
-    public function it_responds_with_join_initial_area_when_login_responded_is_success(): void
-    {
-        $commands = $this->script->handle(new LoginRespondedEvent(true, new SocketIdentifier(2)));
-
-        $command = $commands[0];
-
-        $this->assertInstanceOf(JoinInitialAreaCommand::class, $command);
-    }
-
-    #[Test]
-    public function it_dont_do_anything_to_unrelated_event(): void
-    {
-        $commands = $this->script->handle(new PlayerDetectedEvent(new PlayerName('Hilise')));
-        $this->assertEmpty($commands);
-    }
-
-    #[Test]
-    public function it_dont_load_player_inventory_when_joins_battleon_but_socket_is_null(): void
-    {
-        $commands = $this->script->handle(new AreaJoinedEvent(
-            new Area(new AreaIdentifier(1), new AreaName('battleon'), new RoomIdentifier(1)),
-        ));
-        $this->assertEmpty($commands);
-    }
-
-    #[Test]
-    public function it_dont_load_player_inventory_when_joins_battleon(): void
-    {
-        $this->script->handle(new LoginRespondedEvent(true, new SocketIdentifier(2)));
-        $commands = $this->script->handle(new AreaJoinedEvent(
-            new Area(new AreaIdentifier(1), new AreaName('battleon'), new RoomIdentifier(1)),
-        ));
-
-        $command = $commands[0];
-
-        $this->assertInstanceOf(LoadPlayerInventoryCommand::class, $command);
-    }
-
-    #[Test]
-    public function it_marks_script_as_done_and_success_when_ends(): void
-    {
-        $this->script->handle(new LoginRespondedEvent(true, new SocketIdentifier(2)));
-        $this->script->handle(new AreaJoinedEvent(
-            new Area(new AreaIdentifier(1), new AreaName('battleon'), new RoomIdentifier(1)),
-        ));
+        $this->runFullSequence();
 
         $this->assertTrue($this->script->isDone());
-        $this->assertSame($this->script->result(), ScriptResult::Success);
+        $this->assertSame(ScriptResult::Success, $this->script->result());
     }
 
     #[Test]
-    public function it_have_the_expected_events(): void
+    public function it_fails_when_login_responded_not_success(): void
     {
-        $this->assertCount(3, $this->script->handles());
+        $this->script->handle(new ConnectionEstablishedEvent(), $this->ctx);
+        $this->script->handle(new LoginRespondedEvent(false, null), $this->ctx);
 
-        $this->assertContains(ConnectionEstablishedEvent::class, $this->script->handles());
-        $this->assertContains(LoginRespondedEvent::class, $this->script->handles());
-        $this->assertContains(AreaJoinedEvent::class, $this->script->handles());
+        $this->assertTrue($this->script->isDone());
+        $this->assertSame(ScriptResult::Failed, $this->script->result());
     }
 
     #[Test]
-    public function it_fail_when_login_responded_not_success(): void
+    public function it_stores_socket_id_in_context(): void
     {
-        $this->script->handle(new LoginRespondedEvent(false, null));
+        $socketId = new SocketIdentifier(42);
+        $this->script->handle(new ConnectionEstablishedEvent(), $this->ctx);
+        $this->script->handle(new LoginRespondedEvent(true, $socketId), $this->ctx);
 
-        $this->assertSame($this->script->result(), ScriptResult::Failed);
+        $this->assertSame($socketId, $this->ctx->get('socket_id'));
     }
 
     #[Test]
-    public function it_defaults_to_failed_if_result_called(): void
+    public function it_stores_area_id_in_context(): void
     {
-        $this->assertSame($this->script->result(), ScriptResult::Failed);
+        $areaId = new AreaIdentifier(7);
+        $socketId = new SocketIdentifier(1);
+
+        $this->script->handle(new ConnectionEstablishedEvent(), $this->ctx);
+        $this->script->handle(new LoginRespondedEvent(true, $socketId), $this->ctx);
+        $this->script->handle(
+            new AreaJoinedEvent(new Area($areaId, new AreaName('battleon'), new RoomIdentifier(1))),
+            $this->ctx,
+        );
+
+        $this->assertSame($areaId, $this->ctx->get('area_id'));
     }
 }
