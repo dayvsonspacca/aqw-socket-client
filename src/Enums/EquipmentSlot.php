@@ -13,4 +13,5 @@ enum EquipmentSlot: string
     case Helm = 'he';
     case House = 'ho';
     case Pet = 'pe';
+    case Accessory = 'am';
 }
