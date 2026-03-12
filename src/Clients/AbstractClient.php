@@ -16,12 +16,21 @@ use Psl\DataStructure\Queue;
 
 abstract class AbstractClient implements ClientInterface
 {
+    private ?ClientContext $lastContext = null;
+
+    #[Override]
+    public function context(): ?ClientContext
+    {
+        return $this->lastContext;
+    }
+
     #[Override]
     public function run(ScriptInterface $script): void
     {
         /** @var Queue<CommandInterface> $queue */
         $queue = new Queue();
         $context = new ClientContext();
+        $this->lastContext = $context;
 
         $initial = $script->start($context);
 
