@@ -12,15 +12,15 @@ use AqwSocketClient\Interfaces\MessageInterface;
 use AqwSocketClient\Interfaces\ScriptInterface;
 use AqwSocketClient\Scripts\ClientContext;
 use Override;
-use SplQueue;
+use Psl\DataStructure\Queue;
 
 abstract class AbstractClient implements ClientInterface
 {
     #[Override]
     public function run(ScriptInterface $script): void
     {
-        /** @var SplQueue<CommandInterface> $queue */
-        $queue = new SplQueue();
+        /** @var Queue<CommandInterface> $queue */
+        $queue = new Queue();
         $context = new ClientContext();
 
         $initial = $script->start($context);
@@ -35,7 +35,7 @@ abstract class AbstractClient implements ClientInterface
                 break;
             }
 
-            if (!$queue->isEmpty()) {
+            if ($queue->count() > 0) {
                 $this->send($queue->dequeue()->pack());
             }
 
