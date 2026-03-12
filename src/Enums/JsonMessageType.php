@@ -16,6 +16,11 @@ enum JsonMessageType: string
     case EquipItem = 'equipItem';
 
     /**
+     * Message related to a player unequipping an item.
+     */
+    case UnequipItem = 'unequipItem';
+
+    /**
      * Message related to a player changing the appearance of a currently equipped item.
      */
     case WearItem = 'wearItem';
@@ -34,4 +39,9 @@ enum JsonMessageType: string
      * Message related to quests information
      */
     case QuestsLoaded = 'getQuests';
+
+    /**
+     * Message related to player cosmetic preferences loaded.
+     */
+    case PreferencesLoaded = 'loadPrefs';
 }
