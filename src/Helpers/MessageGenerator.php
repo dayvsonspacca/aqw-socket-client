@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace AqwSocketClient\Helpers;
 
+use AqwSocketClient\Enums\EquipmentSlot;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
+use AqwSocketClient\Objects\Identifiers\ItemIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use AqwSocketClient\Objects\Names\AreaName;
 use AqwSocketClient\Objects\Names\PlayerName;
@@ -126,5 +128,34 @@ final class MessageGenerator
     public static function questLoadedWithStaffAndGuildTags(): string
     {
         return '{"t":"xt","b":{"r":-1,"o":{"cmd":"getQuests","quests":{"9999":{"QuestID":9999,"sName":"Staff Guild Quest","sDesc":"A staff guild quest.","sEndText":"Done!","iExp":0,"iGold":0,"iRep":0,"FactionID":1,"sFaction":"Good","iLvl":0,"iReqRep":0,"iReqCP":0,"iClass":0,"bOnce":0,"bUpg":0,"bStaff":1,"bGuild":1,"turnin":[],"reward":[],"reqd":[]}}}}}';
+    }
+
+    public static function equipItem(SocketIdentifier $socketId, ItemIdentifier $itemId, EquipmentSlot $slot): string
+    {
+        return (
+            '{"t":"xt","b":{"r":-1,"o":{"cmd":"equipItem","uid":'
+            . (string) $socketId
+            . ',"ItemID":'
+            . (string) $itemId
+            . ',"strES":"'
+            . $slot->value
+            . '","sFile":"items/equip/armor.swf","sLink":"http://game.aq.com/","sMeta":"AutoAdd"}}}'
+        );
+    }
+
+    public static function equipItemWithoutBoost(
+        SocketIdentifier $socketId,
+        ItemIdentifier $itemId,
+        EquipmentSlot $slot,
+    ): string {
+        return (
+            '{"t":"xt","b":{"r":-1,"o":{"cmd":"equipItem","uid":'
+            . (string) $socketId
+            . ',"ItemID":'
+            . (string) $itemId
+            . ',"strES":"'
+            . $slot->value
+            . '","sFile":"items/equip/armor.swf","sLink":"http://game.aq.com/"}}}'
+        );
     }
 }
