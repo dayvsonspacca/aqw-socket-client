@@ -3,4 +3,4 @@ vendor
 composer.lock
 public
 command.php
-references
+references.worktrees
