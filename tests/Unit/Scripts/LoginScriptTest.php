@@ -38,9 +38,10 @@ final class LoginScriptTest extends TestCase
 
         $this->script->handle(new ConnectionEstablishedEvent(), $this->ctx);
         $this->script->handle(new LoginRespondedEvent(true, $socketId), $this->ctx);
-        $this->script->handle(new AreaJoinedEvent(
-            new Area($areaId, new AreaName('battleon'), new RoomIdentifier(1))
-        ), $this->ctx);
+        $this->script->handle(
+            new AreaJoinedEvent(new Area($areaId, new AreaName('battleon'), new RoomIdentifier(1))),
+            $this->ctx,
+        );
         $this->script->handle(new PlayerInventoryLoadedEvent(), $this->ctx);
     }
 
@@ -81,9 +82,10 @@ final class LoginScriptTest extends TestCase
 
         $this->script->handle(new ConnectionEstablishedEvent(), $this->ctx);
         $this->script->handle(new LoginRespondedEvent(true, $socketId), $this->ctx);
-        $this->script->handle(new AreaJoinedEvent(
-            new Area($areaId, new AreaName('battleon'), new RoomIdentifier(1))
-        ), $this->ctx);
+        $this->script->handle(
+            new AreaJoinedEvent(new Area($areaId, new AreaName('battleon'), new RoomIdentifier(1))),
+            $this->ctx,
+        );
 
         $this->assertSame($areaId, $this->ctx->get('area_id'));
     }

@@ -38,9 +38,7 @@ final class JoinBattleonScriptTest extends TestCase
     public function it_succeeds_and_stores_area_id_when_battleon_is_joined(): void
     {
         $areaId = new AreaIdentifier(1);
-        $event = new AreaJoinedEvent(
-            new Area($areaId, new AreaName('battleon'), new RoomIdentifier(1))
-        );
+        $event = new AreaJoinedEvent(new Area($areaId, new AreaName('battleon'), new RoomIdentifier(1)));
 
         $this->script->handle($event, $this->ctx);
 
@@ -52,9 +50,7 @@ final class JoinBattleonScriptTest extends TestCase
     #[Test]
     public function it_does_not_succeed_when_non_battleon_area_is_joined(): void
     {
-        $event = new AreaJoinedEvent(
-            new Area(new AreaIdentifier(2), new AreaName('othermap'), new RoomIdentifier(1))
-        );
+        $event = new AreaJoinedEvent(new Area(new AreaIdentifier(2), new AreaName('othermap'), new RoomIdentifier(1)));
 
         $this->script->handle($event, $this->ctx);
 

@@ -17,17 +17,26 @@ use PHPUnit\Framework\TestCase;
 
 final class SuccessEvent implements EventInterface
 {
-    public static function from(MessageInterface $message): ?EventInterface { return null; }
+    public static function from(MessageInterface $message): ?EventInterface
+    {
+        return null;
+    }
 }
 
 final class FailureEvent implements EventInterface
 {
-    public static function from(MessageInterface $message): ?EventInterface { return null; }
+    public static function from(MessageInterface $message): ?EventInterface
+    {
+        return null;
+    }
 }
 
 final class UnrelatedEvent implements EventInterface
 {
-    public static function from(MessageInterface $message): ?EventInterface { return null; }
+    public static function from(MessageInterface $message): ?EventInterface
+    {
+        return null;
+    }
 }
 
 final class StubCommand implements CommandInterface
@@ -85,9 +94,7 @@ final class PipelineTest extends TestCase
     #[Test]
     public function it_fails_when_failure_event_arrives(): void
     {
-        $pipeline = Pipeline::send(new StubCommand())
-            ->waitFor(SuccessEvent::class)
-            ->orFailOn(FailureEvent::class);
+        $pipeline = Pipeline::send(new StubCommand())->waitFor(SuccessEvent::class)->orFailOn(FailureEvent::class);
 
         $pipeline->handle(new FailureEvent(), $this->ctx);
 
@@ -98,9 +105,7 @@ final class PipelineTest extends TestCase
     #[Test]
     public function it_stores_matched_event_on_failure(): void
     {
-        $pipeline = Pipeline::send(new StubCommand())
-            ->waitFor(SuccessEvent::class)
-            ->orFailOn(FailureEvent::class);
+        $pipeline = Pipeline::send(new StubCommand())->waitFor(SuccessEvent::class)->orFailOn(FailureEvent::class);
         $event = new FailureEvent();
 
         $pipeline->handle($event, $this->ctx);
@@ -122,8 +127,10 @@ final class PipelineTest extends TestCase
     public function it_invokes_callback_on_success_and_returns_its_command(): void
     {
         $followUp = new StubCommand();
-        $pipeline = Pipeline::send(new StubCommand())
-            ->waitFor(SuccessEvent::class, static fn(SuccessEvent $_e, ClientContext $_ctx): ?CommandInterface => $followUp);
+        $pipeline = Pipeline::send(new StubCommand())->waitFor(
+            SuccessEvent::class,
+            static fn(SuccessEvent $_e, ClientContext $_ctx): ?CommandInterface => $followUp,
+        );
 
         $returned = $pipeline->handle(new SuccessEvent(), $this->ctx);
 
@@ -133,9 +140,7 @@ final class PipelineTest extends TestCase
     #[Test]
     public function it_declares_all_registered_event_classes_in_handles(): void
     {
-        $pipeline = Pipeline::send(new StubCommand())
-            ->waitFor(SuccessEvent::class)
-            ->orFailOn(FailureEvent::class);
+        $pipeline = Pipeline::send(new StubCommand())->waitFor(SuccessEvent::class)->orFailOn(FailureEvent::class);
 
         $handles = $pipeline->handles();
 
@@ -146,11 +151,13 @@ final class PipelineTest extends TestCase
     #[Test]
     public function it_writes_to_context_from_callback(): void
     {
-        $pipeline = Pipeline::send(new StubCommand())
-            ->waitFor(SuccessEvent::class, static function (SuccessEvent $_e, ClientContext $ctx): ?CommandInterface {
-                $ctx->set('key', 'value');
-                return null;
-            });
+        $pipeline = Pipeline::send(new StubCommand())->waitFor(SuccessEvent::class, static function (
+            SuccessEvent $_e,
+            ClientContext $ctx,
+        ): ?CommandInterface {
+            $ctx->set('key', 'value');
+            return null;
+        });
 
         $pipeline->handle(new SuccessEvent(), $this->ctx);
 

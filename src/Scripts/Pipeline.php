@@ -90,11 +90,13 @@ final class Pipeline extends AbstractScript
         }
 
         foreach ($this->failureClasses as $failureClass) {
-            if ($event instanceof $failureClass) {
-                $this->matchedEvent = $event;
-                $this->failed();
-                return null;
+            if (!$event instanceof $failureClass) {
+                continue;
             }
+
+            $this->matchedEvent = $event;
+            $this->failed();
+            return null;
         }
 
         return null;

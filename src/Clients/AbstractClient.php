@@ -53,8 +53,11 @@ abstract class AbstractClient implements ClientInterface
         }
     }
 
-    private function processMessage(ScriptInterface $script, MessageInterface $message, ClientContext $context): ?CommandInterface
-    {
+    private function processMessage(
+        ScriptInterface $script,
+        MessageInterface $message,
+        ClientContext $context,
+    ): ?CommandInterface {
         foreach ($this->resolveEvents($script, $message) as $event) {
             $command = $script->handle($event, $context);
 

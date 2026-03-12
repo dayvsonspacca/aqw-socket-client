@@ -27,7 +27,10 @@ final class StubEvent implements EventInterface
 
 final class SucceedingScript extends AbstractScript
 {
-    public function handles(): array { return [StubEvent::class]; }
+    public function handles(): array
+    {
+        return [StubEvent::class];
+    }
 
     public function handle(EventInterface $event, ClientContext $context): ?CommandInterface
     {
@@ -38,7 +41,10 @@ final class SucceedingScript extends AbstractScript
 
 final class FailingScript extends AbstractScript
 {
-    public function handles(): array { return [StubEvent::class]; }
+    public function handles(): array
+    {
+        return [StubEvent::class];
+    }
 
     public function handle(EventInterface $event, ClientContext $context): ?CommandInterface
     {
@@ -49,7 +55,10 @@ final class FailingScript extends AbstractScript
 
 final class WritingScript extends AbstractScript
 {
-    public function handles(): array { return [StubEvent::class]; }
+    public function handles(): array
+    {
+        return [StubEvent::class];
+    }
 
     public function handle(EventInterface $event, ClientContext $context): ?CommandInterface
     {
@@ -63,7 +72,10 @@ final class ReadingScript extends AbstractScript
 {
     public bool $sawValue = false;
 
-    public function handles(): array { return [StubEvent::class]; }
+    public function handles(): array
+    {
+        return [StubEvent::class];
+    }
 
     public function handle(EventInterface $event, ClientContext $context): ?CommandInterface
     {
@@ -75,7 +87,10 @@ final class ReadingScript extends AbstractScript
 
 final class ExpirableStubScript extends ExpirableScript
 {
-    public function handles(): array { return [StubEvent::class]; }
+    public function handles(): array
+    {
+        return [StubEvent::class];
+    }
 
     public function handle(EventInterface $event, ClientContext $context): ?CommandInterface
     {

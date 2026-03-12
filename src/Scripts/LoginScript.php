@@ -21,11 +21,8 @@ use AqwSocketClient\Objects\Names\PlayerName;
  */
 final class LoginScript extends SequenceScript
 {
-    public function __construct(
-        PlayerName $playerName,
-        #[\SensitiveParameter]
-        string $token,
-    ) {
+    public function __construct(PlayerName $playerName, #[\SensitiveParameter] string $token)
+    {
         parent::__construct([
             new ConnectAndLoginScript($playerName, $token),
             new JoinBattleonScript(),
