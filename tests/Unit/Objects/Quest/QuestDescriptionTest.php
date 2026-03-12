@@ -32,6 +32,15 @@ final class QuestDescriptionTest extends TestCase
     }
 
     #[Test]
+    public function it_can_create_without_completion_text(): void
+    {
+        $description = new QuestDescription('Bring me some Mana Energy from the Mana Golem.');
+
+        $this->assertInstanceOf(QuestDescription::class, $description);
+        $this->assertNull($description->completionText);
+    }
+
+    #[Test]
     public function should_throw_exception_when_completion_text_empty(): void
     {
         $this->expectException(\Psl\Type\Exception\AssertException::class);

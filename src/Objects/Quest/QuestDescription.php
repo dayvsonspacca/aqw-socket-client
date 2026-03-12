@@ -10,9 +10,12 @@ final readonly class QuestDescription
 {
     public function __construct(
         public readonly string $text,
-        public readonly string $completionText,
+        public readonly ?string $completionText = null,
     ) {
         Type\non_empty_string()->assert($this->text);
-        Type\non_empty_string()->assert($this->completionText);
+
+        if ($this->completionText !== null) {
+            Type\non_empty_string()->assert($this->completionText);
+        }
     }
 }

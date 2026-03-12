@@ -114,7 +114,7 @@ final class QuestLoadedEvent implements EventInterface
             new Quest(
                 new QuestIdentifier((int) $questId),
                 new QuestName($q['sName']),
-                new QuestDescription($q['sDesc'], $q['sEndText']),
+                new QuestDescription($q['sDesc'], $q['sEndText'] !== '' ? $q['sEndText'] : null),
                 $requirements,
                 $rewards,
                 $turnInItems,
