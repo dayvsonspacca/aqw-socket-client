@@ -39,4 +39,9 @@ enum JsonMessageType: string
      * Message related to quests information
      */
     case QuestsLoaded = 'getQuests';
+
+    /**
+     * Message related to player cosmetic preferences loaded.
+     */
+    case PreferencesLoaded = 'loadPrefs';
 }

@@ -171,4 +171,9 @@ final class MessageGenerator
             . '","bUnload":true}}}'
         );
     }
+
+    public static function playerPreferencesLoaded(): string
+    {
+        return '{"t":"xt","b":{"r":-1,"o":{"cmd":"loadPrefs","result":{"costumes":{"co":83965,"ba":59470,"Weapon":59471,"he":74726},"loadouts":{},"prefs":{}},"success":true}}}';
+    }
 }
