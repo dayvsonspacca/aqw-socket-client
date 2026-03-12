@@ -16,12 +16,12 @@ use AqwSocketClient\Helpers\MessageGenerator;
 use AqwSocketClient\Interfaces\ClientInterface;
 use AqwSocketClient\Messages\DelimitedMessage;
 use AqwSocketClient\Messages\XmlMessage;
-use AqwSocketClient\Objects\Area\Area;
 use AqwSocketClient\Objects\Identifiers\AreaIdentifier;
-use AqwSocketClient\Objects\Identifiers\RoomIdentifier;
 use AqwSocketClient\Objects\Identifiers\SocketIdentifier;
 use AqwSocketClient\Objects\Names\AreaName;
 use AqwSocketClient\Objects\Names\PlayerName;
+use AqwSocketClient\Scripts\ClientContext;
+use AqwSocketClient\Scripts\ExpirableScript;
 use AqwSocketClient\Scripts\LoginScript;
 use AqwSocketClient\Server;
 use AqwSocketClient\Sockets\FakeSocket;
@@ -279,10 +279,20 @@ final class SocketClientTest extends TestCase
     #[Test]
     public function it_verifies_if_its_a_expirable_scrip_and_if_is_expired(): void
     {
-        $playerName = new PlayerName('Hilise');
-        $token = md5('test');
+        $script = new class extends ExpirableScript {
+            public function handles(): array
+            {
+                return [];
+            }
 
-        $script = new LoginScript($playerName, $token);
+            public function handle(
+                \AqwSocketClient\Interfaces\EventInterface $event,
+                ClientContext $context,
+            ): ?\AqwSocketClient\Interfaces\CommandInterface {
+                return null;
+            }
+        };
+
         $this->assertFalse($script->isExpired());
         $script->expiresAt(new DateTimeImmutable('-10 seconds'));
         $this->assertTrue($script->isExpired());
@@ -299,15 +309,10 @@ final class SocketClientTest extends TestCase
     {
         $playerName = new PlayerName('Hilise');
         $token = md5('test');
-        $areaIdentifier = new AreaIdentifier(1);
 
         $script = new LoginScript($playerName, $token);
-        $script->expiresAt(new DateTimeImmutable('-10 seconds'));
 
         $this->client->connect();
-        $script->handle(new AreaJoinedEvent(
-            new Area($areaIdentifier, new AreaName('battleon'), new RoomIdentifier(1)),
-        ));
         $this->client->disconnect();
         $this->client->run($script);
 
