@@ -158,4 +158,17 @@ final class MessageGenerator
             . '","sFile":"items/equip/armor.swf","sLink":"http://game.aq.com/"}}}'
         );
     }
+
+    public static function unequipItem(SocketIdentifier $socketId, ItemIdentifier $itemId, EquipmentSlot $slot): string
+    {
+        return (
+            '{"t":"xt","b":{"r":-1,"o":{"cmd":"unequipItem","uid":'
+            . (string) $socketId
+            . ',"ItemID":'
+            . (string) $itemId
+            . ',"strES":"'
+            . $slot->value
+            . '","bUnload":true}}}'
+        );
+    }
 }

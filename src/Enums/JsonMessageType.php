@@ -16,6 +16,11 @@ enum JsonMessageType: string
     case EquipItem = 'equipItem';
 
     /**
+     * Message related to a player unequipping an item.
+     */
+    case UnequipItem = 'unequipItem';
+
+    /**
      * Message related to a player changing the appearance of a currently equipped item.
      */
     case WearItem = 'wearItem';
