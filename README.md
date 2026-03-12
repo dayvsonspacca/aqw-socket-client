@@ -17,7 +17,7 @@ Allows login, sending commands, and processing server events in a modular, scrip
 
 ## How it works
 
-The library is built around a simple, linear pipeline. Raw bytes come in from the socket, get parsed into typed messages, get interpreted as high-level events, and finally get handled by a **Script** — which decides what commands to send back.
+The library is built around a simple, linear pipeline. Raw bytes come in from the socket, get parsed into typed messages, get interpreted as high-level events, and finally get handled by a **Script** — which decides what command to send back.
 
 ```mermaid
 flowchart LR
@@ -29,7 +29,9 @@ flowchart LR
     F -->|packed as Packet| A
 ```
 
-You write a **Script** that declares which events it cares about and reacts to them by returning commands. The client drives the loop — receiving messages, resolving events, and dispatching them — until the script signals it's done.
+You write a **Script** that declares which events it cares about and reacts to them by returning a command. The client calls `start()` once before the loop begins, then receives messages, resolves events, and dispatches them until the script signals it's done.
+
+Each script call returns **at most one command**, which is enqueued and sent on the next tick. A shared `ClientContext` flows through every call, letting scripts pass data between steps.
 
 ```mermaid
 sequenceDiagram
@@ -37,22 +39,43 @@ sequenceDiagram
     participant Client
     participant Script
 
+    Client->>Script: start(context)
+    Script-->>Client: null
+
     Client->>Server: connect()
     Server-->>Client: cross-domain-policy (XML)
-    Client->>Script: handle(ConnectionEstablishedEvent)
-    Script-->>Client: [LoginCommand]
+    Client->>Script: handle(ConnectionEstablishedEvent, context)
+    Script-->>Client: LoginCommand
     Client->>Server: send LoginCommand
 
     Server-->>Client: login response (delimited)
-    Client->>Script: handle(LoginRespondedEvent)
-    Script-->>Client: [JoinInitialAreaCommand]
+    Client->>Script: handle(LoginRespondedEvent, context)
+    Note over Script: stores socket_id in context
+    Script-->>Client: null → advances to JoinBattleonScript
+    Client->>Script: start(context) [JoinBattleonScript]
+    Script-->>Client: JoinInitialAreaCommand
     Client->>Server: send JoinInitialAreaCommand
 
     Server-->>Client: area joined (JSON)
-    Client->>Script: handle(AreaJoinedEvent)
-    Script-->>Client: [LoadPlayerInventoryCommand]
-    Note over Script: script marks itself as done
+    Client->>Script: handle(AreaJoinedEvent, context)
+    Note over Script: stores area_id in context → advances to LoadInventoryScript
+    Client->>Script: start(context) [LoadInventoryScript]
+    Script-->>Client: LoadPlayerInventoryCommand
     Client->>Server: send LoadPlayerInventoryCommand
+
+    Server-->>Client: inventory loaded (JSON)
+    Client->>Script: handle(PlayerInventoryLoadedEvent, context)
+    Note over Script: success() — sequence complete
+```
+
+After `run()` completes, you can read the accumulated state via `context()`:
+
+```php
+$client->run(new LoginScript($playerName, $token));
+
+$ctx      = $client->context();
+$socketId = $ctx->get('socket_id'); // SocketIdentifier
+$areaId   = $ctx->get('area_id');   // AreaIdentifier
 ```
 
 ---
@@ -61,11 +84,30 @@ sequenceDiagram
 
 ### 📜 Scripts
 
-Scripts are the core unit of logic. Each script declares the events it listens to and reacts by returning commands. When finished, it calls `done()` to signal the client to stop.
+Scripts are the core unit of logic. The library ships with both **atomic scripts** (single-responsibility steps) and **composition primitives** for building sequences and pipelines.
+
+#### Composition primitives
 
 | Script | Description |
 |---|---|
-| `LoginScript` | Handles the full login flow: authenticates, joins the initial area (`battleon`), and loads the player's inventory. Marks itself as done once the area is joined. |
+| `SequenceScript` | Runs a list of scripts in order. Advances to the next when the current one succeeds. Fails immediately if any child fails, disconnects, or expires. |
+| `Pipeline` | Fluent DSL for simple linear flows: `Pipeline::send($cmd)->waitFor(SomeEvent::class)->orFailOn(OtherEvent::class)`. Interchangeable with class-based scripts inside `SequenceScript`. |
+
+#### Login sequence
+
+| Script | Description |
+|---|---|
+| `LoginScript` | Orchestrates the full login flow as a `SequenceScript` of three atomic steps (see below). |
+| `ConnectAndLoginScript` | Sends `LoginCommand` on connection. On a successful `LoginRespondedEvent`, stores `socket_id` in context. |
+| `JoinBattleonScript` | Sends `JoinInitialAreaCommand` on start. Succeeds when `AreaJoinedEvent` for `battleon` is received, storing `area_id` in context. |
+| `LoadInventoryScript` | Sends `LoadPlayerInventoryCommand` on start (reading `socket_id` and `area_id` from context). Succeeds when `PlayerInventoryLoadedEvent` arrives. |
+
+#### Base classes
+
+| Class | When to use |
+|---|---|
+| `AbstractScript` | Base for all atomic scripts. Provides `success()`, `failed()`, `disconnected()`, `isDone()`, and a default no-op `start()`. |
+| `ExpirableScript` | Extends `AbstractScript` with a configurable timeout. |
 
 ---
 
@@ -105,9 +147,69 @@ Commands are actions sent from the client to the server. Each one knows how to s
 
 ## Extending
 
-All core pieces are interface-driven, making the library easy to extend:
+All core pieces are interface-driven, making the library easy to extend.
 
-- **New event?** Implement `EventInterface` — parse any `MessageInterface` and return a typed object.
-- **New command?** Implement `CommandInterface` — serialize your data into a `Packet` via `pack()`.
-- **New script?** Extend `AbstractScript` — declare your `handles()`, react in `handle()`, call `done()` when finished.
-- **Custom socket?** Implement `SocketInterface` — useful for testing or alternative transports.
+### Writing a custom script
+
+Extend `AbstractScript`. Declare which events you handle in `handles()`, react in `handle()`, and optionally send an initial command from `start()`. Call `success()` or `failed()` when done.
+
+```php
+final class MyScript extends AbstractScript
+{
+    #[Override]
+    public function start(ClientContext $context): ?CommandInterface
+    {
+        return new SomeCommand(); // sent immediately before the loop
+    }
+
+    #[Override]
+    public function handles(): array
+    {
+        return [SomeEvent::class, ErrorEvent::class];
+    }
+
+    #[Override]
+    public function handle(EventInterface $event, ClientContext $context): ?CommandInterface
+    {
+        if ($event instanceof ErrorEvent) {
+            $this->failed();
+            return null;
+        }
+
+        $context->set('result', $event->data);
+        $this->success();
+        return null;
+    }
+}
+```
+
+### Using Pipeline for simple flows
+
+For common "send a command, wait for a response" patterns:
+
+```php
+$step = Pipeline::send(new SomeCommand())
+    ->waitFor(SuccessEvent::class)
+    ->orFailOn(ErrorEvent::class);
+```
+
+`Pipeline` is fully compatible with `SequenceScript`:
+
+```php
+$script = new SequenceScript([
+    new ConnectAndLoginScript($name, $token),
+    Pipeline::send(new JoinAreaCommand($area))->waitFor(AreaJoinedEvent::class),
+]);
+```
+
+### Adding a new event
+
+Implement `EventInterface::from(MessageInterface): ?EventInterface`. Return `null` if the message doesn't match.
+
+### Adding a new command
+
+Implement `CommandInterface::pack(): Packet`. Use `Packet::packetify()` with the `%xt%zm%cmd%...%` format.
+
+### Custom socket
+
+Implement `SocketInterface` — useful for testing or alternative transports.
